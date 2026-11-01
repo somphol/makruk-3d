@@ -14,6 +14,7 @@ An interactive, bilingual 3D Makruk (Thai chess) academy built with vanilla HTML
 - **Procedural 3D pieces** — Khun, Met, Khon, Ma, Ruea, Bia, and Bia Ngua are generated from `LatheGeometry`, `ExtrudeGeometry`, spheres, cones, toruses, and custom profiles. No model files required.
 - **Carved 8×8 board** — choose traditional single-tone or modern checkered patterns, with four material finishes including teak, Carrara/Marquina marble, travertine/granite, and jade/slate. Inlaid gold trim, corner studs, coordinate labels, soft shadows, gold dust, and OrbitControls included.
 - **Full-size board mode** — hides the side panels and header so the board can fill the viewport; exit with the same button or Escape.
+- **Honed, anti-glare board** — every board finish uses matte stone or low-sheen wood so the key light cannot wash out a square.
 - **Beginner Move Assist** — green glowing dots for legal destinations and red pulse rings for captures.
 - **Interactive tutor** — displays the selected piece's English and Thai names, phonetic pronunciation, movement summary, legal move count, and capture count.
 - **Illustrated glossary** — seven clickable piece cards with lore, movement, pronunciation, and 3D modeling notes, plus a Makruk-in-60-seconds rule sheet.
@@ -68,18 +69,18 @@ npx serve .
 
 <img src="docs/piece-preview.webp" alt="A rotatable 3D Met piece in the Makruk piece preview with Thai pronunciation controls" width="100%" />
 
-Open **Rules & Pieces** and click any card, or select a piece on the board and use **View in 3D** in the tutor bar, to explore its procedural 3D model. Drag to orbit, scroll or pinch to zoom, toggle auto-rotate, or reset the view. The speaker button on each card and in the preview panel speaks the Thai piece name through the browser's Thai speech voice; the preview also shows the role, movement and hand-built modeling notes.
+Open **Rules & Pieces** and click any card, or select a piece on the board and use **View in 3D** in the tutor bar, to explore its procedural 3D model. Drag to orbit, scroll or pinch to zoom, toggle auto-rotate, or reset the view. The speaker button on each card and in the preview panel speaks the Thai piece name through the browser's Thai speech voice; repeated clicks are queued reliably, and the preview also shows the role, movement and hand-built modeling notes.
 
 ### Board finishes
 
 | Finish | Character |
 | --- | --- |
 | Teak & Ebony | Warm carved wood, the original academy board. |
-| Carrara & Marquina | Polished white marble against deep black stone. |
+| Carrara & Marquina | Honed white marble against deep black stone. |
 | Travertine & Granite | Honed ivory travertine with warm charcoal granite. |
 | Jade & Slate | Green stone inlay with pale quartz squares. |
 
-The stone finishes are inspired by publicly sold stone table-top boards, where contrasting natural stones are inlaid flush into the playing surface. References: [stone chess board styles](http://pebblez.com/stone-chess-boards.html), [marble chess-set buying guide](https://marbleseven.com/marble-chess-set-handcrafted-stone-chess-boards-buying-guide/), [travertine chess tables](https://www.1stdibs.com/furniture/tables/game-tables/1960s-pedestal-travertine-chess-table/id-f_33774512/).
+The stone finishes use a low-glare honed treatment and are inspired by publicly sold stone table-top boards, where contrasting natural stones are inlaid flush into the playing surface. References: [stone chess board styles](http://pebblez.com/stone-chess-boards.html), [marble chess-set buying guide](https://marbleseven.com/marble-chess-set-handcrafted-stone-chess-boards-buying-guide/), [travertine chess tables](https://www.1stdibs.com/furniture/tables/game-tables/1960s-pedestal-travertine-chess-table/id-f_33774512/).
 
 ## Camera controls
 

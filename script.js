@@ -89,7 +89,7 @@ const I18N = {
     boardPatternHeading: "Board pattern",
     boardPatternSubtitle: "Traditional Makruk boards are single-tone; modern club boards often alternate light and dark squares.",
     boardMaterialHeading: "Board material",
-    boardMaterialSubtitle: "Teak and stone table-top finishes, from classic Carrara marble to warm travertine.",
+    boardMaterialSubtitle: "Low-glare teak and honed stone table-top finishes, from classic Carrara marble to warm travertine.",
     stageColorHeading: "Stage colour",
     stageColorSubtitle: "Choose the room around the board, or follow the active theme.",
     stageColorCustom: "Custom colour",
@@ -283,7 +283,7 @@ const I18N = {
     boardPatternHeading: "รูปแบบกระดาน",
     boardPatternSubtitle: "กระดานหมากรุกไทยดั้งเดิมเป็นสีเดียว ส่วนกระดานแข่งขันสมัยใหม่มักสลับช่องสว่างและเข้ม",
     boardMaterialHeading: "วัสดุกระดาน",
-    boardMaterialSubtitle: "ผิวไม้และหินสำหรับโต๊ะเล่น จากหินอ่อนคาร์ราราคลาสสิกถึงทราเวอร์ทีนอบอุ่น",
+    boardMaterialSubtitle: "ผิวไม้และหินขัดด้านลดแสงสะท้อน จากหินอ่อนคาร์ราราคลาสสิกถึงทราเวอร์ทีนอบอุ่น",
     stageColorHeading: "สีของเวที",
     stageColorSubtitle: "เลือกสีห้องรอบกระดาน หรือใช้สีตามธีมที่เลือก",
     stageColorCustom: "เลือกสีเอง",
@@ -628,13 +628,13 @@ const BOARD_STYLES = {
 const BOARD_MATERIALS = {
   teak: {
     name: { en: "Teak & Ebony", th: "ไม้สักและไม้ดำ" },
-    description: { en: "Warm carved wood, the academy classic.", th: "ไม้แกะสลักโทนอบอุ่น ฉบับคลาสสิกของสถาบัน" },
+    description: { en: "Matte carved wood, the academy classic.", th: "ไม้แกะสลักผิวด้าน ฉบับคลาสสิกของสถาบัน" },
     light: "#6d4528",
     dark: "#4a2a18",
   },
   carrara: {
     name: { en: "Carrara & Marquina", th: "คาร์ราราและมาร์กินา" },
-    description: { en: "Polished white marble against deep black stone.", th: "หินอ่อนขาวขัดเงาสลับหินดำเข้ม" },
+    description: { en: "Honed white marble against deep black stone.", th: "หินอ่อนขาวผิวด้านสลับหินดำเข้ม" },
     light: "#d8d2c4",
     dark: "#17191c",
   },
@@ -646,7 +646,7 @@ const BOARD_MATERIALS = {
   },
   jade: {
     name: { en: "Jade & Slate", th: "หยกและหินชนวน" },
-    description: { en: "Green stone inlay with pale quartz squares.", th: "หยกเขียวฝังสลับหินควอตซ์อ่อน" },
+    description: { en: "Honed green stone inlay with pale quartz squares.", th: "หยกเขียวฝังผิวด้านสลับหินควอตซ์อ่อน" },
     light: "#d5ddcf",
     dark: "#234c3e",
   },
@@ -972,11 +972,27 @@ const audio = new SoundStudio();
 
 const thaiSpeech = {
   utterance: null,
+  active: null,
+  queue: [],
   token: 0,
-  startTimer: null,
-  endTimer: null,
+  watchdog: null,
   buttons: new Set(),
+  warmed: false,
 };
+
+function warmSpeechVoices() {
+  if (thaiSpeech.warmed || !("speechSynthesis" in window)) return;
+  thaiSpeech.warmed = true;
+  try {
+    const synth = window.speechSynthesis;
+    synth.getVoices();
+    if (typeof synth.addEventListener === "function") {
+      synth.addEventListener("voiceschanged", () => synth.getVoices(), { once: true });
+    }
+  } catch {
+    // Voice enumeration is best-effort.
+  }
+}
 
 /* =========================================================================
    Game state and rules
@@ -1833,14 +1849,14 @@ function createMaterials() {
 
   materials.tileA = new THREE.MeshStandardMaterial({
     map: woodTextures.tileA,
-    roughness: 0.7,
-    metalness: 0.02,
+    roughness: 0.82,
+    metalness: 0.01,
   });
   materials.tileB = new THREE.MeshStandardMaterial({
     map: woodTextures.tileB,
     color: 0x7d6c5d,
-    roughness: 0.73,
-    metalness: 0.02,
+    roughness: 0.84,
+    metalness: 0.01,
   });
   materials.border = new THREE.MeshStandardMaterial({
     map: woodTextures.border,
@@ -1919,43 +1935,36 @@ function createMaterials() {
   const jadeLight = makeStoneTexture("#d5ddcf", "#799887", 605, "marble", 1.2);
   const jadeDark = makeStoneTexture("#234c3e", "#9bc2ad", 606, "jade", 1.25);
 
-  const marbleLightMaterial = new THREE.MeshPhysicalMaterial({
+  // Honed, low-glare surfaces keep the board readable under the key light.
+  const marbleLightMaterial = new THREE.MeshStandardMaterial({
     map: carraraLight,
-    roughness: 0.24,
-    metalness: 0.01,
-    clearcoat: 0.36,
-    clearcoatRoughness: 0.24,
+    roughness: 0.58,
+    metalness: 0,
   });
-  const marbleDarkMaterial = new THREE.MeshPhysicalMaterial({
+  const marbleDarkMaterial = new THREE.MeshStandardMaterial({
     map: carraraDark,
-    roughness: 0.21,
-    metalness: 0.015,
-    clearcoat: 0.4,
-    clearcoatRoughness: 0.2,
+    roughness: 0.54,
+    metalness: 0,
   });
   const travertineLightMaterial = new THREE.MeshStandardMaterial({
     map: travertineLight,
-    roughness: 0.72,
-    metalness: 0.01,
+    roughness: 0.82,
+    metalness: 0,
   });
   const travertineDarkMaterial = new THREE.MeshStandardMaterial({
     map: travertineDark,
-    roughness: 0.68,
-    metalness: 0.015,
+    roughness: 0.78,
+    metalness: 0,
   });
-  const jadeLightMaterial = new THREE.MeshPhysicalMaterial({
+  const jadeLightMaterial = new THREE.MeshStandardMaterial({
     map: jadeLight,
-    roughness: 0.34,
-    metalness: 0.01,
-    clearcoat: 0.3,
-    clearcoatRoughness: 0.28,
+    roughness: 0.54,
+    metalness: 0,
   });
-  const jadeDarkMaterial = new THREE.MeshPhysicalMaterial({
+  const jadeDarkMaterial = new THREE.MeshStandardMaterial({
     map: jadeDark,
-    roughness: 0.3,
-    metalness: 0.015,
-    clearcoat: 0.4,
-    clearcoatRoughness: 0.24,
+    roughness: 0.5,
+    metalness: 0,
   });
 
   materials.boardSets = {
@@ -3724,16 +3733,16 @@ function togglePiecePreviewAutoRotate() {
 function clearThaiSpeechHighlights() {
   thaiSpeech.buttons.forEach((button) => button.classList.remove("is-speaking"));
   thaiSpeech.buttons.clear();
-  clearTimeout(thaiSpeech.endTimer);
-  thaiSpeech.endTimer = null;
+  clearTimeout(thaiSpeech.watchdog);
+  thaiSpeech.watchdog = null;
 }
 
 function stopThaiSpeech() {
   thaiSpeech.token += 1;
-  clearTimeout(thaiSpeech.startTimer);
-  thaiSpeech.startTimer = null;
-  clearThaiSpeechHighlights();
+  thaiSpeech.queue = [];
+  thaiSpeech.active = null;
   thaiSpeech.utterance = null;
+  clearThaiSpeechHighlights();
   if (!("speechSynthesis" in window)) return;
   try {
     window.speechSynthesis.cancel();
@@ -3741,6 +3750,72 @@ function stopThaiSpeech() {
   } catch {
     // Some embedded browsers expose speechSynthesis but reject calls.
   }
+}
+
+function playNextThaiUtterance() {
+  if (thaiSpeech.active || !("speechSynthesis" in window)) return;
+  const item = thaiSpeech.queue.shift();
+  if (!item) {
+    clearThaiSpeechHighlights();
+    return;
+  }
+
+  const synth = window.speechSynthesis;
+  const utterance = new SpeechSynthesisUtterance(item.text);
+  utterance.lang = "th-TH";
+  utterance.rate = 0.82;
+  utterance.pitch = 1.02;
+  utterance.volume = 0.95;
+  if (item.voice) utterance.voice = item.voice;
+
+  const token = thaiSpeech.token;
+  thaiSpeech.active = utterance;
+  thaiSpeech.utterance = utterance;
+
+  const finish = () => {
+    if (thaiSpeech.active !== utterance) return;
+    clearTimeout(thaiSpeech.watchdog);
+    thaiSpeech.watchdog = null;
+    thaiSpeech.active = null;
+    thaiSpeech.utterance = null;
+    if (token !== thaiSpeech.token) return;
+    window.setTimeout(() => {
+      if (token === thaiSpeech.token) playNextThaiUtterance();
+    }, 55);
+  };
+
+  utterance.onend = finish;
+  utterance.onerror = (event) => {
+    finish();
+    if (event?.error === "not-allowed") {
+      showToast(t("speechUnavailable"), "error", "!");
+    }
+  };
+
+  // A phantom "speaking" flag can survive a previous browser interruption.
+  // Only clear it when we do not own an active utterance.
+  if (synth.speaking || synth.pending) {
+    try {
+      synth.cancel();
+      if (synth.paused) synth.resume();
+    } catch {
+      // Continue anyway.
+    }
+  }
+
+  try {
+    if (synth.paused) synth.resume();
+    synth.speak(utterance);
+  } catch (error) {
+    console.warn("Thai speech failed", error);
+    finish();
+    showToast(t("speechUnavailable"), "error", "!");
+    return;
+  }
+
+  // If a browser never fires end/error, allow the next queued phrase through.
+  clearTimeout(thaiSpeech.watchdog);
+  thaiSpeech.watchdog = window.setTimeout(finish, 5000);
 }
 
 function speakThaiPiece(key, originButton = null) {
@@ -3755,67 +3830,17 @@ function speakThaiPiece(key, originButton = null) {
   const meta = PIECES[key];
   if (!meta) return;
 
-  const synth = window.speechSynthesis;
-  const token = ++thaiSpeech.token;
-  clearTimeout(thaiSpeech.startTimer);
-  clearThaiSpeechHighlights();
+  warmSpeechVoices();
+  const voices = window.speechSynthesis.getVoices() || [];
+  const thaiVoice = voices.find((voice) => /^th/i.test(voice.lang))
+    || voices.find((voice) => /thai/i.test(voice.name));
 
   const buttons = [dom.piecePronounceButton, originButton].filter(Boolean);
   buttons.forEach((button) => button.classList.add("is-speaking"));
-  thaiSpeech.buttons = new Set(buttons);
+  buttons.forEach((button) => thaiSpeech.buttons.add(button));
 
-  const utterance = new SpeechSynthesisUtterance(meta.name.th);
-  utterance.lang = "th-TH";
-  utterance.rate = 0.82;
-  utterance.pitch = 1.02;
-  utterance.volume = 0.95;
-  const thaiVoice = (synth.getVoices() || []).find((voice) => /^th/i.test(voice.lang));
-  if (thaiVoice) utterance.voice = thaiVoice;
-
-  // Keep a strong reference. Chrome can garbage-collect a local utterance
-  // between clicks, which makes only the first pronunciation audible.
-  thaiSpeech.utterance = utterance;
-
-  const finish = () => {
-    if (token !== thaiSpeech.token) return;
-    clearThaiSpeechHighlights();
-    thaiSpeech.utterance = null;
-  };
-  utterance.onend = finish;
-  utterance.onerror = (event) => {
-    if (token !== thaiSpeech.token) return;
-    finish();
-    if (event?.error === "not-allowed") {
-      showToast(t("speechUnavailable"), "error", "!");
-    }
-  };
-  thaiSpeech.endTimer = window.setTimeout(finish, 6000);
-
-  const start = () => {
-    if (token !== thaiSpeech.token) return;
-    try {
-      if (synth.paused) synth.resume();
-      synth.speak(utterance);
-    } catch (error) {
-      console.warn("Thai speech failed", error);
-      finish();
-      showToast(t("speechUnavailable"), "error", "!");
-    }
-  };
-
-  // Chrome needs a short gap after cancel(); speaking in the same task often
-  // leaves the second and later utterances silent. Delay only when needed.
-  if (synth.speaking || synth.pending) {
-    try {
-      synth.cancel();
-      if (synth.paused) synth.resume();
-    } catch {
-      // Continue and still try the new utterance.
-    }
-    thaiSpeech.startTimer = window.setTimeout(start, 120);
-  } else {
-    start();
-  }
+  thaiSpeech.queue.push({ text: meta.name.th, voice: thaiVoice || null });
+  if (!thaiSpeech.active) playNextThaiUtterance();
 }
 
 function openModal(modal) {
@@ -4675,6 +4700,7 @@ function bindEvents() {
 
 function boot() {
   loadPreferences();
+  warmSpeechVoices();
   applyTextSize(state.textSize);
   applyTheme(state.theme);
   applyStageColor(state.stageColor);
@@ -4724,7 +4750,7 @@ boot();
 /* A small, deliberately read-friendly surface for teachers and automated
    smoke tests. It does not expose any private player information. */
 window.Makruk3D = {
-  version: "1.5.0",
+  version: "1.6.0",
   credits: APP_CREDIT,
   getState: () => ({
     turn: state.turn,
