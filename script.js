@@ -50,6 +50,10 @@ const I18N = {
     moveView: "Move view",
     moveViewOn: "Move mode on — drag the stage to reposition the board.",
     moveViewOff: "Move mode off — drag to orbit the board.",
+    fullSize: "Full size",
+    exitFullSize: "Exit full size",
+    fullSizeOn: "Full-size board enabled. Press Esc or the button to exit.",
+    fullSizeOff: "Returned to the academy layout.",
     assistOn: "Assist on",
     assistOff: "Assist off",
     loadingScene: "Carving the board…",
@@ -84,6 +88,8 @@ const I18N = {
     themeSubtitle: "Four moods drawn from Thai court interiors.",
     boardPatternHeading: "Board pattern",
     boardPatternSubtitle: "Traditional Makruk boards are single-tone; modern club boards often alternate light and dark squares.",
+    boardMaterialHeading: "Board material",
+    boardMaterialSubtitle: "Teak and stone table-top finishes, from classic Carrara marble to warm travertine.",
     stageColorHeading: "Stage colour",
     stageColorSubtitle: "Choose the room around the board, or follow the active theme.",
     stageColorCustom: "Custom colour",
@@ -238,6 +244,10 @@ const I18N = {
     moveView: "เลื่อนมุมมอง",
     moveViewOn: "โหมดเลื่อนเปิด — ลากพื้นที่เวทีเพื่อย้ายกระดาน",
     moveViewOff: "โหมดเลื่อนปิด — ลากเพื่อหมุนรอบกระดาน",
+    fullSize: "เต็มจอ",
+    exitFullSize: "ออกจากเต็มจอ",
+    fullSizeOn: "เปิดกระดานเต็มจอแล้ว กด Esc หรือปุ่มเพื่อออก",
+    fullSizeOff: "กลับสู่หน้าจอสถาบัน",
     assistOn: "ตัวช่วยเปิด",
     assistOff: "ตัวช่วยปิด",
     loadingScene: "กำลังแกะสลักกระดาน…",
@@ -272,6 +282,8 @@ const I18N = {
     themeSubtitle: "สี่บรรยากาศจากภายในราชสำนักไทย",
     boardPatternHeading: "รูปแบบกระดาน",
     boardPatternSubtitle: "กระดานหมากรุกไทยดั้งเดิมเป็นสีเดียว ส่วนกระดานแข่งขันสมัยใหม่มักสลับช่องสว่างและเข้ม",
+    boardMaterialHeading: "วัสดุกระดาน",
+    boardMaterialSubtitle: "ผิวไม้และหินสำหรับโต๊ะเล่น จากหินอ่อนคาร์ราราคลาสสิกถึงทราเวอร์ทีนอบอุ่น",
     stageColorHeading: "สีของเวที",
     stageColorSubtitle: "เลือกสีห้องรอบกระดาน หรือใช้สีตามธีมที่เลือก",
     stageColorCustom: "เลือกสีเอง",
@@ -613,6 +625,33 @@ const BOARD_STYLES = {
   },
 };
 
+const BOARD_MATERIALS = {
+  teak: {
+    name: { en: "Teak & Ebony", th: "ไม้สักและไม้ดำ" },
+    description: { en: "Warm carved wood, the academy classic.", th: "ไม้แกะสลักโทนอบอุ่น ฉบับคลาสสิกของสถาบัน" },
+    light: "#6d4528",
+    dark: "#4a2a18",
+  },
+  carrara: {
+    name: { en: "Carrara & Marquina", th: "คาร์ราราและมาร์กินา" },
+    description: { en: "Polished white marble against deep black stone.", th: "หินอ่อนขาวขัดเงาสลับหินดำเข้ม" },
+    light: "#d8d2c4",
+    dark: "#17191c",
+  },
+  travertine: {
+    name: { en: "Travertine & Granite", th: "ทราเวอร์ทีนและแกรนิต" },
+    description: { en: "Honed ivory travertine and warm charcoal granite.", th: "หินทราเวอร์ทีนงาช้างด้านและแกรนิตถ่านอบอุ่น" },
+    light: "#cbb38f",
+    dark: "#403a34",
+  },
+  jade: {
+    name: { en: "Jade & Slate", th: "หยกและหินชนวน" },
+    description: { en: "Green stone inlay with pale quartz squares.", th: "หยกเขียวฝังสลับหินควอตซ์อ่อน" },
+    light: "#d5ddcf",
+    dark: "#234c3e",
+  },
+};
+
 const STAGE_COLORS = {
   auto: { nameKey: "stageColorAuto", color: null },
   midnight: { nameKey: "stageColorMidnight", color: "#090604" },
@@ -682,12 +721,14 @@ const dom = {
   displayModal: $("#displayModal"),
   themeGrid: $("#themeGrid"),
   boardStyleControl: $("#boardStyleControl"),
+  boardMaterialControl: $("#boardMaterialControl"),
   stageColorControl: $("#stageColorControl"),
   stageColorInput: $("#stageColorInput"),
   stageColorCurrent: $("#stageColorCurrent"),
   textSizeControl: $("#textSizeControl"),
   displayReset: $("#displayReset"),
   panToggle: $("#panToggle"),
+  fullSizeToggle: $("#fullSizeToggle"),
   turnStone: $("#turnStone"),
   turnText: $("#turnText"),
   moveCounter: $("#moveCounter"),
@@ -956,6 +997,7 @@ const state = {
   theme: "lacquer",
   textSize: "medium",
   boardStyle: "checkered",
+  boardMaterial: "teak",
   stageColor: "auto",
   history: [],
   captured: { w: [], b: [] },
@@ -1550,6 +1592,7 @@ let highlightLayer = null;
 let lastMoveLayer = null;
 let tableMesh = null;
 let panMode = false;
+let boardFocus = false;
 let pickables = [];
 let tileMeshes = [];
 let raycaster = null;
@@ -1649,6 +1692,111 @@ function makeWoodTexture(baseColor, grainColor, seed, repeat = 1.35) {
     const alpha = 0.02 + random() * 0.015;
     ctx.fillStyle = `rgba(0,0,0,${alpha})`;
     ctx.fillRect(random() * 384, random() * 384, 1 + random(), 1 + random());
+  }
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(repeat, repeat);
+  if (renderer) texture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+  return texture;
+}
+
+function makeStoneTexture(baseColor, accentColor, seed, style = "marble", repeat = 1.1) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 384;
+  canvas.height = 384;
+  const ctx = canvas.getContext("2d");
+  const random = seededRandom(seed);
+
+  ctx.fillStyle = baseColor;
+  ctx.fillRect(0, 0, 384, 384);
+
+  const sheen = ctx.createLinearGradient(0, 0, 384, 384);
+  sheen.addColorStop(0, "rgba(255,255,255,0.16)");
+  sheen.addColorStop(0.38, "rgba(255,255,255,0)");
+  sheen.addColorStop(1, "rgba(0,0,0,0.14)");
+  ctx.fillStyle = sheen;
+  ctx.fillRect(0, 0, 384, 384);
+
+  if (style === "marble" || style === "jade") {
+    for (let vein = 0; vein < 16; vein += 1) {
+      const startY = random() * 430 - 24;
+      const startX = -20 + random() * 60;
+      const endY = random() * 430 - 24;
+      const endX = 330 + random() * 80;
+      const bendA = 20 + random() * 100;
+      const bendB = 20 + random() * 100;
+      const broad = vein % 4 === 0;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(startX, startY);
+      ctx.bezierCurveTo(
+        90 + random() * 70,
+        startY + bendA,
+        220 + random() * 60,
+        endY - bendB,
+        endX,
+        endY,
+      );
+      ctx.lineCap = "round";
+      ctx.strokeStyle = accentColor;
+      ctx.globalAlpha = broad ? 0.08 + random() * 0.06 : 0.16 + random() * 0.18;
+      ctx.lineWidth = broad ? 4 + random() * 7 : 0.6 + random() * 1.8;
+      ctx.stroke();
+      if (!broad && random() > 0.4) {
+        ctx.globalAlpha = 0.24;
+        ctx.lineWidth = 0.5;
+        ctx.strokeStyle = "#ffffff";
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+  } else if (style === "granite") {
+    for (let speck = 0; speck < 2600; speck += 1) {
+      const x = random() * 384;
+      const y = random() * 384;
+      const size = 0.4 + random() * 2.2;
+      ctx.globalAlpha = 0.06 + random() * 0.28;
+      ctx.fillStyle = random() > 0.72 ? "#e0d3c2" : accentColor;
+      ctx.fillRect(x, y, size, size);
+    }
+    ctx.globalAlpha = 1;
+  } else if (style === "travertine") {
+    for (let band = 0; band < 28; band += 1) {
+      const y = random() * 420 - 18;
+      ctx.beginPath();
+      const amplitude = 2 + random() * 7;
+      const frequency = 0.008 + random() * 0.012;
+      const phase = random() * Math.PI * 2;
+      for (let x = -20; x <= 404; x += 7) {
+        const wave = Math.sin(x * frequency + phase) * amplitude;
+        if (x === -20) ctx.moveTo(x, y + wave);
+        else ctx.lineTo(x, y + wave);
+      }
+      ctx.strokeStyle = accentColor;
+      ctx.globalAlpha = 0.05 + random() * 0.13;
+      ctx.lineWidth = 0.8 + random() * 4.5;
+      ctx.stroke();
+    }
+    for (let pit = 0; pit < 110; pit += 1) {
+      const x = random() * 384;
+      const y = random() * 384;
+      const r = 0.5 + random() * 2.2;
+      ctx.beginPath();
+      ctx.ellipse(x, y, r * 1.8, r, random() * Math.PI, 0, Math.PI * 2);
+      ctx.fillStyle = accentColor;
+      ctx.globalAlpha = 0.12 + random() * 0.2;
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  for (let dot = 0; dot < 360; dot += 1) {
+    ctx.fillStyle = `rgba(0,0,0,${0.015 + random() * 0.02})`;
+    ctx.fillRect(random() * 384, random() * 384, 1, 1);
   }
 
   const texture = new THREE.CanvasTexture(canvas);
@@ -1763,6 +1911,59 @@ function createMaterials() {
     roughness: 0.24,
     metalness: 0.1,
   });
+
+  const carraraLight = makeStoneTexture("#d8d2c4", "#7f817e", 601, "marble", 1.2);
+  const carraraDark = makeStoneTexture("#17191c", "#aeb2b3", 602, "marble", 1.2);
+  const travertineLight = makeStoneTexture("#cbb38f", "#8f7050", 603, "travertine", 1.25);
+  const travertineDark = makeStoneTexture("#403a34", "#9a8b78", 604, "granite", 1.1);
+  const jadeLight = makeStoneTexture("#d5ddcf", "#799887", 605, "marble", 1.2);
+  const jadeDark = makeStoneTexture("#234c3e", "#9bc2ad", 606, "jade", 1.25);
+
+  const marbleLightMaterial = new THREE.MeshPhysicalMaterial({
+    map: carraraLight,
+    roughness: 0.24,
+    metalness: 0.01,
+    clearcoat: 0.36,
+    clearcoatRoughness: 0.24,
+  });
+  const marbleDarkMaterial = new THREE.MeshPhysicalMaterial({
+    map: carraraDark,
+    roughness: 0.21,
+    metalness: 0.015,
+    clearcoat: 0.4,
+    clearcoatRoughness: 0.2,
+  });
+  const travertineLightMaterial = new THREE.MeshStandardMaterial({
+    map: travertineLight,
+    roughness: 0.72,
+    metalness: 0.01,
+  });
+  const travertineDarkMaterial = new THREE.MeshStandardMaterial({
+    map: travertineDark,
+    roughness: 0.68,
+    metalness: 0.015,
+  });
+  const jadeLightMaterial = new THREE.MeshPhysicalMaterial({
+    map: jadeLight,
+    roughness: 0.34,
+    metalness: 0.01,
+    clearcoat: 0.3,
+    clearcoatRoughness: 0.28,
+  });
+  const jadeDarkMaterial = new THREE.MeshPhysicalMaterial({
+    map: jadeDark,
+    roughness: 0.3,
+    metalness: 0.015,
+    clearcoat: 0.4,
+    clearcoatRoughness: 0.24,
+  });
+
+  materials.boardSets = {
+    teak: { light: materials.tileA, dark: materials.tileB },
+    carrara: { light: marbleLightMaterial, dark: marbleDarkMaterial },
+    travertine: { light: travertineLightMaterial, dark: travertineDarkMaterial },
+    jade: { light: jadeLightMaterial, dark: jadeDarkMaterial },
+  };
 }
 
 function addMesh(parent, geometry, material, position = null) {
@@ -2122,7 +2323,7 @@ function buildBoard() {
         col - 3.5,
         0.447,
         row - 3.5,
-        state.boardStyle === "checkered" && !isLight ? materials.tileB : materials.tileA,
+        boardTileMaterial(isLight),
       );
       tile.receiveShadow = true;
       tile.castShadow = false;
@@ -2338,11 +2539,33 @@ function setPanMode(enabled, { announce = true } = {}) {
   }
 }
 
+function setBoardFocus(enabled, { announce = true } = {}) {
+  boardFocus = Boolean(enabled);
+  document.body.classList.toggle("board-focus", boardFocus);
+  if (dom.fullSizeToggle) {
+    dom.fullSizeToggle.classList.toggle("is-active", boardFocus);
+    dom.fullSizeToggle.setAttribute("aria-pressed", String(boardFocus));
+    dom.fullSizeToggle.title = boardFocus
+      ? t("exitFullSize")
+      : `${t("fullSize")} / กระดานเต็มจอ`;
+    const label = dom.fullSizeToggle.querySelector("span:last-child");
+    if (label) label.textContent = boardFocus ? t("exitFullSize") : t("fullSize");
+  }
+  window.setTimeout(() => {
+    resizeScene();
+    resetCamera();
+  }, 180);
+  if (announce) {
+    showToast(boardFocus ? t("fullSizeOn") : t("fullSizeOff"), "info", boardFocus ? "⛶" : "▣");
+  }
+}
+
 function resetCamera() {
   if (!camera || !controls) return;
   controls.target.set(0, 0.35, 0);
   const aspect = Math.max(0.55, dom.boardStage.clientWidth / Math.max(1, dom.boardStage.clientHeight));
-  const position = defaultCameraPosition.clone().multiplyScalar(aspectDistanceMultiplier(aspect));
+  const focusZoom = boardFocus ? (aspect < 1 ? 0.87 : 0.85) : 1;
+  const position = defaultCameraPosition.clone().multiplyScalar(aspectDistanceMultiplier(aspect) * focusZoom);
   camera.position.copy(position);
   camera.lookAt(controls.target);
   lastViewportAspect = aspect;
@@ -2666,6 +2889,12 @@ function applyStaticTranslations() {
   });
 
   dom.glossaryTitle.textContent = t("rulesButton");
+
+  if (boardFocus && dom.fullSizeToggle) {
+    const label = dom.fullSizeToggle.querySelector("span:last-child");
+    if (label) label.textContent = t("exitFullSize");
+    dom.fullSizeToggle.title = t("exitFullSize");
+  }
 }
 
 function updateTurnUI() {
@@ -2941,14 +3170,29 @@ function applyTextSize(size, { persist = false } = {}) {
   if (persist) savePreferences();
 }
 
+function boardTileMaterial(isLight) {
+  const set = materials.boardSets?.[state.boardMaterial] || materials.boardSets?.teak;
+  if (!set) return materials.tileA;
+  return state.boardStyle === "checkered" && !isLight ? set.dark : set.light;
+}
+
+function applyBoardTiles() {
+  for (const tile of tileMeshes) {
+    tile.material = boardTileMaterial(tile.userData.isLight);
+  }
+}
+
 function applyBoardStyle(style, { persist = false } = {}) {
   const nextStyle = BOARD_STYLES[style] ? style : "checkered";
   state.boardStyle = nextStyle;
-  for (const tile of tileMeshes) {
-    tile.material = nextStyle === "checkered" && !tile.userData.isLight
-      ? materials.tileB
-      : materials.tileA;
-  }
+  applyBoardTiles();
+  if (persist) savePreferences();
+}
+
+function applyBoardMaterial(materialKey, { persist = false } = {}) {
+  const nextMaterial = BOARD_MATERIALS[materialKey] ? materialKey : "teak";
+  state.boardMaterial = nextMaterial;
+  applyBoardTiles();
   if (persist) savePreferences();
 }
 
@@ -2984,6 +3228,22 @@ function renderDisplaySettings() {
         <span class="board-style-copy">
           <strong>${style.name[state.lang]}</strong>
           <small>${style.description[state.lang]}</small>
+        </span>
+        <span class="theme-check" aria-hidden="true">✓</span>
+      </button>`;
+  }).join("");
+
+  dom.boardMaterialControl.innerHTML = Object.entries(BOARD_MATERIALS).map(([key, material]) => {
+    const active = state.boardMaterial === key;
+    return `
+      <button class="board-material-option${active ? " is-active" : ""}" type="button" data-board-material="${key}" aria-pressed="${active}">
+        <span class="board-material-preview" aria-hidden="true">
+          <i style="background:${material.light}"></i>
+          <i style="background:${material.dark}"></i>
+        </span>
+        <span class="board-material-copy">
+          <strong>${material.name[state.lang]}</strong>
+          <small>${material.description[state.lang]}</small>
         </span>
         <span class="theme-check" aria-hidden="true">✓</span>
       </button>`;
@@ -3999,6 +4259,7 @@ function savePreferences() {
       theme: state.theme,
       textSize: state.textSize,
       boardStyle: state.boardStyle,
+      boardMaterial: state.boardMaterial,
       stageColor: state.stageColor,
     }));
   } catch {
@@ -4018,6 +4279,7 @@ function loadPreferences() {
     if (THEMES[prefs.theme]) state.theme = prefs.theme;
     if (TEXT_SIZES[prefs.textSize]) state.textSize = prefs.textSize;
     if (BOARD_STYLES[prefs.boardStyle]) state.boardStyle = prefs.boardStyle;
+    if (BOARD_MATERIALS[prefs.boardMaterial]) state.boardMaterial = prefs.boardMaterial;
     if (prefs.stageColor === "auto" || /^#[0-9a-f]{6}$/i.test(String(prefs.stageColor))) {
       state.stageColor = String(prefs.stageColor).toLowerCase();
     }
@@ -4225,6 +4487,10 @@ function bindEvents() {
     setPanMode(!panMode);
     audio.click();
   });
+  dom.fullSizeToggle.addEventListener("click", () => {
+    setBoardFocus(!boardFocus);
+    audio.click();
+  });
   dom.saveButton.addEventListener("click", downloadSave);
   dom.loadButton.addEventListener("click", () => {
     audio.click();
@@ -4275,6 +4541,14 @@ function bindEvents() {
     audio.click();
   });
 
+  dom.boardMaterialControl.addEventListener("click", (event) => {
+    const option = event.target.closest("[data-board-material]");
+    if (!option) return;
+    applyBoardMaterial(option.dataset.boardMaterial, { persist: true });
+    renderDisplaySettings();
+    audio.click();
+  });
+
   dom.stageColorControl.addEventListener("click", (event) => {
     const option = event.target.closest("[data-stage-choice]");
     if (!option) return;
@@ -4315,6 +4589,7 @@ function bindEvents() {
     applyTheme("lacquer", { persist: true });
     applyTextSize("medium", { persist: true });
     applyBoardStyle("checkered", { persist: true });
+    applyBoardMaterial("teak", { persist: true });
     applyStageColor("auto", { persist: true });
     renderDisplaySettings();
     audio.click();
@@ -4350,6 +4625,7 @@ function bindEvents() {
     else if (!dom.stalemateModal.hidden) closeModal(dom.stalemateModal);
     else if (!dom.resultModal.hidden) closeModal(dom.resultModal);
     else if (!dom.glossaryModal.hidden) closeModal(dom.glossaryModal);
+    else if (boardFocus) setBoardFocus(false);
   });
 
   dom.scene.addEventListener("pointerdown", boardPointerDown);
@@ -4402,6 +4678,7 @@ function boot() {
   applyTextSize(state.textSize);
   applyTheme(state.theme);
   applyStageColor(state.stageColor);
+  applyBoardMaterial(state.boardMaterial);
   applyBoardStyle(state.boardStyle);
   resetGameState();
   const restored = tryRestoreAutoSave();
@@ -4421,8 +4698,10 @@ function boot() {
   bindEvents();
   applyTheme(state.theme);
   applyStageColor(state.stageColor);
+  applyBoardMaterial(state.boardMaterial);
   applyBoardStyle(state.boardStyle);
   setPanMode(false, { announce: false });
+  setBoardFocus(false, { announce: false });
   rebuildPieceMeshes();
   renderHighlights();
   updateAllUI();
@@ -4445,7 +4724,7 @@ boot();
 /* A small, deliberately read-friendly surface for teachers and automated
    smoke tests. It does not expose any private player information. */
 window.Makruk3D = {
-  version: "1.4.0",
+  version: "1.5.0",
   credits: APP_CREDIT,
   getState: () => ({
     turn: state.turn,
@@ -4456,8 +4735,10 @@ window.Makruk3D = {
     theme: state.theme,
     textSize: state.textSize,
     boardStyle: state.boardStyle,
+    boardMaterial: state.boardMaterial,
     stageColor: state.stageColor,
     panMode,
+    boardFocus,
     status: state.status,
     statusReason: state.statusReason,
     winner: state.winner,

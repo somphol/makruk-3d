@@ -2168,10 +2168,79 @@ body::before {
   transform: scale(1);
 }
 
-.board-style-control {
+.board-style-control,
+.board-material-control {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 7px;
+}
+
+.board-material-option {
+  min-height: 73px;
+  padding: 9px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  position: relative;
+  border: 1px solid rgba(214, 179, 106, 0.14);
+  border-radius: 10px;
+  color: var(--cream);
+  background: rgba(7, 5, 3, 0.2);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 180ms ease, background 180ms ease, transform 180ms var(--ease);
+}
+
+.board-material-option:hover {
+  border-color: rgba(214, 179, 106, 0.34);
+  background: rgba(7, 5, 3, 0.32);
+  transform: translateY(-1px);
+}
+
+.board-material-option.is-active {
+  border-color: rgba(214, 179, 106, 0.56);
+  box-shadow: inset 0 0 0 1px rgba(214, 179, 106, 0.16);
+}
+
+.board-material-preview {
+  width: 43px;
+  height: 43px;
+  flex: 0 0 43px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 244, 218, 0.15);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 2px;
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.25);
+}
+
+.board-material-preview i {
+  border-radius: 3px;
+}
+
+.board-material-copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-right: 10px;
+}
+
+.board-material-copy strong {
+  color: var(--cream);
+  font-family: var(--font-display);
+  font-size: calc(15px * var(--text-scale));
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.board-material-copy small {
+  color: var(--muted);
+  font-size: calc(8px * var(--text-scale));
+  line-height: 1.4;
 }
 
 .stage-color-control {
@@ -3336,6 +3405,7 @@ html:not([data-theme="lacquer"]) :is(
   .mode-card,
   .theme-card,
   .board-style-option,
+  .board-material-option,
   .stage-color-custom,
   .text-size-option,
   .reading-preview,
@@ -3359,6 +3429,7 @@ html:not([data-theme="lacquer"]) :is(
   .mode-card:hover,
   .theme-card:hover,
   .board-style-option:hover,
+  .board-material-option:hover,
   .text-size-option:hover
 ) {
   background: var(--theme-hover);
@@ -3368,6 +3439,7 @@ html:not([data-theme="lacquer"]) :is(
   .mode-card.is-active,
   .theme-card.is-active,
   .board-style-option.is-active,
+  .board-material-option.is-active,
   .text-size-option.is-active
 ) {
   background:
@@ -3747,4 +3819,56 @@ html[data-theme="ivory"] .theme-preview {
   .piece-preview-copy { padding: 21px 17px 18px; }
   .piece-preview-copy h2 { font-size: 30px; }
   .glossary-card .glossary-speak { top: 7px; right: 7px; width: 24px; height: 24px; }
+}
+
+/* =========================================================
+   Full-size board mode
+   ========================================================= */
+
+body.board-focus {
+  overflow: hidden;
+}
+
+body.board-focus .app-shell {
+  width: 100%;
+  max-width: none;
+  height: 100vh;
+  padding: 10px;
+  gap: 8px;
+}
+
+body.board-focus .topbar,
+body.board-focus .sidebar,
+body.board-focus .footer,
+body.board-focus .capture-tray {
+  display: none !important;
+}
+
+body.board-focus .workspace {
+  display: block;
+  flex: 1;
+  min-height: 0;
+}
+
+body.board-focus .arena {
+  height: 100%;
+  padding: 10px;
+  gap: 8px;
+  border-radius: 22px;
+}
+
+body.board-focus .board-stage {
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  border-radius: 18px;
+}
+
+body.board-focus .tutor {
+  min-height: 68px;
+}
+
+body.board-focus .brand {
+  pointer-events: none;
 }

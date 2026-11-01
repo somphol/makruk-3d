@@ -10,7 +10,7 @@
 | Field | Value |
 | --- | --- |
 | Project status | ✅ Complete and published |
-| App version | `1.4.0` |
+| App version | `1.5.0` |
 | Repository | <https://github.com/somphol/makruk-3d> |
 | Live page | <https://somphol.github.io/makruk-3d/> (GitHub Pages deployment enabled) |
 | Primary branch | `main` |
@@ -18,9 +18,9 @@
 | 3D preview commit | `8d2e1ed` — Add 3D piece preview, Thai pronunciation and correct Met |
 | Build type | Static site; no package manager, no build step |
 | Source files | `index.html`, `style.css`, `script.js` |
-| Source lines | 8,727 |
-| Source size | 270,221 bytes |
-| Project size | 1.4 MB including README screenshots |
+| Source lines | 9,142 |
+| Source size | 284,382 bytes |
+| Project size | 1.5 MB including README screenshots |
 
 ## Build timeline
 
@@ -28,10 +28,10 @@
 | --- | --- |
 | OpenCode session started | `2026-11-01T18:42:08Z` |
 | Initial game published | `2026-11-01T19:07:33Z` |
-| Latest completion snapshot | `2026-11-01T20:36:42Z` |
-| **Elapsed session time** | **1 hour 54 minutes 34 seconds** |
+| Latest completion snapshot | `2026-11-01T20:52:17Z` |
+| **Elapsed session time** | **2 hours 10 minutes 9 seconds** |
 
-The elapsed time covers requirements research, design, procedural 3D modeling, rules engine, AI, bilingual copy, audio synthesis, persistence, browser testing, README/screenshot generation, GitHub publication, live-deployment verification, the post-game stalemate review, four display themes, four text sizes, the checkered/traditional board switch, adjustable stage colours, a moveable board view, the interactive 3D piece preview, tutor-to-preview linking, and repeatable Thai speech.
+The elapsed time covers requirements research, design, procedural 3D modeling, rules engine, AI, bilingual copy, audio synthesis, persistence, browser testing, README/screenshot generation, GitHub publication, live-deployment verification, the post-game stalemate review, four display themes, four text sizes, the checkered/traditional board switch, adjustable stage colours, a moveable board view, the interactive 3D piece preview, tutor-to-preview linking, repeatable Thai speech, full-size board mode, and teak/stone board finishes.
 
 ## Token consumption
 
@@ -39,13 +39,13 @@ Captured from the OpenCode session database at the latest completion snapshot. T
 
 | Token category | Count |
 | --- | ---: |
-| Input tokens | 665,741 |
-| Output tokens | 174,745 |
-| Reasoning tokens | 198,551 |
-| Cache read tokens | 67,249,152 |
+| Input tokens | 755,181 |
+| Output tokens | 199,327 |
+| Reasoning tokens | 220,745 |
+| Cache read tokens | 93,237,376 |
 | Cache write tokens | 1,512 |
-| **Total tokens processed** | **68,289,701** |
-| Non-cache token total (input + output + reasoning) | 1,039,037 |
+| **Total tokens processed** | **94,414,141** |
+| Non-cache token total (input + output + reasoning) | 1,175,253 |
 | Recorded API cost | **$0.00** |
 
 > The total is the sum of input, output, reasoning, cache-read, and cache-write tokens. The completion snapshot is taken just before the final state-file commit; the final commit and closing assistant message may add a small amount after the snapshot.
@@ -91,6 +91,9 @@ Browser-tested with Playwright and Chrome:
 - ✅ Tutor bar **View in 3D** link opens the selected piece, including Bia Ngua, without disturbing the match
 - ✅ Repeated **Hear Thai** playback verified across card and preview buttons with a mocked speech engine
 - ✅ Scene loader is removed from hit-testing after fading, so it cannot block board clicks
+- ✅ Full-size board mode verified on desktop and mobile; sidebar, header, footer and capture tray hide, and Escape exits
+- ✅ Four board finishes verified: teak/ebony, Carrara/Marquina, travertine/granite and jade/slate
+- ✅ Stone board materials persist, reset correctly, and retain readable piece contrast
 - ✅ JSON save download and file restore
 - ✅ Auto-save / reload restoration, including language and assist preferences
 - ✅ Invalid save rejection
@@ -102,6 +105,7 @@ Browser-tested with Playwright and Chrome:
 
 ## Revision log
 
+- **2026-11-01 · v1.5.0** — Added **Full size** board mode with Escape-to-exit and camera framing for desktop/mobile. Added four board finishes inspired by stone table-top boards: Teak & Ebony, Carrara & Marquina, Travertine & Granite, and Jade & Slate, all persisted in display preferences.
 - **2026-11-01 · v1.4.0** — Added a **View in 3D** link to the selected-piece tutor, fixed repeat Thai pronunciation playback (utterance retention, cancel/resume timing, and highlight cleanup), and removed the faded scene loader from hit-testing so it can never block board clicks.
 - **2026-11-01 · v1.3.0** — Added six stage-colour presets plus a native custom colour picker, automatic lighter table treatment and softened vignette for light stages, and a **Move view** panning mode with a recentring Reset view. Board panning is available by left-drag in Move view, right-drag, or two-finger drag.
 - **2026-11-01 · v1.2.0** — Added the beginner stalemate review, four display themes, four text sizes, and the checkered/traditional board switch. Checkered is now the default; traditional single-tone remains available. Sources confirm both styles are used in Thailand.
