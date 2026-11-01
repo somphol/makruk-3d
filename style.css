@@ -762,6 +762,7 @@ body::before {
 .scene-loader.is-hidden {
   opacity: 0;
   visibility: hidden;
+  pointer-events: none;
 }
 
 .loader-mark {
@@ -924,6 +925,36 @@ body::before {
   color: var(--gold);
   font-family: var(--font-thai);
   font-size: calc(12px * var(--text-scale));
+}
+
+.tutor-3d-link {
+  margin-top: 5px;
+  padding: 3px 7px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid rgba(214, 179, 106, 0.24);
+  border-radius: 999px;
+  color: var(--gold);
+  background: rgba(214, 179, 106, 0.06);
+  font-family: var(--font-body);
+  font-size: calc(8px * var(--text-scale));
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.tutor-3d-link:hover {
+  color: var(--gold-bright);
+  border-color: var(--line-strong);
+  background: rgba(214, 179, 106, 0.12);
+}
+
+.tutor-3d-link span:first-child {
+  font-size: calc(10px * var(--text-scale));
+  line-height: 1;
 }
 
 .tutor-movement {

@@ -16,7 +16,7 @@ An interactive, bilingual 3D Makruk (Thai chess) academy built with vanilla HTML
 - **Beginner Move Assist** — green glowing dots for legal destinations and red pulse rings for captures.
 - **Interactive tutor** — displays the selected piece's English and Thai names, phonetic pronunciation, movement summary, legal move count, and capture count.
 - **Illustrated glossary** — seven clickable piece cards with lore, movement, pronunciation, and 3D modeling notes, plus a Makruk-in-60-seconds rule sheet.
-- **Interactive 3D piece preview** — click any Rules & Pieces card to open a separate orbit-controlled model with auto-rotate, reset view, and Thai pronunciation buttons.
+- **Interactive 3D piece preview** — click any Rules & Pieces card, or the **View in 3D** link inside the tutor bar, to open a separate orbit-controlled model with auto-rotate, reset view, and Thai pronunciation buttons.
 - **Thai speech** — every piece card and preview panel can pronounce the Thai name (ขุน, เม็ด, โคน, ม้า, เรือ, เบี้ย, เบี้ยหงาย) using the browser's Thai voice; respects the sound toggle.
 - **Stalemate review** — after a stalemate, a beginner panel shows the final move, the safe Khun, and every escape square alongside the piece controlling it.
 - **Single Player vs AI or Pass & Play** — a heuristic alpha-beta bot playing Black, or two humans sharing one board.
@@ -66,7 +66,7 @@ npx serve .
 
 <img src="docs/piece-preview.webp" alt="A rotatable 3D Met piece in the Makruk piece preview with Thai pronunciation controls" width="100%" />
 
-Open **Rules & Pieces**, then click any card to explore its procedural 3D model. Drag to orbit, scroll or pinch to zoom, toggle auto-rotate, or reset the view. The speaker button on each card and in the preview panel speaks the Thai piece name through the browser's Thai speech voice; the preview also shows the role, movement and hand-built modeling notes.
+Open **Rules & Pieces** and click any card, or select a piece on the board and use **View in 3D** in the tutor bar, to explore its procedural 3D model. Drag to orbit, scroll or pinch to zoom, toggle auto-rotate, or reset the view. The speaker button on each card and in the preview panel speaks the Thai piece name through the browser's Thai speech voice; the preview also shows the role, movement and hand-built modeling notes.
 
 ## Camera controls
 

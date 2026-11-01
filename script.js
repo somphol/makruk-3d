@@ -632,6 +632,14 @@ const PIECE_META_BY_TYPE = {
   R: PIECES.ruea,
   P: PIECES.bia,
 };
+const PIECE_KEY_BY_TYPE = {
+  K: "khun",
+  M: "met",
+  B: "khon",
+  N: "ma",
+  R: "ruea",
+  P: "bia",
+};
 
 const t = (key, vars = {}) => {
   const dict = I18N[state.lang] || I18N.en;
@@ -650,6 +658,11 @@ const pieceMeta = (piece) => {
 
 const pieceName = (piece) => pieceMeta(piece).name[state.lang];
 const pieceGlyph = (piece) => pieceMeta(piece).glyph;
+const pieceViewerKey = (piece) => {
+  if (!piece) return null;
+  if (piece.type === "P" && piece.promoted) return "biaNgua";
+  return PIECE_KEY_BY_TYPE[piece.type] || null;
+};
 const opponent = (color) => (color === "w" ? "b" : "w");
 
 /* =========================================================================
@@ -915,6 +928,14 @@ class SoundStudio {
 }
 
 const audio = new SoundStudio();
+
+const thaiSpeech = {
+  utterance: null,
+  token: 0,
+  startTimer: null,
+  endTimer: null,
+  buttons: new Set(),
+};
 
 /* =========================================================================
    Game state and rules
@@ -2284,6 +2305,10 @@ function initScene() {
   sceneReady = true;
   window.setTimeout(() => {
     dom.sceneLoader.classList.add("is-hidden");
+    // Remove it from hit-testing entirely once the fade has had time to settle.
+    window.setTimeout(() => {
+      dom.sceneLoader.hidden = true;
+    }, 520);
   }, 340);
   window.__MAKRUK_READY__ = true;
   return true;
@@ -2783,6 +2808,10 @@ function tutorMarkupForPiece(piece, moves) {
       <span class="tutor-name">
         <strong>${meta.name[state.lang]}</strong>
         <small>${meta.name[otherLang]} · ${meta.phonetic}</small>
+        <button class="tutor-3d-link" type="button" data-tutor-view3d="${pieceViewerKey(piece)}" aria-label="${t("viewIn3D")}: ${meta.name[state.lang]}">
+          <span aria-hidden="true">◈</span>
+          <span>${t("viewIn3D")}</span>
+        </button>
       </span>
     </div>
     <div class="tutor-movement">
@@ -3412,6 +3441,7 @@ function openPiecePreview(key) {
 function stopPiecePreview() {
   if (piecePreview.renderer) piecePreview.renderer.setAnimationLoop(null);
   if (piecePreview.clock) piecePreview.clock.stop();
+  stopThaiSpeech();
 }
 
 function resetPiecePreviewView() {
@@ -3431,19 +3461,49 @@ function togglePiecePreviewAutoRotate() {
   audio.click();
 }
 
+function clearThaiSpeechHighlights() {
+  thaiSpeech.buttons.forEach((button) => button.classList.remove("is-speaking"));
+  thaiSpeech.buttons.clear();
+  clearTimeout(thaiSpeech.endTimer);
+  thaiSpeech.endTimer = null;
+}
+
+function stopThaiSpeech() {
+  thaiSpeech.token += 1;
+  clearTimeout(thaiSpeech.startTimer);
+  thaiSpeech.startTimer = null;
+  clearThaiSpeechHighlights();
+  thaiSpeech.utterance = null;
+  if (!("speechSynthesis" in window)) return;
+  try {
+    window.speechSynthesis.cancel();
+    if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+  } catch {
+    // Some embedded browsers expose speechSynthesis but reject calls.
+  }
+}
+
 function speakThaiPiece(key, originButton = null) {
   if (!state.sound) {
     showToast(t("soundOffSpeech"), "info", "∅");
     return;
   }
-  if (!("speechSynthesis" in window)) {
+  if (!("speechSynthesis" in window) || typeof SpeechSynthesisUtterance === "undefined") {
     showToast(t("speechUnavailable"), "error", "!");
     return;
   }
   const meta = PIECES[key];
   if (!meta) return;
+
   const synth = window.speechSynthesis;
-  synth.cancel();
+  const token = ++thaiSpeech.token;
+  clearTimeout(thaiSpeech.startTimer);
+  clearThaiSpeechHighlights();
+
+  const buttons = [dom.piecePronounceButton, originButton].filter(Boolean);
+  buttons.forEach((button) => button.classList.add("is-speaking"));
+  thaiSpeech.buttons = new Set(buttons);
+
   const utterance = new SpeechSynthesisUtterance(meta.name.th);
   utterance.lang = "th-TH";
   utterance.rate = 0.82;
@@ -3452,12 +3512,50 @@ function speakThaiPiece(key, originButton = null) {
   const thaiVoice = (synth.getVoices() || []).find((voice) => /^th/i.test(voice.lang));
   if (thaiVoice) utterance.voice = thaiVoice;
 
-  const buttons = [dom.piecePronounceButton, originButton].filter(Boolean);
-  buttons.forEach((button) => button.classList.add("is-speaking"));
-  const clear = () => buttons.forEach((button) => button.classList.remove("is-speaking"));
-  utterance.onend = clear;
-  utterance.onerror = clear;
-  synth.speak(utterance);
+  // Keep a strong reference. Chrome can garbage-collect a local utterance
+  // between clicks, which makes only the first pronunciation audible.
+  thaiSpeech.utterance = utterance;
+
+  const finish = () => {
+    if (token !== thaiSpeech.token) return;
+    clearThaiSpeechHighlights();
+    thaiSpeech.utterance = null;
+  };
+  utterance.onend = finish;
+  utterance.onerror = (event) => {
+    if (token !== thaiSpeech.token) return;
+    finish();
+    if (event?.error === "not-allowed") {
+      showToast(t("speechUnavailable"), "error", "!");
+    }
+  };
+  thaiSpeech.endTimer = window.setTimeout(finish, 6000);
+
+  const start = () => {
+    if (token !== thaiSpeech.token) return;
+    try {
+      if (synth.paused) synth.resume();
+      synth.speak(utterance);
+    } catch (error) {
+      console.warn("Thai speech failed", error);
+      finish();
+      showToast(t("speechUnavailable"), "error", "!");
+    }
+  };
+
+  // Chrome needs a short gap after cancel(); speaking in the same task often
+  // leaves the second and later utterances silent. Delay only when needed.
+  if (synth.speaking || synth.pending) {
+    try {
+      synth.cancel();
+      if (synth.paused) synth.resume();
+    } catch {
+      // Continue and still try the new utterance.
+    }
+    thaiSpeech.startTimer = window.setTimeout(start, 120);
+  } else {
+    start();
+  }
 }
 
 function openModal(modal) {
@@ -3827,7 +3925,7 @@ function toggleSound() {
     audio.click();
     showToast(t("toastSoundOn"), "success", "♪");
   } else {
-    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    stopThaiSpeech();
     showToast(t("toastSoundOff"), "info", "∅");
   }
 }
@@ -4080,6 +4178,13 @@ function bindEvents() {
   dom.soundToggle.addEventListener("click", toggleSound);
   dom.glossaryButton.addEventListener("click", showGlossary);
   dom.sidebarGlossary.addEventListener("click", showGlossary);
+
+  dom.tutorContent.addEventListener("click", (event) => {
+    const link = event.target.closest("[data-tutor-view3d]");
+    if (!link) return;
+    event.preventDefault();
+    openPiecePreview(link.dataset.tutorView3d);
+  });
 
   dom.glossaryGrid.addEventListener("click", (event) => {
     const pronounce = event.target.closest("[data-pronounce]");
@@ -4340,7 +4445,7 @@ boot();
 /* A small, deliberately read-friendly surface for teachers and automated
    smoke tests. It does not expose any private player information. */
 window.Makruk3D = {
-  version: "1.3.0",
+  version: "1.4.0",
   credits: APP_CREDIT,
   getState: () => ({
     turn: state.turn,
