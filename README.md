@@ -20,6 +20,8 @@ An interactive, bilingual 3D Makruk (Thai chess) academy built with vanilla HTML
 - **Single Player vs AI or Pass & Play** — a heuristic alpha-beta bot playing Black, or two humans sharing one board.
 - **Instant EN ⇄ TH switching** — all headers, labels, tooltips, tutor copy, move record, result overlay, display settings, and glossary update without interrupting a match.
 - **Four display themes & scalable text** — Midnight Lacquer, Ivory Court, Jade Pavilion, and Ruby Palace, plus four text sizes from 90% to 140%. Preferences are saved on the device.
+- **Adjustable stage palette** — choose the coloured room/backdrop behind the board from six presets or any custom colour. Light stages soften the vignette and table automatically.
+- **Moveable board view** — orbit, zoom, right-drag to pan, or switch on **Move view** to reposition the board with an ordinary drag. Reset view recentres everything.
 - **Web Audio synthesis** — wooden piece thuds, capture clacks, check alerts, promotion chimes, victory fanfare, defeat cadence, and draw chords. No audio files.
 - **Persistence** — autosaves to `localStorage`, downloads `makruk_save.json`, and restores matches from JSON.
 - **Responsive** — desktop, tablet, and mobile layouts, with camera framing adjusted for portrait screens.
@@ -51,7 +53,8 @@ npx serve .
 3. Click a highlighted destination to move. Captures, checks, promotions, and the match result are announced in the tutor bar, move record, and sound design.
 4. Use **Save Match** to download `makruk_save.json`; use **Load Match** to restore a saved position.
 5. Switch **EN / TH** at any time without resetting the match.
-6. Open **Theme & text size** to choose a display theme, a traditional or checkered board, and a larger type size.
+6. Open **Theme & text size** to choose a display theme, a traditional or checkered board, a stage colour, and a larger type size.
+7. Use **Move view** to drag the board to a new position, or right-drag/two-finger drag at any time. **Reset view** recentres it.
 
 > **Board note:** Traditional Thai Makruk boards are usually single-tone with carved grid lines; modern Thai club boards often alternate light and dark squares. The academy supports both, with the checkered pattern enabled by default.
 >
@@ -61,7 +64,8 @@ npx serve .
 
 - Drag to orbit the board.
 - Scroll or pinch to zoom.
-- **Reset view** returns to the academy's signature three-quarter angle.
+- **Move view** switches left-drag/touch-drag to panning; right-drag and two-finger drag also pan.
+- **Reset view** recentres the board and returns to the academy's signature three-quarter angle.
 
 ## Authentic Makruk rules implemented
 

@@ -47,6 +47,9 @@ const I18N = {
     turnLabel: "Turn",
     botThinking: "Bot thinking",
     resetView: "Reset view",
+    moveView: "Move view",
+    moveViewOn: "Move mode on — drag the stage to reposition the board.",
+    moveViewOff: "Move mode off — drag to orbit the board.",
     assistOn: "Assist on",
     assistOff: "Assist off",
     loadingScene: "Carving the board…",
@@ -81,6 +84,17 @@ const I18N = {
     themeSubtitle: "Four moods drawn from Thai court interiors.",
     boardPatternHeading: "Board pattern",
     boardPatternSubtitle: "Traditional Makruk boards are single-tone; modern club boards often alternate light and dark squares.",
+    stageColorHeading: "Stage colour",
+    stageColorSubtitle: "Choose the room around the board, or follow the active theme.",
+    stageColorCustom: "Custom colour",
+    stageColorCurrent: "Current: {color}",
+    stageColorAuto: "Theme default",
+    stageColorMidnight: "Midnight",
+    stageColorCharcoal: "Charcoal",
+    stageColorSand: "Sand",
+    stageColorSage: "Sage",
+    stageColorWine: "Wine",
+    stageColorNavy: "Navy",
     textSizeHeading: "Text size",
     textSizeSubtitle: "Enlarge the academy's labels for easier reading.",
     readingPreviewLabel: "Preview",
@@ -208,6 +222,9 @@ const I18N = {
     turnLabel: "ตาเดิน",
     botThinking: "บอทกำลังคิด",
     resetView: "มุมมองเริ่มต้น",
+    moveView: "เลื่อนมุมมอง",
+    moveViewOn: "โหมดเลื่อนเปิด — ลากพื้นที่เวทีเพื่อย้ายกระดาน",
+    moveViewOff: "โหมดเลื่อนปิด — ลากเพื่อหมุนรอบกระดาน",
     assistOn: "ตัวช่วยเปิด",
     assistOff: "ตัวช่วยปิด",
     loadingScene: "กำลังแกะสลักกระดาน…",
@@ -242,6 +259,17 @@ const I18N = {
     themeSubtitle: "สี่บรรยากาศจากภายในราชสำนักไทย",
     boardPatternHeading: "รูปแบบกระดาน",
     boardPatternSubtitle: "กระดานหมากรุกไทยดั้งเดิมเป็นสีเดียว ส่วนกระดานแข่งขันสมัยใหม่มักสลับช่องสว่างและเข้ม",
+    stageColorHeading: "สีของเวที",
+    stageColorSubtitle: "เลือกสีห้องรอบกระดาน หรือใช้สีตามธีมที่เลือก",
+    stageColorCustom: "เลือกสีเอง",
+    stageColorCurrent: "ปัจจุบัน: {color}",
+    stageColorAuto: "ค่าธีม",
+    stageColorMidnight: "เที่ยงคืน",
+    stageColorCharcoal: "ถ่าน",
+    stageColorSand: "ทราย",
+    stageColorSage: "เสจ",
+    stageColorWine: "ไวน์",
+    stageColorNavy: "กรมท่า",
     textSizeHeading: "ขนาดตัวอักษร",
     textSizeSubtitle: "ขยายข้อความของสถาบันเพื่อให้อ่านง่ายขึ้น",
     readingPreviewLabel: "ตัวอย่าง",
@@ -559,6 +587,16 @@ const BOARD_STYLES = {
   },
 };
 
+const STAGE_COLORS = {
+  auto: { nameKey: "stageColorAuto", color: null },
+  midnight: { nameKey: "stageColorMidnight", color: "#090604" },
+  charcoal: { nameKey: "stageColorCharcoal", color: "#27231f" },
+  sand: { nameKey: "stageColorSand", color: "#cbb58f" },
+  sage: { nameKey: "stageColorSage", color: "#223b30" },
+  wine: { nameKey: "stageColorWine", color: "#2b0c14" },
+  navy: { nameKey: "stageColorNavy", color: "#111d2b" },
+};
+
 const PIECE_ORDER = ["khun", "met", "khon", "ma", "ruea", "bia", "biaNgua"];
 const PIECE_META_BY_TYPE = {
   K: PIECES.khun,
@@ -605,8 +643,12 @@ const dom = {
   displayModal: $("#displayModal"),
   themeGrid: $("#themeGrid"),
   boardStyleControl: $("#boardStyleControl"),
+  stageColorControl: $("#stageColorControl"),
+  stageColorInput: $("#stageColorInput"),
+  stageColorCurrent: $("#stageColorCurrent"),
   textSizeControl: $("#textSizeControl"),
   displayReset: $("#displayReset"),
+  panToggle: $("#panToggle"),
   turnStone: $("#turnStone"),
   turnText: $("#turnText"),
   moveCounter: $("#moveCounter"),
@@ -854,6 +896,7 @@ const state = {
   theme: "lacquer",
   textSize: "medium",
   boardStyle: "checkered",
+  stageColor: "auto",
   history: [],
   captured: { w: [], b: [] },
   selected: null,
@@ -1445,6 +1488,8 @@ let boardRoot = null;
 let pieceLayer = null;
 let highlightLayer = null;
 let lastMoveLayer = null;
+let tableMesh = null;
+let panMode = false;
 let pickables = [];
 let tileMeshes = [];
 let raycaster = null;
@@ -1590,6 +1635,11 @@ function createMaterials() {
     map: woodTextures.table,
     color: 0x6c5845,
     roughness: 0.82,
+    metalness: 0.01,
+  });
+  materials.tableFlat = new THREE.MeshStandardMaterial({
+    color: 0x3a2a1d,
+    roughness: 0.88,
     metalness: 0.01,
   });
   materials.ivory = new THREE.MeshPhysicalMaterial({
@@ -1972,14 +2022,14 @@ function buildBoard() {
   boardRoot.name = "carved-makruk-board";
   scene.add(boardRoot);
 
-  const table = new THREE.Mesh(
+  tableMesh = new THREE.Mesh(
     new THREE.CircleGeometry(16, 96),
     materials.table,
   );
-  table.rotation.x = -Math.PI / 2;
-  table.position.y = -0.015;
-  table.receiveShadow = true;
-  scene.add(table);
+  tableMesh.rotation.x = -Math.PI / 2;
+  tableMesh.position.y = -0.015;
+  tableMesh.receiveShadow = true;
+  scene.add(tableMesh);
 
   addBox(boardRoot, 9.45, 0.18, 9.45, 0, 0.09, 0, materials.border).receiveShadow = true;
   addBox(boardRoot, 9.02, 0.12, 9.02, 0, 0.24, 0, materials.borderDark);
@@ -2147,7 +2197,14 @@ function initScene() {
   controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.075;
-  controls.enablePan = false;
+  controls.enablePan = true;
+  controls.screenSpacePanning = true;
+  controls.panSpeed = 0.72;
+  controls.mouseButtons.LEFT = THREE.MOUSE.ROTATE;
+  controls.mouseButtons.MIDDLE = THREE.MOUSE.DOLLY;
+  controls.mouseButtons.RIGHT = THREE.MOUSE.PAN;
+  controls.touches.ONE = THREE.TOUCH.ROTATE;
+  controls.touches.TWO = THREE.TOUCH.DOLLY_PAN;
   controls.minDistance = 9.5;
   controls.maxDistance = 34;
   controls.minPolarAngle = 0.32;
@@ -2183,8 +2240,29 @@ function aspectDistanceMultiplier(aspect) {
   return Math.max(1, 1.03 / Math.min(1.3, Math.max(0.55, aspect)));
 }
 
+function setPanMode(enabled, { announce = true } = {}) {
+  panMode = Boolean(enabled);
+  if (dom.panToggle) {
+    dom.panToggle.classList.toggle("is-active", panMode);
+    dom.panToggle.setAttribute("aria-pressed", String(panMode));
+  }
+  if (renderer) renderer.domElement.classList.toggle("is-pan-mode", panMode);
+  if (controls) {
+    controls.enablePan = true;
+    controls.mouseButtons.LEFT = panMode ? THREE.MOUSE.PAN : THREE.MOUSE.ROTATE;
+    controls.mouseButtons.MIDDLE = THREE.MOUSE.DOLLY;
+    controls.mouseButtons.RIGHT = THREE.MOUSE.PAN;
+    controls.touches.ONE = panMode ? THREE.TOUCH.PAN : THREE.TOUCH.ROTATE;
+    controls.touches.TWO = THREE.TOUCH.DOLLY_PAN;
+  }
+  if (announce) {
+    showToast(panMode ? t("moveViewOn") : t("moveViewOff"), "info", panMode ? "✥" : "↻");
+  }
+}
+
 function resetCamera() {
   if (!camera || !controls) return;
+  controls.target.set(0, 0.35, 0);
   const aspect = Math.max(0.55, dom.boardStage.clientWidth / Math.max(1, dom.boardStage.clientHeight));
   const position = defaultCameraPosition.clone().multiplyScalar(aspectDistanceMultiplier(aspect));
   camera.position.copy(position);
@@ -2710,19 +2788,67 @@ function updateSoundUI() {
   audio.enabled = state.sound;
 }
 
+function effectiveStageColor() {
+  if (state.stageColor !== "auto") return state.stageColor;
+  return `#${THEMES[state.theme].scene.background.toString(16).padStart(6, "0")}`;
+}
+
+function applyStageAppearance() {
+  if (!scene) return;
+  const themeScene = THEMES[state.theme].scene;
+  const custom = state.stageColor !== "auto";
+  const background = new THREE.Color(custom ? state.stageColor : themeScene.background);
+  const hsl = {};
+  background.getHSL(hsl);
+  const luminance = background.r * 0.2126 + background.g * 0.7152 + background.b * 0.0722;
+
+  scene.background.copy(background);
+  if (scene.fog) scene.fog.color.copy(background);
+  document.documentElement.style.setProperty(
+    "--stage-vignette-opacity",
+    luminance > 0.45 ? "0.36" : "1",
+  );
+
+  if (dust) {
+    dust.material.opacity = luminance > 0.45 ? 0.16 : 0.42;
+    dust.material.color.setHex(themeScene.dust);
+  }
+
+  if (tableMesh && materials.tableFlat) {
+    if (custom) {
+      const tableColor = background.clone();
+      tableColor.getHSL(hsl);
+      tableColor.setHSL(
+        hsl.h,
+        Math.min(0.55, Math.max(0.06, hsl.s * 0.82)),
+        hsl.l > 0.5 ? Math.max(0.28, hsl.l - 0.17) : Math.min(0.5, hsl.l + 0.1),
+      );
+      materials.tableFlat.color.copy(tableColor);
+      tableMesh.material = materials.tableFlat;
+    } else {
+      tableMesh.material = materials.table;
+      materials.table.color.setHex(themeScene.table);
+    }
+  }
+}
+
 function applyTheme(theme, { persist = false } = {}) {
   const nextTheme = THEMES[theme] ? theme : "lacquer";
   state.theme = nextTheme;
   document.documentElement.dataset.theme = nextTheme;
+  applyStageAppearance();
+  if (persist) savePreferences();
+}
 
-  if (scene) {
-    const config = THEMES[nextTheme].scene;
-    scene.background.setHex(config.background);
-    if (scene.fog) scene.fog.color.setHex(config.fog);
-    if (materials.table?.color) materials.table.color.setHex(config.table);
-    if (dust?.material?.color) dust.material.color.setHex(config.dust);
+function applyStageColor(color, { persist = false } = {}) {
+  if (color === "auto") {
+    state.stageColor = "auto";
+  } else if (/^#[0-9a-f]{6}$/i.test(String(color))) {
+    state.stageColor = String(color).toLowerCase();
+  } else {
+    state.stageColor = "auto";
   }
-
+  applyStageAppearance();
   if (persist) savePreferences();
 }
 
@@ -2742,6 +2868,16 @@ function applyBoardStyle(style, { persist = false } = {}) {
       : materials.tileA;
   }
   if (persist) savePreferences();
+}
+
+function stageColorLabel() {
+  if (state.stageColor === "auto") {
+    return `${t("stageColorAuto")} · ${THEMES[state.theme].name[state.lang]}`;
+  }
+  const preset = Object.entries(STAGE_COLORS).find(([, value]) => (
+    value.color && value.color.toLowerCase() === state.stageColor
+  ));
+  return preset ? t(preset[1].nameKey) : state.stageColor.toUpperCase();
 }
 
 function renderDisplaySettings() {
@@ -2770,6 +2906,25 @@ function renderDisplaySettings() {
         <span class="theme-check" aria-hidden="true">✓</span>
       </button>`;
   }).join("");
+
+  dom.stageColorControl.innerHTML = Object.entries(STAGE_COLORS).map(([key, preset]) => {
+    const active = key === "auto"
+      ? state.stageColor === "auto"
+      : Boolean(preset.color && preset.color.toLowerCase() === state.stageColor);
+    const label = t(preset.nameKey);
+    return `
+      <button class="stage-color-option${active ? " is-active" : ""}" type="button" data-stage-choice="${key}" aria-pressed="${active}" title="${label}" aria-label="${label}">
+        <span class="stage-color-swatch${key === "auto" ? " is-auto" : ""}" style="${preset.color ? `background:${preset.color}` : ""}" aria-hidden="true"></span>
+      </button>`;
+  }).join("");
+
+  const matchedPreset = Object.entries(STAGE_COLORS).some(([key, preset]) => (
+    key !== "auto" && preset.color && preset.color.toLowerCase() === state.stageColor
+  ));
+  const customActive = state.stageColor !== "auto" && !matchedPreset;
+  dom.stageColorInput.value = effectiveStageColor();
+  dom.stageColorCurrent.textContent = t("stageColorCurrent", { color: stageColorLabel() });
+  dom.stageColorCurrent.closest(".stage-color-custom")?.classList.toggle("is-active", customActive);
 
   dom.textSizeControl.innerHTML = Object.entries(TEXT_SIZES).map(([key, size]) => {
     const active = state.textSize === key;
@@ -3451,6 +3606,7 @@ function savePreferences() {
       theme: state.theme,
       textSize: state.textSize,
       boardStyle: state.boardStyle,
+      stageColor: state.stageColor,
     }));
   } catch {
     // Storage can be unavailable in private modes; the game still works.
@@ -3469,6 +3625,9 @@ function loadPreferences() {
     if (THEMES[prefs.theme]) state.theme = prefs.theme;
     if (TEXT_SIZES[prefs.textSize]) state.textSize = prefs.textSize;
     if (BOARD_STYLES[prefs.boardStyle]) state.boardStyle = prefs.boardStyle;
+    if (prefs.stageColor === "auto" || /^#[0-9a-f]{6}$/i.test(String(prefs.stageColor))) {
+      state.stageColor = String(prefs.stageColor).toLowerCase();
+    }
   } catch {
     // Ignore malformed preferences.
   }
@@ -3635,6 +3794,10 @@ function bindEvents() {
     resetCamera();
     audio.click();
   });
+  dom.panToggle.addEventListener("click", () => {
+    setPanMode(!panMode);
+    audio.click();
+  });
   dom.saveButton.addEventListener("click", downloadSave);
   dom.loadButton.addEventListener("click", () => {
     audio.click();
@@ -3685,6 +3848,34 @@ function bindEvents() {
     audio.click();
   });
 
+  dom.stageColorControl.addEventListener("click", (event) => {
+    const option = event.target.closest("[data-stage-choice]");
+    if (!option) return;
+    const preset = STAGE_COLORS[option.dataset.stageChoice];
+    if (!preset) return;
+    applyStageColor(preset.color || "auto", { persist: true });
+    renderDisplaySettings();
+    audio.click();
+  });
+
+  dom.stageColorInput.addEventListener("input", () => {
+    applyStageColor(dom.stageColorInput.value);
+    dom.stageColorCurrent.textContent = t("stageColorCurrent", {
+      color: dom.stageColorInput.value.toUpperCase(),
+    });
+    dom.stageColorCurrent.closest(".stage-color-custom")?.classList.add("is-active");
+    dom.stageColorControl.querySelectorAll(".stage-color-option").forEach((button) => {
+      button.classList.remove("is-active");
+      button.setAttribute("aria-pressed", "false");
+    });
+  });
+
+  dom.stageColorInput.addEventListener("change", () => {
+    applyStageColor(dom.stageColorInput.value, { persist: true });
+    renderDisplaySettings();
+    audio.click();
+  });
+
   dom.textSizeControl.addEventListener("click", (event) => {
     const option = event.target.closest("[data-text-choice]");
     if (!option) return;
@@ -3697,6 +3888,7 @@ function bindEvents() {
     applyTheme("lacquer", { persist: true });
     applyTextSize("medium", { persist: true });
     applyBoardStyle("checkered", { persist: true });
+    applyStageColor("auto", { persist: true });
     renderDisplaySettings();
     audio.click();
   });
@@ -3777,6 +3969,7 @@ function boot() {
   loadPreferences();
   applyTextSize(state.textSize);
   applyTheme(state.theme);
+  applyStageColor(state.stageColor);
   applyBoardStyle(state.boardStyle);
   resetGameState();
   const restored = tryRestoreAutoSave();
@@ -3795,7 +3988,9 @@ function boot() {
 
   bindEvents();
   applyTheme(state.theme);
+  applyStageColor(state.stageColor);
   applyBoardStyle(state.boardStyle);
+  setPanMode(false, { announce: false });
   rebuildPieceMeshes();
   renderHighlights();
   updateAllUI();
@@ -3818,7 +4013,7 @@ boot();
 /* A small, deliberately read-friendly surface for teachers and automated
    smoke tests. It does not expose any private player information. */
 window.Makruk3D = {
-  version: "1.2.0",
+  version: "1.3.0",
   credits: APP_CREDIT,
   getState: () => ({
     turn: state.turn,
@@ -3829,6 +4024,8 @@ window.Makruk3D = {
     theme: state.theme,
     textSize: state.textSize,
     boardStyle: state.boardStyle,
+    stageColor: state.stageColor,
+    panMode,
     status: state.status,
     statusReason: state.statusReason,
     winner: state.winner,
@@ -3856,4 +4053,9 @@ window.Makruk3D = {
   selectSquare,
   playMove: (from, to) => performMove(from, to),
   newGame: () => newGame({ announce: false }),
+  getView: () => ({
+    panMode,
+    target: controls ? controls.target.toArray() : null,
+    camera: camera ? camera.position.toArray() : null,
+  }),
 };

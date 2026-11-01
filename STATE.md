@@ -10,7 +10,7 @@
 | Field | Value |
 | --- | --- |
 | Project status | ✅ Complete and published |
-| App version | `1.2.0` |
+| App version | `1.3.0` |
 | Repository | <https://github.com/somphol/makruk-3d> |
 | Live page | <https://somphol.github.io/makruk-3d/> (GitHub Pages deployment enabled) |
 | Primary branch | `main` |
@@ -18,9 +18,9 @@
 | State commit | `56db0ac` — Add live demo link and project state report |
 | Build type | Static site; no package manager, no build step |
 | Source files | `index.html`, `style.css`, `script.js` |
-| Source lines | 7,566 |
-| Source size | 231,949 bytes |
-| Project size | 784 KB including README screenshots |
+| Source lines | 7,928 |
+| Source size | 244,225 bytes |
+| Project size | 1.0 MB including README screenshots |
 
 ## Build timeline
 
@@ -28,10 +28,10 @@
 | --- | --- |
 | OpenCode session started | `2026-11-01T18:42:08Z` |
 | Initial game published | `2026-11-01T19:07:33Z` |
-| Latest completion snapshot | `2026-11-01T19:46:11Z` |
-| **Elapsed session time** | **1 hour 4 minutes 3 seconds** |
+| Latest completion snapshot | `2026-11-01T20:04:28Z` |
+| **Elapsed session time** | **1 hour 22 minutes 20 seconds** |
 
-The elapsed time covers requirements research, design, procedural 3D modeling, rules engine, AI, bilingual copy, audio synthesis, persistence, browser testing, README/screenshot generation, GitHub publication, live-deployment verification, the post-game stalemate review, four display themes, four text sizes, and the checkered/traditional board switch.
+The elapsed time covers requirements research, design, procedural 3D modeling, rules engine, AI, bilingual copy, audio synthesis, persistence, browser testing, README/screenshot generation, GitHub publication, live-deployment verification, the post-game stalemate review, four display themes, four text sizes, the checkered/traditional board switch, adjustable stage colours, and a moveable board view.
 
 ## Token consumption
 
@@ -39,13 +39,13 @@ Captured from the OpenCode session database at the latest completion snapshot. T
 
 | Token category | Count |
 | --- | ---: |
-| Input tokens | 530,402 |
-| Output tokens | 134,893 |
-| Reasoning tokens | 142,616 |
-| Cache read tokens | 32,518,400 |
+| Input tokens | 586,550 |
+| Output tokens | 154,854 |
+| Reasoning tokens | 164,008 |
+| Cache read tokens | 45,939,456 |
 | Cache write tokens | 1,512 |
-| **Total tokens processed** | **33,327,823** |
-| Non-cache token total (input + output + reasoning) | 807,911 |
+| **Total tokens processed** | **46,846,380** |
+| Non-cache token total (input + output + reasoning) | 905,412 |
 | Recorded API cost | **$0.00** |
 
 > The total is the sum of input, output, reasoning, cache-read, and cache-write tokens. The completion snapshot is taken just before the final state-file commit; the final commit and closing assistant message may add a small amount after the snapshot.
@@ -84,7 +84,9 @@ Browser-tested with Playwright and Chrome:
 - ✅ Four display themes applied to both the interface and 3D stage
 - ✅ Four text sizes verified: 90%, 100%, 120%, 140% (body font 15px → 21px)
 - ✅ Checkered and traditional board patterns rendered and restored from preferences
-- ✅ Display preferences persist across reload; Reset restores lacquer/medium/checkered
+- ✅ Six stage colours plus custom colour verified; light stages switch to a flat, lighter table and softened vignette
+- ✅ Move view verified: left-drag pan on desktop/mobile, existing right-drag/two-finger pan, and Reset view recentres
+- ✅ Display preferences persist across reload; Reset restores lacquer/medium/checkered/auto-stage
 - ✅ JSON save download and file restore
 - ✅ Auto-save / reload restoration, including language and assist preferences
 - ✅ Invalid save rejection
@@ -96,6 +98,7 @@ Browser-tested with Playwright and Chrome:
 
 ## Revision log
 
+- **2026-11-01 · v1.3.0** — Added six stage-colour presets plus a native custom colour picker, automatic lighter table treatment and softened vignette for light stages, and a **Move view** panning mode with a recentring Reset view. Board panning is available by left-drag in Move view, right-drag, or two-finger drag.
 - **2026-11-01 · v1.2.0** — Added the beginner stalemate review, four display themes, four text sizes, and the checkered/traditional board switch. Checkered is now the default; traditional single-tone remains available. Sources confirm both styles are used in Thailand.
 - **2026-11-01 · v1.0.0** — Initial procedural 3D Makruk game, AI, bilingual academy, glossary, audio, persistence and GitHub Pages publication.
 
