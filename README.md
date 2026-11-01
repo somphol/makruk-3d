@@ -2,9 +2,11 @@
 
 **หมากรุกไทย 3 มิติ · สถาบันหมากรุกไทยและสตูดิโอผู้เริ่มต้น**
 
+**Live demo:** <https://somphol.github.io/makruk-3d/>
+
 An interactive, bilingual 3D Makruk (Thai chess) academy built with vanilla HTML5, CSS3, ES6 JavaScript, and Three.js. It uses authentic procedural piece silhouettes, a carved teak board, beginner move coaching, a heuristic AI opponent, local pass-and-play, synthesized Web Audio sound, and portable JSON match saves.
 
-[![Makruk 3D board](docs/hero.webp)](docs/hero.webp)
+[![Makruk 3D board](docs/hero.webp)](https://somphol.github.io/makruk-3d/)
 
 ## Highlights
 
