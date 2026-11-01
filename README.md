@@ -19,7 +19,7 @@ An interactive, bilingual 3D Makruk (Thai chess) academy built with vanilla HTML
 - **Interactive tutor** — displays the selected piece's English and Thai names, phonetic pronunciation, movement summary, legal move count, and capture count.
 - **Illustrated glossary** — seven clickable piece cards with lore, movement, pronunciation, and 3D modeling notes, plus a Makruk-in-60-seconds rule sheet.
 - **Interactive 3D piece preview** — click any Rules & Pieces card, or the **View in 3D** link inside the tutor bar, to open a separate orbit-controlled model with auto-rotate, reset view, and Thai pronunciation buttons.
-- **Thai speech** — every piece card and preview panel can pronounce the Thai name (ขุน, เม็ด, โคน, ม้า, เรือ, เบี้ย, เบี้ยหงาย) using the browser's Thai voice; respects the sound toggle.
+- **Thai pronunciation** — every piece card and preview panel plays a bundled Thai recording (macOS **Kanya** voice) for ขุน, เม็ด, โคน, ม้า, เรือ, เบี้ย and เบี้ยหงาย, with browser speech synthesis as a fallback. Repeated clicks restart the clip reliably and respect the sound toggle.
 - **Stalemate review** — after a stalemate, a beginner panel shows the final move, the safe Khun, and every escape square alongside the piece controlling it.
 - **Single Player vs AI or Pass & Play** — a heuristic alpha-beta bot playing Black, or two humans sharing one board.
 - **Instant EN ⇄ TH switching** — all headers, labels, tooltips, tutor copy, move record, result overlay, display settings, and glossary update without interrupting a match.
@@ -69,7 +69,7 @@ npx serve .
 
 <img src="docs/piece-preview.webp" alt="A rotatable 3D Met piece in the Makruk piece preview with Thai pronunciation controls" width="100%" />
 
-Open **Rules & Pieces** and click any card, or select a piece on the board and use **View in 3D** in the tutor bar, to explore its procedural 3D model. Drag to orbit, scroll or pinch to zoom, toggle auto-rotate, or reset the view. The speaker button on each card and in the preview panel speaks the Thai piece name through the browser's Thai speech voice; repeated clicks are queued reliably, and the preview also shows the role, movement and hand-built modeling notes.
+Open **Rules & Pieces** and click any card, or select a piece on the board and use **View in 3D** in the tutor bar, to explore its procedural 3D model. Drag to orbit, scroll or pinch to zoom, toggle auto-rotate, or reset the view. The speaker button on each card and in the preview panel plays a bundled Thai pronunciation recording; repeated clicks restart the clip immediately. If the recording cannot load, the browser's Thai speech voice is used as a fallback. The preview also shows the role, movement and hand-built modeling notes.
 
 ### Board finishes
 
@@ -126,6 +126,7 @@ makruk-3d/
 ├── index.html       # Semantic app shell, bilingual data-i18n hooks, modals
 ├── style.css        # Midnight-lacquer visual system and responsive layout
 ├── script.js        # Three.js scene, procedural models, rules, AI, audio, I/O
+├── audio/th/        # Bundled Thai pronunciation WAVs (Kanya voice)
 ├── docs/
 │   ├── hero.webp
 │   └── mobile.webp
@@ -186,6 +187,7 @@ The same payload is auto-saved under `makruk3d.match.v1` in browser storage.
 - **Rendering:** [Three.js](https://threejs.org) r160 via CDN, with `OrbitControls`
 - **Typography:** Cormorant Garamond, Manrope, Noto Sans Thai, and Noto Serif Thai via Google Fonts
 - **Cultural inspiration:** the Thai Makruk tradition, its court pieces, and the Thai river-barge silhouette of the Ruea
+- **Thai pronunciation audio:** generated with the macOS **Kanya** Thai system voice
 
 Build timing and token usage are recorded in [STATE.md](STATE.md).
 

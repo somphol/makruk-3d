@@ -680,6 +680,16 @@ const PIECE_KEY_BY_TYPE = {
   P: "bia",
 };
 
+const PRONUNCIATION_FILES = {
+  khun: "audio/th/khun.wav",
+  met: "audio/th/met.wav",
+  khon: "audio/th/khon.wav",
+  ma: "audio/th/ma.wav",
+  ruea: "audio/th/ruea.wav",
+  bia: "audio/th/bia.wav",
+  biaNgua: "audio/th/bia-ngua.wav",
+};
+
 const t = (key, vars = {}) => {
   const dict = I18N[state.lang] || I18N.en;
   let value = dict[key] ?? I18N.en[key] ?? key;
@@ -978,6 +988,13 @@ const thaiSpeech = {
   watchdog: null,
   buttons: new Set(),
   warmed: false,
+};
+
+const pronunciationAudio = {
+  players: new Map(),
+  active: null,
+  token: 0,
+  buttons: new Set(),
 };
 
 function warmSpeechVoices() {
@@ -3689,6 +3706,7 @@ function renderPiecePreviewCopy(key) {
 
 function openPiecePreview(key) {
   if (!PIECES[key]) return;
+  preloadPronunciationAudio();
   if (!initPiecePreview()) {
     showToast(t("previewUnavailable"), "error", "!");
     return;
@@ -3710,6 +3728,7 @@ function openPiecePreview(key) {
 function stopPiecePreview() {
   if (piecePreview.renderer) piecePreview.renderer.setAnimationLoop(null);
   if (piecePreview.clock) piecePreview.clock.stop();
+  stopThaiPronunciation();
   stopThaiSpeech();
 }
 
@@ -3818,11 +3837,98 @@ function playNextThaiUtterance() {
   thaiSpeech.watchdog = window.setTimeout(finish, 5000);
 }
 
-function speakThaiPiece(key, originButton = null) {
-  if (!state.sound) {
-    showToast(t("soundOffSpeech"), "info", "∅");
-    return;
+function preloadPronunciationAudio() {
+  if (typeof Audio === "undefined") return;
+  for (const [key, src] of Object.entries(PRONUNCIATION_FILES)) {
+    if (pronunciationAudio.players.has(key)) continue;
+    const player = new Audio();
+    player.preload = "auto";
+    player.src = src;
+    player.load();
+    pronunciationAudio.players.set(key, player);
   }
+}
+
+function clearPronunciationHighlights() {
+  pronunciationAudio.buttons.forEach((button) => button.classList.remove("is-speaking"));
+  pronunciationAudio.buttons.clear();
+}
+
+function stopThaiPronunciation() {
+  pronunciationAudio.token += 1;
+  clearPronunciationHighlights();
+  if (pronunciationAudio.active) {
+    try {
+      pronunciationAudio.active.pause();
+      pronunciationAudio.active.currentTime = 0;
+    } catch {
+      // Ignore media reset errors.
+    }
+    pronunciationAudio.active = null;
+  }
+  pronunciationAudio.players.forEach((player) => {
+    if (player !== pronunciationAudio.active) {
+      try {
+        player.pause();
+        player.currentTime = 0;
+      } catch {
+        // Ignore media reset errors.
+      }
+    }
+  });
+}
+
+function playRecordedPronunciation(key, originButton = null) {
+  if (typeof Audio === "undefined") return false;
+  const src = PRONUNCIATION_FILES[key];
+  if (!src) return false;
+
+  // The recordings are primary; browser speech is only a fallback.
+  stopThaiSpeech();
+  stopThaiPronunciation();
+  const token = pronunciationAudio.token;
+  const buttons = [dom.piecePronounceButton, originButton].filter(Boolean);
+  buttons.forEach((button) => button.classList.add("is-speaking"));
+  pronunciationAudio.buttons = new Set(buttons);
+
+  let player = pronunciationAudio.players.get(key);
+  if (!player) {
+    player = new Audio(src);
+    player.preload = "auto";
+    pronunciationAudio.players.set(key, player);
+  }
+
+  let fellBack = false;
+  const fallback = () => {
+    if (token !== pronunciationAudio.token || fellBack) return;
+    fellBack = true;
+    clearPronunciationHighlights();
+    pronunciationAudio.active = null;
+    speakThaiWithBrowser(key, originButton);
+  };
+
+  player.onended = () => {
+    if (token !== pronunciationAudio.token) return;
+    clearPronunciationHighlights();
+    pronunciationAudio.active = null;
+  };
+  player.onerror = fallback;
+  pronunciationAudio.active = player;
+
+  try {
+    player.pause();
+    player.currentTime = 0;
+    player.volume = 0.95;
+    const playback = player.play();
+    if (playback?.catch) playback.catch(fallback);
+    return true;
+  } catch {
+    fallback();
+    return true;
+  }
+}
+
+function speakThaiWithBrowser(key, originButton = null) {
   if (!("speechSynthesis" in window) || typeof SpeechSynthesisUtterance === "undefined") {
     showToast(t("speechUnavailable"), "error", "!");
     return;
@@ -3841,6 +3947,16 @@ function speakThaiPiece(key, originButton = null) {
 
   thaiSpeech.queue.push({ text: meta.name.th, voice: thaiVoice || null });
   if (!thaiSpeech.active) playNextThaiUtterance();
+}
+
+function speakThaiPiece(key, originButton = null) {
+  if (!state.sound) {
+    showToast(t("soundOffSpeech"), "info", "∅");
+    return;
+  }
+  if (!PIECES[key]) return;
+  if (playRecordedPronunciation(key, originButton)) return;
+  speakThaiWithBrowser(key, originButton);
 }
 
 function openModal(modal) {
@@ -3878,6 +3994,7 @@ function closeEndModals() {
 }
 
 function showGlossary() {
+  preloadPronunciationAudio();
   renderGlossary();
   openModal(dom.glossaryModal);
 }
@@ -4210,6 +4327,7 @@ function toggleSound() {
     audio.click();
     showToast(t("toastSoundOn"), "success", "♪");
   } else {
+    stopThaiPronunciation();
     stopThaiSpeech();
     showToast(t("toastSoundOff"), "info", "∅");
   }
@@ -4738,6 +4856,8 @@ function boot() {
     }
   }, 360);
 
+  window.setTimeout(preloadPronunciationAudio, 1200);
+
   if (state.history.length === 0) {
     window.setTimeout(() => {
       if (state.history.length === 0) showToast(t("toastBoardReady"), "info", "ม");
@@ -4750,7 +4870,7 @@ boot();
 /* A small, deliberately read-friendly surface for teachers and automated
    smoke tests. It does not expose any private player information. */
 window.Makruk3D = {
-  version: "1.6.0",
+  version: "1.7.0",
   credits: APP_CREDIT,
   getState: () => ({
     turn: state.turn,

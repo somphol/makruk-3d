@@ -10,7 +10,7 @@
 | Field | Value |
 | --- | --- |
 | Project status | ✅ Complete and published |
-| App version | `1.6.0` |
+| App version | `1.7.0` |
 | Repository | <https://github.com/somphol/makruk-3d> |
 | Live page | <https://somphol.github.io/makruk-3d/> (GitHub Pages deployment enabled) |
 | Primary branch | `main` |
@@ -18,9 +18,9 @@
 | 3D preview commit | `8d2e1ed` — Add 3D piece preview, Thai pronunciation and correct Met |
 | Build type | Static site; no package manager, no build step |
 | Source files | `index.html`, `style.css`, `script.js` |
-| Source lines | 9,168 |
-| Source size | 285,109 bytes |
-| Project size | 1.7 MB including README screenshots |
+| Source lines | 9,288 |
+| Source size | 288,366 bytes |
+| Project size | 2.1 MB including README screenshots and bundled Thai audio |
 
 ## Build timeline
 
@@ -28,8 +28,8 @@
 | --- | --- |
 | OpenCode session started | `2026-11-01T18:42:08Z` |
 | Initial game published | `2026-11-01T19:07:33Z` |
-| Latest completion snapshot | `2026-11-01T21:22:44Z` |
-| **Elapsed session time** | **2 hours 40 minutes 36 seconds** |
+| Latest completion snapshot | `2026-11-01T22:39:54Z` |
+| **Elapsed session time** | **3 hours 57 minutes 46 seconds** |
 
 The elapsed time covers requirements research, design, procedural 3D modeling, rules engine, AI, bilingual copy, audio synthesis, persistence, browser testing, README/screenshot generation, GitHub publication, live-deployment verification, the post-game stalemate review, four display themes, four text sizes, the checkered/traditional board switch, adjustable stage colours, a moveable board view, the interactive 3D piece preview, tutor-to-preview linking, repeatable Thai speech, full-size board mode, and teak/stone board finishes.
 
@@ -39,13 +39,13 @@ Captured from the OpenCode session database at the latest completion snapshot. T
 
 | Token category | Count |
 | --- | ---: |
-| Input tokens | 782,706 |
-| Output tokens | 207,803 |
-| Reasoning tokens | 230,534 |
-| Cache read tokens | 100,516,352 |
+| Input tokens | 1,451,376 |
+| Output tokens | 216,063 |
+| Reasoning tokens | 242,198 |
+| Cache read tokens | 108,221,568 |
 | Cache write tokens | 1,512 |
-| **Total tokens processed** | **101,738,907** |
-| Non-cache token total (input + output + reasoning) | 1,221,043 |
+| **Total tokens processed** | **110,132,717** |
+| Non-cache token total (input + output + reasoning) | 1,909,637 |
 | Recorded API cost | **$0.00** |
 
 > The total is the sum of input, output, reasoning, cache-read, and cache-write tokens. The completion snapshot is taken just before the final state-file commit; the final commit and closing assistant message may add a small amount after the snapshot.
@@ -95,8 +95,9 @@ Browser-tested with Playwright and Chrome:
 - ✅ Four board finishes verified: teak/ebony, Carrara/Marquina, travertine/granite and jade/slate
 - ✅ Stone board materials persist, reset correctly, and retain readable piece contrast
 - ✅ Honed anti-glare surfaces remove the bright key-light reflection from marble and wood
-- ✅ Thai speech verified with the real macOS **Kanya** voice: three consecutive utterances start and end correctly
-- ✅ Queued pronunciation retains utterance references, warms the voice list, and avoids cancel/speak races
+- ✅ Bundled Thai pronunciation WAVs generated with the macOS **Kanya** voice; all seven pieces load and play
+- ✅ Repeated Hear Thai clicks restart the recorded clip immediately; browser speech synthesis remains the fallback
+- ✅ Audio output verified in Chrome with advancing media timestamps, loaded resources and no playback errors
 - ✅ JSON save download and file restore
 - ✅ Auto-save / reload restoration, including language and assist preferences
 - ✅ Invalid save rejection
@@ -108,6 +109,7 @@ Browser-tested with Playwright and Chrome:
 
 ## Revision log
 
+- **2026-11-01 · v1.7.0** — Replaced unreliable browser speech synthesis as the primary pronunciation path with seven bundled WAV recordings generated from the macOS **Kanya** Thai voice. Repeated Hear Thai clicks now restart the clip immediately; speech synthesis remains a fallback. Added full-size board framing, stone board finishes, and honed anti-glare surfaces in this release cycle.
 - **2026-11-01 · v1.6.0** — Converted all board surfaces to honed, anti-glare materials to remove key-light reflections. Rebuilt Thai pronunciation as a deterministic queue with voice warm-up and strong utterance references; verified three consecutive plays with the real macOS Thai voice. Added full-size board framing and stone finishes from the previous revision.
 - **2026-11-01 · v1.5.0** — Added **Full size** board mode with Escape-to-exit and camera framing for desktop/mobile. Added four board finishes inspired by stone table-top boards: Teak & Ebony, Carrara & Marquina, Travertine & Granite, and Jade & Slate, all persisted in display preferences.
 - **2026-11-01 · v1.4.0** — Added a **View in 3D** link to the selected-piece tutor, fixed repeat Thai pronunciation playback (utterance retention, cancel/resume timing, and highlight cleanup), and removed the faded scene loader from hit-testing so it can never block board clicks.
