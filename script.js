@@ -102,7 +102,7 @@ const I18N = {
     displayNote: "These preferences are saved on this device and do not affect the match.",
     resetDisplay: "Reset display",
     done: "Done",
-    wisdom: "The boat is mightier than the seed. Guard the lord, advance the shells, and let patience win the board.",
+    wisdom: "The boat is mightier than the queen. Guard the lord, advance the shells, and let patience win the board.",
     wisdomSource: "Makruk proverb for beginners",
     footerCredit: "Crafted in OpenCode with DeepSeek V4.1 Flash",
     footerHeritage: "Inspired by the Thai chess tradition",
@@ -196,6 +196,19 @@ const I18N = {
     confirmLoad: "Loading a file will replace the current match. Continue?",
 
     glossarySubtitle: "Seven silhouettes, one ancient battlefield.",
+    piecePreviewEyebrow: "THE PIECE IN THREE DIMENSIONS",
+    piecePreviewHint: "Drag to rotate · scroll or pinch to zoom",
+    piecePreviewReset: "Reset view",
+    piecePreviewAuto: "Auto-rotate",
+    piecePreviewAutoOn: "Auto-rotate on",
+    piecePreviewAutoOff: "Auto-rotate off",
+    piecePreviewModel: "3D model",
+    viewIn3D: "View in 3D",
+    hearThai: "Hear Thai",
+    pronounceHint: "Thai pronunciation",
+    soundOffSpeech: "Sound is off — enable sound to hear the Thai pronunciation.",
+    speechUnavailable: "Speech is not available in this browser.",
+    previewUnavailable: "The 3D preview is unavailable in this browser.",
     rulesHeading: "Makruk in sixty seconds",
     rulesIntro: "The essentials that make Thai chess different from the international game.",
     heritageTitle: "A living court game",
@@ -371,6 +384,19 @@ const I18N = {
     confirmLoad: "การโหลดไฟล์จะแทนที่แมตช์ปัจจุบัน ดำเนินการต่อหรือไม่?",
 
     glossarySubtitle: "เจ็ดรูปทรง หนึ่งสมรภูมิโบราณ",
+    piecePreviewEyebrow: "หมากในสามมิติ",
+    piecePreviewHint: "ลากเพื่อหมุน · เลื่อนหรือบีบเพื่อซูม",
+    piecePreviewReset: "รีเซ็ตมุมมอง",
+    piecePreviewAuto: "หมุนอัตโนมัติ",
+    piecePreviewAutoOn: "เปิดหมุนอัตโนมัติ",
+    piecePreviewAutoOff: "ปิดหมุนอัตโนมัติ",
+    piecePreviewModel: "แบบจำลองสามมิติ",
+    viewIn3D: "ดูในสามมิติ",
+    hearThai: "ฟังเสียงไทย",
+    pronounceHint: "คำอ่านภาษาไทย",
+    soundOffSpeech: "เสียงปิดอยู่ — เปิดเสียงเพื่อฟังคำอ่านภาษาไทย",
+    speechUnavailable: "เบราว์เซอร์นี้ไม่รองรับการออกเสียง",
+    previewUnavailable: "เบราว์เซอร์นี้ไม่สามารถแสดงตัวอย่างสามมิติได้",
     rulesHeading: "หมากรุกไทยในหกสิบวินาที",
     rulesIntro: "สาระสำคัญที่ทำให้หมากรุกไทยต่างจากหมากรุกสากล",
     heritageTitle: "เกมแห่งราชสำนักที่ยังมีชีวิต",
@@ -414,11 +440,11 @@ const PIECES = {
     type: "M",
     glyph: "❖",
     name: { en: "Met", th: "เม็ด" },
-    role: { en: "Seed / Queen", th: "เม็ด / ราชินี" },
+    role: { en: "Queen / Counsellor", th: "เม็ด / ราชินี" },
     phonetic: "MET",
     lore: {
-      en: "Met means a fruitstone or seed. Small, rounded and quietly essential, the Met is a guardian of the Khun rather than a sweeping queen.",
-      th: "เม็ดหมายถึงเมล็ดหรือเม็ดในผลไม้ รูปเล็กกลมและสำคัญเงียบ ๆ เม็ดเป็นผู้พิทักษ์ขุน ไม่ใช่ราชินีที่กวาดกระดาน",
+      en: "Met is Makruk's queen — the short-range counsellor inherited from the ancient mantri and ferz. She guards the Khun and controls the diagonals one square at a time.",
+      th: "เม็ดคือราชินีของหมากรุกไทย ผู้ให้คำปรึกษาระยะสั้นที่สืบทอดจากมันตรีและเฟิร์ซโบราณ เม็ดปกป้องขุนและควบคุมแนวทแยงทีละช่อง",
     },
     movement: {
       en: "Exactly one square diagonally, forwards or backwards. A short-range defender.",
@@ -678,6 +704,19 @@ const dom = {
   glossaryTitle: $("#glossaryTitle"),
   glossarySubtitle: $("#glossarySubtitle"),
   glossaryGrid: $("#glossaryGrid"),
+  piecePreviewModal: $("#piecePreviewModal"),
+  piecePreviewStage: $("#piecePreviewStage"),
+  piecePreviewCanvas: $("#piecePreviewCanvas"),
+  piecePreviewGlyph: $("#piecePreviewGlyph"),
+  piecePreviewStageName: $("#piecePreviewStageName"),
+  piecePreviewTitle: $("#piecePreviewTitle"),
+  piecePreviewRole: $("#piecePreviewRole"),
+  piecePreviewLore: $("#piecePreviewLore"),
+  piecePreviewMovement: $("#piecePreviewMovement"),
+  piecePreviewModel: $("#piecePreviewModel"),
+  piecePronounceButton: $("#piecePronounceButton"),
+  pieceResetView: $("#pieceResetView"),
+  pieceAutoRotate: $("#pieceAutoRotate"),
   rulesHeading: $("#rulesHeading"),
   rulesIntro: $("#rulesIntro"),
   rulesGrid: $("#rulesGrid"),
@@ -1504,6 +1543,20 @@ const meshById = new Map();
 const removalEntries = [];
 const materials = {};
 const woodTextures = {};
+const piecePreview = {
+  renderer: null,
+  scene: null,
+  camera: null,
+  controls: null,
+  pivot: null,
+  group: null,
+  shadow: null,
+  ring: null,
+  clock: null,
+  key: null,
+  autoRotate: true,
+  stageObserver: null,
+};
 
 function worldPosition(index) {
   const row = rowOf(index);
@@ -3123,6 +3176,7 @@ function updateAllUI() {
   updateTutor();
   if (!dom.resultModal.hidden) updateResultContent();
   if (!dom.glossaryModal.hidden) renderGlossary();
+  if (!dom.piecePreviewModal.hidden && piecePreview.key) renderPiecePreviewCopy(piecePreview.key);
   if (!dom.stalemateModal.hidden) renderStalemateReview();
   if (!dom.displayModal.hidden) renderDisplaySettings();
 }
@@ -3138,8 +3192,11 @@ function renderGlossary() {
     const piece = PIECES[key];
     const otherLang = state.lang === "en" ? "th" : "en";
     return `
-      <article class="glossary-card">
+      <article class="glossary-card" data-piece-key="${key}" role="button" tabindex="0"
+        aria-label="${t("viewIn3D")}: ${piece.name[state.lang]}">
         <span class="glossary-glyph" aria-hidden="true">${piece.glyph}</span>
+        <button class="glossary-speak" type="button" data-pronounce="${key}"
+          aria-label="${t("hearThai")}: ${piece.name.th}" title="${t("hearThai")}">🔊</button>
         <div class="glossary-body">
           <div class="glossary-names">
             <strong>${piece.name[state.lang]}</strong>
@@ -3149,6 +3206,7 @@ function renderGlossary() {
           <p class="glossary-lore">${piece.lore[state.lang]}</p>
           <p class="glossary-move"><b>${t("movement")}:</b> ${piece.movement[state.lang]}</p>
           <span class="glossary-model">${piece.model[state.lang]}</span>
+          <span class="glossary-view3d">${t("viewIn3D")} <i aria-hidden="true">↗</i></span>
         </div>
       </article>`;
   }).join("");
@@ -3168,6 +3226,240 @@ function renderGlossary() {
     </article>`).join("");
 }
 
+function initPiecePreview() {
+  if (piecePreview.renderer) return true;
+  const canvas = dom.piecePreviewCanvas;
+  if (!canvas) return false;
+  try {
+    piecePreview.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    piecePreview.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    piecePreview.renderer.outputColorSpace = THREE.SRGBColorSpace;
+    piecePreview.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    piecePreview.renderer.toneMappingExposure = 1.16;
+    piecePreview.renderer.shadowMap.enabled = true;
+    piecePreview.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    piecePreview.renderer.setClearColor(0x000000, 0);
+  } catch (error) {
+    console.warn(error);
+    return false;
+  }
+
+  if (!materials.ivory) createMaterials();
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(34, 1, 0.01, 40);
+  const controls = new OrbitControls(camera, canvas);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.08;
+  controls.enablePan = false;
+  controls.minDistance = 0.5;
+  controls.maxDistance = 8;
+  controls.minPolarAngle = 0.1;
+  controls.maxPolarAngle = Math.PI * 0.53;
+  controls.rotateSpeed = 0.7;
+  controls.zoomSpeed = 0.8;
+
+  scene.add(new THREE.HemisphereLight(0xffe6bd, 0x140b06, 1.15));
+  const key = new THREE.DirectionalLight(0xffd28a, 2.35);
+  key.position.set(2.4, 4.2, 3.2);
+  key.castShadow = true;
+  key.shadow.mapSize.set(512, 512);
+  key.shadow.camera.near = 0.1;
+  key.shadow.camera.far = 20;
+  scene.add(key);
+  const rim = new THREE.DirectionalLight(0x8fd6ff, 1.55);
+  rim.position.set(-3.2, 2.5, -2.6);
+  scene.add(rim);
+  const fill = new THREE.PointLight(0xffb15a, 1.1, 10, 2);
+  fill.position.set(0.4, 1.1, 2.4);
+  scene.add(fill);
+
+  const shadow = new THREE.Mesh(
+    new THREE.CircleGeometry(1, 64),
+    new THREE.ShadowMaterial({ color: 0x000000, opacity: 0.34 })
+  );
+  shadow.rotation.x = -Math.PI / 2;
+  shadow.position.y = 0.002;
+  shadow.receiveShadow = true;
+  scene.add(shadow);
+
+  const ring = new THREE.Mesh(
+    new THREE.TorusGeometry(1, 0.012, 8, 72),
+    new THREE.MeshStandardMaterial({ color: 0xd1a84c, metalness: 0.85, roughness: 0.28 })
+  );
+  ring.rotation.x = -Math.PI / 2;
+  ring.position.y = 0.004;
+  scene.add(ring);
+
+  const pivot = new THREE.Group();
+  scene.add(pivot);
+
+  piecePreview.scene = scene;
+  piecePreview.camera = camera;
+  piecePreview.controls = controls;
+  piecePreview.pivot = pivot;
+  piecePreview.shadow = shadow;
+  piecePreview.ring = ring;
+  piecePreview.clock = new THREE.Clock(false);
+
+  piecePreview.stageObserver = new ResizeObserver(resizePiecePreview);
+  piecePreview.stageObserver.observe(dom.piecePreviewStage);
+  window.addEventListener("resize", resizePiecePreview);
+  resizePiecePreview();
+  return true;
+}
+
+function resizePiecePreview() {
+  if (!piecePreview.renderer || !dom.piecePreviewStage) return;
+  const width = Math.max(1, dom.piecePreviewStage.clientWidth);
+  const height = Math.max(1, dom.piecePreviewStage.clientHeight);
+  piecePreview.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  piecePreview.renderer.setSize(width, height, false);
+  if (piecePreview.camera) {
+    piecePreview.camera.aspect = width / height;
+    piecePreview.camera.updateProjectionMatrix();
+  }
+}
+
+function fitPiecePreview(key) {
+  if (!piecePreview.pivot || !PIECES[key]) return;
+  const meta = PIECES[key];
+  const created = createPieceGroup({
+    type: meta.type,
+    color: "w",
+    promoted: key === "biaNgua",
+  });
+
+  if (piecePreview.group) {
+    piecePreview.pivot.remove(piecePreview.group);
+    disposeGroup(piecePreview.group);
+  }
+
+  piecePreview.pivot.rotation.y = 0;
+  piecePreview.pivot.add(created);
+  created.updateMatrixWorld(true);
+  const box = new THREE.Box3().setFromObject(created);
+  const size = new THREE.Vector3();
+  const center = new THREE.Vector3();
+  box.getSize(size);
+  box.getCenter(center);
+  created.position.x -= center.x;
+  created.position.z -= center.z;
+  created.position.y -= box.min.y;
+  created.updateMatrixWorld(true);
+
+  const height = Math.max(0.3, size.y);
+  const footprint = Math.max(0.24, size.x, size.z);
+  piecePreview.shadow.scale.setScalar(footprint * 2.1);
+  piecePreview.ring.scale.setScalar(footprint * 1.18);
+  piecePreview.group = created;
+  piecePreview.key = key;
+
+  const targetY = height * 0.46;
+  const distance = Math.max(0.85, height * 2.05, footprint * 3.1);
+  piecePreview.controls.target.set(0, targetY, 0);
+  piecePreview.camera.position.set(distance * 0.72, targetY + height * 0.62 + distance * 0.18, distance * 0.96);
+  piecePreview.controls.minDistance = Math.max(0.42, height * 0.9);
+  piecePreview.controls.maxDistance = Math.max(2.2, height * 5.5);
+  piecePreview.controls.update();
+}
+
+function renderPiecePreviewFrame() {
+  if (!piecePreview.renderer || !piecePreview.scene || !piecePreview.camera) return;
+  const delta = Math.min(piecePreview.clock.getDelta(), 0.05);
+  if (piecePreview.autoRotate && piecePreview.pivot) {
+    piecePreview.pivot.rotation.y += delta * 0.52;
+  }
+  piecePreview.controls.update();
+  piecePreview.renderer.render(piecePreview.scene, piecePreview.camera);
+}
+
+function renderPiecePreviewCopy(key) {
+  const meta = PIECES[key];
+  if (!meta) return;
+  if (dom.piecePreviewTitle) dom.piecePreviewTitle.textContent = meta.name[state.lang];
+  if (dom.piecePreviewStageName) dom.piecePreviewStageName.textContent = meta.name[state.lang];
+  if (dom.piecePreviewGlyph) dom.piecePreviewGlyph.textContent = meta.glyph;
+  if (dom.piecePreviewRole) dom.piecePreviewRole.textContent = `${meta.role[state.lang]} · ${meta.phonetic}`;
+  if (dom.piecePreviewLore) dom.piecePreviewLore.textContent = meta.lore[state.lang];
+  if (dom.piecePreviewMovement) dom.piecePreviewMovement.textContent = meta.movement[state.lang];
+  if (dom.piecePreviewModel) dom.piecePreviewModel.textContent = meta.model[state.lang];
+  if (dom.piecePronounceButton) {
+    dom.piecePronounceButton.setAttribute("aria-label", `${t("hearThai")}: ${meta.name.th}`);
+  }
+}
+
+function openPiecePreview(key) {
+  if (!PIECES[key]) return;
+  if (!initPiecePreview()) {
+    showToast(t("previewUnavailable"), "error", "!");
+    return;
+  }
+  openModal(dom.piecePreviewModal);
+  renderPiecePreviewCopy(key);
+  if (dom.pieceAutoRotate) {
+    dom.pieceAutoRotate.classList.toggle("is-active", piecePreview.autoRotate);
+    dom.pieceAutoRotate.setAttribute("aria-pressed", String(piecePreview.autoRotate));
+    dom.pieceAutoRotate.textContent = t("piecePreviewAuto");
+  }
+  fitPiecePreview(key);
+  piecePreview.clock.start();
+  piecePreview.renderer.setAnimationLoop(renderPiecePreviewFrame);
+  window.requestAnimationFrame(resizePiecePreview);
+  audio.click();
+}
+
+function stopPiecePreview() {
+  if (piecePreview.renderer) piecePreview.renderer.setAnimationLoop(null);
+  if (piecePreview.clock) piecePreview.clock.stop();
+}
+
+function resetPiecePreviewView() {
+  if (!piecePreview.key) return;
+  fitPiecePreview(piecePreview.key);
+  audio.click();
+}
+
+function togglePiecePreviewAutoRotate() {
+  piecePreview.autoRotate = !piecePreview.autoRotate;
+  if (dom.pieceAutoRotate) {
+    dom.pieceAutoRotate.classList.toggle("is-active", piecePreview.autoRotate);
+    dom.pieceAutoRotate.setAttribute("aria-pressed", String(piecePreview.autoRotate));
+    dom.pieceAutoRotate.textContent = t("piecePreviewAuto");
+  }
+  showToast(piecePreview.autoRotate ? t("piecePreviewAutoOn") : t("piecePreviewAutoOff"), "info", "↻");
+  audio.click();
+}
+
+function speakThaiPiece(key, originButton = null) {
+  if (!state.sound) {
+    showToast(t("soundOffSpeech"), "info", "∅");
+    return;
+  }
+  if (!("speechSynthesis" in window)) {
+    showToast(t("speechUnavailable"), "error", "!");
+    return;
+  }
+  const meta = PIECES[key];
+  if (!meta) return;
+  const synth = window.speechSynthesis;
+  synth.cancel();
+  const utterance = new SpeechSynthesisUtterance(meta.name.th);
+  utterance.lang = "th-TH";
+  utterance.rate = 0.82;
+  utterance.pitch = 1.02;
+  utterance.volume = 0.95;
+  const thaiVoice = (synth.getVoices() || []).find((voice) => /^th/i.test(voice.lang));
+  if (thaiVoice) utterance.voice = thaiVoice;
+
+  const buttons = [dom.piecePronounceButton, originButton].filter(Boolean);
+  buttons.forEach((button) => button.classList.add("is-speaking"));
+  const clear = () => buttons.forEach((button) => button.classList.remove("is-speaking"));
+  utterance.onend = clear;
+  utterance.onerror = clear;
+  synth.speak(utterance);
+}
+
 function openModal(modal) {
   if (!modal) return;
   lastFocusedElement = document.activeElement;
@@ -3180,13 +3472,15 @@ function openModal(modal) {
 
 function closeModal(modal) {
   if (!modal) return;
+  if (modal === dom.piecePreviewModal) stopPiecePreview();
   modal.hidden = true;
   modal.setAttribute("aria-hidden", "true");
   if (
     dom.glossaryModal.hidden &&
     dom.resultModal.hidden &&
     dom.stalemateModal.hidden &&
-    dom.displayModal.hidden
+    dom.displayModal.hidden &&
+    dom.piecePreviewModal.hidden
   ) {
     document.body.classList.remove("modal-open");
   }
@@ -3533,6 +3827,7 @@ function toggleSound() {
     audio.click();
     showToast(t("toastSoundOn"), "success", "♪");
   } else {
+    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
     showToast(t("toastSoundOff"), "info", "∅");
   }
 }
@@ -3785,6 +4080,33 @@ function bindEvents() {
   dom.soundToggle.addEventListener("click", toggleSound);
   dom.glossaryButton.addEventListener("click", showGlossary);
   dom.sidebarGlossary.addEventListener("click", showGlossary);
+
+  dom.glossaryGrid.addEventListener("click", (event) => {
+    const pronounce = event.target.closest("[data-pronounce]");
+    if (pronounce) {
+      event.preventDefault();
+      event.stopPropagation();
+      speakThaiPiece(pronounce.dataset.pronounce, pronounce);
+      return;
+    }
+    const card = event.target.closest("[data-piece-key]");
+    if (card) openPiecePreview(card.dataset.pieceKey);
+  });
+
+  dom.glossaryGrid.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    if (event.target.closest("[data-pronounce]")) return;
+    const card = event.target.closest("[data-piece-key]");
+    if (!card) return;
+    event.preventDefault();
+    openPiecePreview(card.dataset.pieceKey);
+  });
+
+  dom.piecePronounceButton.addEventListener("click", () => {
+    speakThaiPiece(piecePreview.key, dom.piecePronounceButton);
+  });
+  dom.pieceResetView.addEventListener("click", resetPiecePreviewView);
+  dom.pieceAutoRotate.addEventListener("click", togglePiecePreviewAutoRotate);
   dom.displayButton.addEventListener("click", () => {
     openDisplaySettings();
     audio.click();
@@ -3904,11 +4226,13 @@ function bindEvents() {
       const name = element.dataset.closeModal;
       const modal = name === "glossary"
         ? dom.glossaryModal
-        : name === "stalemate"
-          ? dom.stalemateModal
-          : name === "display"
-            ? dom.displayModal
-            : dom.resultModal;
+        : name === "piecePreview"
+          ? dom.piecePreviewModal
+          : name === "stalemate"
+            ? dom.stalemateModal
+            : name === "display"
+              ? dom.displayModal
+              : dom.resultModal;
       closeModal(modal);
       audio.click();
     });
@@ -3916,7 +4240,8 @@ function bindEvents() {
 
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape") return;
-    if (!dom.displayModal.hidden) closeModal(dom.displayModal);
+    if (!dom.piecePreviewModal.hidden) closeModal(dom.piecePreviewModal);
+    else if (!dom.displayModal.hidden) closeModal(dom.displayModal);
     else if (!dom.stalemateModal.hidden) closeModal(dom.stalemateModal);
     else if (!dom.resultModal.hidden) closeModal(dom.resultModal);
     else if (!dom.glossaryModal.hidden) closeModal(dom.glossaryModal);
@@ -3935,7 +4260,9 @@ function bindEvents() {
   // Keep keyboard users oriented inside modal dialogs.
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Tab") return;
-    const openModalElement = !dom.displayModal.hidden
+    const openModalElement = !dom.piecePreviewModal.hidden
+      ? dom.piecePreviewModal
+      : !dom.displayModal.hidden
       ? dom.displayModal
       : !dom.stalemateModal.hidden
         ? dom.stalemateModal

@@ -248,7 +248,7 @@
 
         <section class="panel wisdom-panel">
           <span class="wisdom-mark" aria-hidden="true">“</span>
-          <p data-i18n="wisdom">The boat is mightier than the seed. Guard the lord, advance the shells, and let patience win the board.</p>
+          <p data-i18n="wisdom">The boat is mightier than the queen. Guard the lord, advance the shells, and let patience win the board.</p>
           <span class="wisdom-source" data-i18n="wisdomSource">Makruk proverb for beginners</span>
         </section>
       </aside>
@@ -294,6 +294,47 @@
             <p id="heritageText">Makruk has been played in Siam for centuries. Its short-range Met and five-direction Khon preserve an older, more deliberate rhythm of chess.</p>
           </div>
         </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3D piece preview -->
+  <div class="modal" id="piecePreviewModal" hidden aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal="piecePreview"></div>
+    <div class="modal-panel piece-preview-panel" role="dialog" aria-modal="true" aria-labelledby="piecePreviewTitle">
+      <button class="modal-close" type="button" data-close-modal="piecePreview" aria-label="Close piece preview">×</button>
+      <div class="piece-preview-layout">
+        <div class="piece-preview-stage" id="piecePreviewStage">
+          <canvas id="piecePreviewCanvas" aria-label="Rotatable 3D model of the selected Makruk piece"></canvas>
+          <span class="piece-preview-badge" id="piecePreviewGlyph" aria-hidden="true">♔</span>
+          <span class="piece-preview-stage-name" id="piecePreviewStageName">Khun</span>
+          <span class="piece-preview-hint" data-i18n="piecePreviewHint">Drag to rotate · scroll or pinch to zoom</span>
+        </div>
+        <div class="piece-preview-copy">
+          <span class="eyebrow" data-i18n="piecePreviewEyebrow">THE PIECE IN THREE DIMENSIONS</span>
+          <h2 id="piecePreviewTitle">Khun</h2>
+          <div class="piece-preview-role" id="piecePreviewRole">Lord / King · KOON</div>
+          <div class="piece-preview-pronounce">
+            <button class="pronounce-btn" id="piecePronounceButton" type="button" aria-label="Hear Thai pronunciation">
+              <span aria-hidden="true">🔊</span>
+              <span data-i18n="hearThai">Hear Thai</span>
+            </button>
+            <span class="pronounce-hint" data-i18n="pronounceHint">Thai pronunciation</span>
+          </div>
+          <p class="piece-preview-lore" id="piecePreviewLore"></p>
+          <div class="piece-preview-block">
+            <span data-i18n="movement">Movement</span>
+            <p id="piecePreviewMovement"></p>
+          </div>
+          <div class="piece-preview-block">
+            <span data-i18n="piecePreviewModel">3D model</span>
+            <p id="piecePreviewModel"></p>
+          </div>
+          <div class="piece-preview-actions">
+            <button class="ghost-btn" id="pieceResetView" type="button" data-i18n="piecePreviewReset">Reset view</button>
+            <button class="ghost-btn is-active" id="pieceAutoRotate" type="button" aria-pressed="true" data-i18n="piecePreviewAuto">Auto-rotate</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

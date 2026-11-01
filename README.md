@@ -15,7 +15,9 @@ An interactive, bilingual 3D Makruk (Thai chess) academy built with vanilla HTML
 - **Carved 8×8 wooden board** — choose traditional single-tone teak or a modern checkered light/dark pattern, with inlaid gold trim, corner studs, coordinate labels, soft shadows, gold dust, and OrbitControls.
 - **Beginner Move Assist** — green glowing dots for legal destinations and red pulse rings for captures.
 - **Interactive tutor** — displays the selected piece's English and Thai names, phonetic pronunciation, movement summary, legal move count, and capture count.
-- **Illustrated glossary** — seven piece cards with lore, movement, pronunciation, and 3D modeling notes, plus a Makruk-in-60-seconds rule sheet.
+- **Illustrated glossary** — seven clickable piece cards with lore, movement, pronunciation, and 3D modeling notes, plus a Makruk-in-60-seconds rule sheet.
+- **Interactive 3D piece preview** — click any Rules & Pieces card to open a separate orbit-controlled model with auto-rotate, reset view, and Thai pronunciation buttons.
+- **Thai speech** — every piece card and preview panel can pronounce the Thai name (ขุน, เม็ด, โคน, ม้า, เรือ, เบี้ย, เบี้ยหงาย) using the browser's Thai voice; respects the sound toggle.
 - **Stalemate review** — after a stalemate, a beginner panel shows the final move, the safe Khun, and every escape square alongside the piece controlling it.
 - **Single Player vs AI or Pass & Play** — a heuristic alpha-beta bot playing Black, or two humans sharing one board.
 - **Instant EN ⇄ TH switching** — all headers, labels, tooltips, tutor copy, move record, result overlay, display settings, and glossary update without interrupting a match.
@@ -60,7 +62,13 @@ npx serve .
 >
 > Sources: [Makruk Game Indy — Thai boards are commonly single-tone or may alternate colours](https://makruk.gameindy.com/manual/lets-get-to-know-basics-of-playing-thai-chess), [PlayBoardGames — traditional boards are not chequered](https://playboardgames.org/how-to-play/makruk).
 
-### Camera controls
+### Piece preview & Thai pronunciation
+
+<img src="docs/piece-preview.webp" alt="A rotatable 3D Met piece in the Makruk piece preview with Thai pronunciation controls" width="100%" />
+
+Open **Rules & Pieces**, then click any card to explore its procedural 3D model. Drag to orbit, scroll or pinch to zoom, toggle auto-rotate, or reset the view. The speaker button on each card and in the preview panel speaks the Thai piece name through the browser's Thai speech voice; the preview also shows the role, movement and hand-built modeling notes.
+
+## Camera controls
 
 - Drag to orbit the board.
 - Scroll or pinch to zoom.
@@ -72,12 +80,14 @@ npx serve .
 | Piece | Thai | Movement |
 | --- | --- | --- |
 | Khun | ขุน | One square in any direction; no castling. |
-| Met | เม็ด | One square diagonally. |
+| Met (queen / counsellor) | เม็ด | One square diagonally. |
 | Khon | โคน | One square diagonally, or one square straight forward. |
 | Ma | ม้า | L-shaped knight leap; only jumping piece. |
 | Ruea | เรือ | Any distance orthogonally; cannot jump. |
 | Bia | เบี้ย | One square forward; captures one square diagonally forward. No double-step or en passant. |
 | Bia Ngua | เบี้ยหงาย | Promoted Bia; moves one square diagonally, like a Met. |
+
+**Met is the Makruk queen/counsellor** — the short-range descendant of the Sanskrit *mantri* and the Persian *ferz*. It is not a pawn or a literal seed; the Thai name is the piece's traditional name, while its role on the board is the queen.
 
 Starting position (White at the bottom):
 
