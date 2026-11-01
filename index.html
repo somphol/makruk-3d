@@ -8,6 +8,20 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23140d08'/%3E%3Ccircle cx='32' cy='32' r='22' fill='none' stroke='%23d6b36a' stroke-width='2'/%3E%3Ctext x='32' y='42' text-anchor='middle' font-size='28' font-family='serif' fill='%23f3d58e'%3Eม%3C/text%3E%3C/svg%3E" />
   <title>Makruk 3D — Thai Chess Academy & Beginner Studio</title>
 
+  <script>
+    // Apply stored display preferences before the first paint.
+    try {
+      var prefs = JSON.parse(localStorage.getItem("makruk3d.prefs.v1") || "{}");
+      var themes = ["lacquer", "ivory", "jade", "ruby"];
+      var sizes = ["small", "medium", "large", "xlarge"];
+      document.documentElement.dataset.theme = themes.indexOf(prefs.theme) >= 0 ? prefs.theme : "lacquer";
+      document.documentElement.dataset.textSize = sizes.indexOf(prefs.textSize) >= 0 ? prefs.textSize : "medium";
+    } catch (e) {
+      document.documentElement.dataset.theme = "lacquer";
+      document.documentElement.dataset.textSize = "medium";
+    }
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700&family=Noto+Serif+Thai:wght@500;600;700&display=swap" rel="stylesheet" />
@@ -219,6 +233,11 @@
             <span data-i18n="openGlossary">Open the illustrated Makruk glossary</span>
             <span aria-hidden="true">→</span>
           </button>
+          <button class="text-button" id="displayButton" type="button">
+            <span aria-hidden="true">🎨</span>
+            <span data-i18n="openDisplay">Theme &amp; text size</span>
+            <span aria-hidden="true">→</span>
+          </button>
         </section>
 
         <section class="panel wisdom-panel">
@@ -273,6 +292,53 @@
     </div>
   </div>
 
+  <!-- Display and reading preferences -->
+  <div class="modal" id="displayModal" hidden aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal="display"></div>
+    <div class="modal-panel display-panel" role="dialog" aria-modal="true" aria-labelledby="displayTitle">
+      <button class="modal-close" type="button" data-close-modal="display" aria-label="Close display settings">×</button>
+      <header class="modal-head display-head">
+        <span class="eyebrow" data-i18n="displayEyebrow">READING COMFORT</span>
+        <h2 id="displayTitle" data-i18n="displayTitle">Display &amp; reading</h2>
+        <p data-i18n="displaySubtitle">Choose a board-house palette and a type size that feels comfortable.</p>
+      </header>
+
+      <div class="display-body">
+        <div class="display-column">
+          <section class="display-section">
+            <h3 data-i18n="themeHeading">Board-house theme</h3>
+            <p data-i18n="themeSubtitle">Four moods drawn from Thai court interiors.</p>
+            <div class="theme-grid" id="themeGrid"></div>
+          </section>
+
+          <section class="display-section">
+            <h3 data-i18n="boardPatternHeading">Board pattern</h3>
+            <p data-i18n="boardPatternSubtitle">Traditional Makruk boards are single-tone; modern club boards often alternate light and dark squares.</p>
+            <div class="board-style-control" id="boardStyleControl"></div>
+          </section>
+        </div>
+
+        <div class="display-column">
+          <section class="display-section">
+            <h3 data-i18n="textSizeHeading">Text size</h3>
+            <p data-i18n="textSizeSubtitle">Enlarge the academy's labels for easier reading.</p>
+            <div class="text-size-control" id="textSizeControl"></div>
+            <div class="reading-preview">
+              <span class="micro-label" data-i18n="readingPreviewLabel">Preview</span>
+              <p data-i18n="readingPreviewText">The Khon steps one square diagonally or one square forward. Protect the Khun, advance the Bia.</p>
+            </div>
+            <p class="display-note" data-i18n="displayNote">These preferences are saved on this device and do not affect the match.</p>
+          </section>
+        </div>
+      </div>
+
+      <div class="result-actions display-actions">
+        <button class="button button-quiet" id="displayReset" type="button" data-i18n="resetDisplay">Reset display</button>
+        <button class="button button-gold" type="button" data-close-modal="display" data-i18n="done">Done</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Result overlay -->
   <div class="modal" id="resultModal" hidden aria-hidden="true">
     <div class="modal-backdrop" data-close-modal="result"></div>
@@ -287,9 +353,54 @@
           <span aria-hidden="true">↻</span>
           <span data-i18n="newGame">New Game</span>
         </button>
+        <button class="button button-review" id="reviewStalemateButton" type="button" hidden>
+          <span aria-hidden="true">🔍</span>
+          <span data-i18n="reviewStalemate">Why is this a draw?</span>
+        </button>
         <button class="button button-quiet" type="button" data-close-modal="result" data-i18n="reviewBoard">Review board</button>
       </div>
       <p class="result-credit" data-i18n="resultCredit">A lesson completed at the Makruk academy.</p>
+    </div>
+  </div>
+
+  <!-- Beginner stalemate review -->
+  <div class="modal" id="stalemateModal" hidden aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal="stalemate"></div>
+    <div class="modal-panel stalemate-panel" role="dialog" aria-modal="true" aria-labelledby="stalemateTitle">
+      <button class="modal-close" type="button" data-close-modal="stalemate" aria-label="Close stalemate review">×</button>
+      <header class="modal-head stalemate-head">
+        <span class="eyebrow" data-i18n="stalemateEyebrow">BEGINNER REVIEW</span>
+        <h2 id="stalemateTitle">Why stalemate is a draw</h2>
+        <p id="stalemateSubtitle">The lord is safe from check, but every escape is covered.</p>
+      </header>
+
+      <div class="stalemate-body">
+        <div class="mini-board-column">
+          <div class="mini-board" id="stalemateBoard" aria-label="Final position diagram"></div>
+          <div class="mini-legend">
+            <span><i class="legend-swatch legend-king"></i><span data-i18n="stalemateLegendKing">Khun — safe</span></span>
+            <span><i class="legend-swatch legend-escape"></i><span data-i18n="stalemateLegendEscape">Covered escape</span></span>
+            <span><i class="legend-swatch legend-move"></i><span data-i18n="stalemateLegendMove">Final move</span></span>
+          </div>
+        </div>
+
+        <div class="stalemate-explain">
+          <div class="stalemate-status" id="stalemateCheckStatus"></div>
+          <p class="stalemate-last-move" id="stalemateLastMove"></p>
+          <p class="stalemate-cause" id="stalemateCause"></p>
+          <h3 id="stalemateEscapesTitle">The Khun’s escape squares</h3>
+          <ul class="escape-list" id="stalemateEscapesList"></ul>
+          <div class="rule-note" id="stalemateRuleNote"></div>
+        </div>
+      </div>
+
+      <div class="result-actions stalemate-actions">
+        <button class="button button-gold" id="stalemateNewGame" type="button">
+          <span aria-hidden="true">↻</span>
+          <span data-i18n="newGame">New Game</span>
+        </button>
+        <button class="button button-quiet" type="button" data-close-modal="stalemate" data-i18n="backToBoard">Back to board</button>
+      </div>
     </div>
   </div>
 

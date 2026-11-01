@@ -73,6 +73,21 @@ const I18N = {
     saveMatch: "Save Match",
     loadMatch: "Load Match",
     openGlossary: "Open the illustrated Makruk glossary",
+    openDisplay: "Theme & text size",
+    displayEyebrow: "READING COMFORT",
+    displayTitle: "Display & reading",
+    displaySubtitle: "Choose a board-house palette and a type size that feels comfortable.",
+    themeHeading: "Board-house theme",
+    themeSubtitle: "Four moods drawn from Thai court interiors.",
+    boardPatternHeading: "Board pattern",
+    boardPatternSubtitle: "Traditional Makruk boards are single-tone; modern club boards often alternate light and dark squares.",
+    textSizeHeading: "Text size",
+    textSizeSubtitle: "Enlarge the academy's labels for easier reading.",
+    readingPreviewLabel: "Preview",
+    readingPreviewText: "The Khon steps one square diagonally or one square forward. Protect the Khun, advance the Bia.",
+    displayNote: "These preferences are saved on this device and do not affect the match.",
+    resetDisplay: "Reset display",
+    done: "Done",
     wisdom: "The boat is mightier than the seed. Guard the lord, advance the shells, and let patience win the board.",
     wisdomSource: "Makruk proverb for beginners",
     footerCredit: "Crafted in OpenCode with DeepSeek V4.1 Flash",
@@ -80,7 +95,25 @@ const I18N = {
     glossaryEyebrow: "THE MAKRUK COMPENDIUM",
     resultEyebrow: "THE MATCH IS DECIDED",
     reviewBoard: "Review board",
+    reviewStalemate: "Why is this a draw?",
+    backToBoard: "Back to board",
     resultCredit: "A lesson completed at the Makruk academy.",
+
+    stalemateEyebrow: "BEGINNER REVIEW",
+    stalemateReviewTitle: "Why stalemate is a draw",
+    stalemateReviewSubtitle: "The lord is safe from check, but every escape is covered.",
+    stalemateNotInCheck: "{side}'s Khun on {square} is NOT in check.",
+    stalemateLastMove: "Final move: {move}",
+    stalemateCauseCaptured: "The final move captured {piece} on {square}, but it did not give check. {side}'s Khun was left with no legal move — stalemate.",
+    stalemateCause: "The final move did not give check. {side}'s Khun was left with no legal move — stalemate.",
+    stalemateEscapesHeading: "The Khun's escape squares",
+    stalemateEscapeAttacked: "controlled by {attackers}",
+    stalemateEscapeBlocked: "blocked by {piece}",
+    stalemateNoEscapes: "No adjacent escape square remains.",
+    stalemateRuleNote: "<strong>Stalemate is a draw.</strong> Only checkmate wins. Capturing the last piece is not enough — the enemy Khun must be in check and have no legal answer.",
+    stalemateLegendKing: "Khun — safe",
+    stalemateLegendEscape: "Covered escape",
+    stalemateLegendMove: "Final move",
 
     white: "White",
     black: "Black",
@@ -153,8 +186,8 @@ const I18N = {
     rulesIntro: "The essentials that make Thai chess different from the international game.",
     heritageTitle: "A living court game",
     heritageText: "Makruk has been played in Siam for centuries. Its short-range Met and five-direction Khon preserve an older, more deliberate rhythm of chess.",
-    rule1Title: "The uncheckered board",
-    rule1Text: "Makruk is played on a plain 8×8 board. Bia begin on the third rank for White and the sixth rank for Black — much closer to the enemy than in international chess.",
+    rule1Title: "The board",
+    rule1Text: "Traditional Thai boards are single-tone with carved grid lines; modern club boards often alternate light and dark squares. Bia begin on the third rank for White and the sixth rank for Black — much closer to the enemy than in international chess.",
     rule2Title: "No first double-step",
     rule2Text: "A Bia advances one square and captures one square diagonally forward. There is no two-square opening move and no en passant.",
     rule3Title: "Promotion on the sixth rank",
@@ -201,6 +234,21 @@ const I18N = {
     saveMatch: "บันทึกแมตช์",
     loadMatch: "โหลดแมตช์",
     openGlossary: "เปิดคู่มือหมากรุกไทยแบบภาพ",
+    openDisplay: "ธีมและขนาดตัวอักษร",
+    displayEyebrow: "ความสบายในการอ่าน",
+    displayTitle: "การแสดงผลและการอ่าน",
+    displaySubtitle: "เลือกชุดสีของห้องกระดานและขนาดตัวอักษรที่อ่านสบาย",
+    themeHeading: "ธีมห้องกระดาน",
+    themeSubtitle: "สี่บรรยากาศจากภายในราชสำนักไทย",
+    boardPatternHeading: "รูปแบบกระดาน",
+    boardPatternSubtitle: "กระดานหมากรุกไทยดั้งเดิมเป็นสีเดียว ส่วนกระดานแข่งขันสมัยใหม่มักสลับช่องสว่างและเข้ม",
+    textSizeHeading: "ขนาดตัวอักษร",
+    textSizeSubtitle: "ขยายข้อความของสถาบันเพื่อให้อ่านง่ายขึ้น",
+    readingPreviewLabel: "ตัวอย่าง",
+    readingPreviewText: "โคนเดินทแยงหนึ่งช่องหรือตรงไปข้างหน้าหนึ่งช่อง ปกป้องขุนและเลื่อนเบี้ย",
+    displayNote: "การตั้งค่านี้บันทึกไว้ในอุปกรณ์นี้และไม่กระทบการแข่งขัน",
+    resetDisplay: "รีเซ็ตการแสดงผล",
+    done: "เสร็จสิ้น",
     wisdom: "เรือแข็งกว่าเม็ด ปกป้องขุน เลื่อนเบี้ย และให้ความอดทนชนะกระดาน",
     wisdomSource: "สุภาษิตหมากรุกสำหรับผู้เริ่มต้น",
     footerCredit: "สร้างด้วย OpenCode และ DeepSeek V4.1 Flash",
@@ -208,7 +256,25 @@ const I18N = {
     glossaryEyebrow: "สารานุกรมหมากรุกไทย",
     resultEyebrow: "การแข่งขันได้ตัดสินแล้ว",
     reviewBoard: "ดูกระดานต่อ",
+    reviewStalemate: "ทำไมเกมนี้จึงเสมอ?",
+    backToBoard: "กลับไปที่กระดาน",
     resultCredit: "บทเรียนที่สำเร็จ ณ สถาบันหมากรุก",
+
+    stalemateEyebrow: "บทเรียนสำหรับผู้เริ่มต้น",
+    stalemateReviewTitle: "ทำไมหมากอับจึงเสมอ",
+    stalemateReviewSubtitle: "ขุนปลอดภัยจากการถูกรุก แต่ทุกช่องหนีถูกควบคุม",
+    stalemateNotInCheck: "ขุน{side}ที่ {square} ไม่ได้ถูกรุก",
+    stalemateLastMove: "ตาเดินสุดท้าย: {move}",
+    stalemateCauseCaptured: "ตาเดินสุดท้ายกิน{piece}ที่ {square} แต่ไม่ได้เป็นการรุก ขุน{side}จึงไม่มีช่องเดินที่ถูกต้อง — หมากอับ",
+    stalemateCause: "ตาเดินสุดท้ายไม่ได้เป็นการรุก ขุน{side}จึงไม่มีช่องเดินที่ถูกต้อง — หมากอับ",
+    stalemateEscapesHeading: "ช่องหนีของขุน",
+    stalemateEscapeAttacked: "ถูกควบคุมโดย {attackers}",
+    stalemateEscapeBlocked: "ถูกบล็อกโดย {piece}",
+    stalemateNoEscapes: "ไม่มีช่องหนีที่อยู่ติดกับขุนเหลืออยู่",
+    stalemateRuleNote: "<strong>หมากอับคือเสมอ</strong> ชนะได้ด้วยรุกจนเท่านั้น การกินหมากตัวสุดท้ายไม่เพียงพอ — ขุนฝ่ายตรงข้ามต้องถูกรุกและไม่มีทางตอบโต้",
+    stalemateLegendKing: "ขุน — ปลอดภัย",
+    stalemateLegendEscape: "ช่องที่ถูกควบคุม",
+    stalemateLegendMove: "ตาเดินสุดท้าย",
 
     white: "ขาว",
     black: "ดำ",
@@ -281,8 +347,8 @@ const I18N = {
     rulesIntro: "สาระสำคัญที่ทำให้หมากรุกไทยต่างจากหมากรุกสากล",
     heritageTitle: "เกมแห่งราชสำนักที่ยังมีชีวิต",
     heritageText: "หมากรุกไทยเล่นกันในสยามมาหลายศตวรรษ เม็ดที่เดินสั้นและโคนที่เดินได้ห้าทิศทางรักษาจังหวะของหมากรุกโบราณที่สุขุมกว่า",
-    rule1Title: "กระดานไม่มีตารางสี",
-    rule1Text: "หมากรุกไทยใช้กระดาน 8×8 พื้นเรียบ เบี้ยเริ่มที่แถวที่สามของขาวและแถวที่หกของดำ ใกล้ข้าศึกกว่าหมากรุกสากลมาก",
+    rule1Title: "กระดาน",
+    rule1Text: "กระดานหมากรุกไทยดั้งเดิมเป็นสีเดียวและมีเส้นตารางแกะ ส่วนกระดานแข่งขันสมัยใหม่มักสลับช่องสว่างและเข้ม เบี้ยเริ่มที่แถวที่สามของขาวและแถวที่หกของดำ ใกล้ข้าศึกกว่าหมากรุกสากลมาก",
     rule2Title: "ไม่มีเดินสองช่อง",
     rule2Text: "เบี้ยเดินตรงหนึ่งช่องและกินทแยงหน้าหนึ่งช่อง ไม่มีการเดินสองช่องในตาแรก และไม่มี en passant",
     rule3Title: "หงายที่แถวที่หก",
@@ -432,6 +498,67 @@ const PIECES = {
   },
 };
 
+const THEMES = {
+  lacquer: {
+    name: { en: "Midnight Lacquer", th: "แลคเกอร์ราตรี" },
+    description: { en: "Deep walnut, candle gold, cool shadow.", th: "วอลนัทเข้ม ทองแสงเทียน และเงาเย็น" },
+    scene: {
+      background: 0x0a0705,
+      fog: 0x0a0705,
+      table: 0x6c5845,
+      dust: 0xe0bc75,
+    },
+  },
+  ivory: {
+    name: { en: "Ivory Court", th: "ราชสำนักงาช้าง" },
+    description: { en: "Parchment, sunlit teak, dark ink.", th: "กระดาษงาช้าง ไม้สักอาบแดด และหมึกเข้ม" },
+    scene: {
+      background: 0x21150d,
+      fog: 0x21150d,
+      table: 0x9a7a56,
+      dust: 0xe6c582,
+    },
+  },
+  jade: {
+    name: { en: "Jade Pavilion", th: "ศาลาหยก" },
+    description: { en: "Forest lacquer and pale gold.", th: "แลคเกอร์ป่าลึกและทองอ่อน" },
+    scene: {
+      background: 0x06140e,
+      fog: 0x06140e,
+      table: 0x4d705e,
+      dust: 0xa9e6c3,
+    },
+  },
+  ruby: {
+    name: { en: "Ruby Palace", th: "วังทับทิม" },
+    description: { en: "Wine-red lacquer and royal gold.", th: "แลคเกอร์แดงไวน์และทองราชวงศ์" },
+    scene: {
+      background: 0x14060a,
+      fog: 0x14060a,
+      table: 0x724348,
+      dust: 0xffb6a1,
+    },
+  },
+};
+
+const TEXT_SIZES = {
+  small: { scale: 0.9, name: { en: "Small", th: "เล็ก" } },
+  medium: { scale: 1, name: { en: "Default", th: "มาตรฐาน" } },
+  large: { scale: 1.2, name: { en: "Large", th: "ใหญ่" } },
+  xlarge: { scale: 1.4, name: { en: "Extra large", th: "ใหญ่มาก" } },
+};
+
+const BOARD_STYLES = {
+  traditional: {
+    name: { en: "Traditional", th: "ดั้งเดิม" },
+    description: { en: "Single-tone teak, separated by carved seams.", th: "ไม้สักสีเดียว คั่นด้วยร่องแกะสลัก" },
+  },
+  checkered: {
+    name: { en: "Checkered", th: "ตารางสลับสี" },
+    description: { en: "Alternating light and dark wood, as on modern club boards.", th: "ไม้สว่างสลับเข้มแบบกระดานแข่งขันสมัยใหม่" },
+  },
+};
+
 const PIECE_ORDER = ["khun", "met", "khon", "ma", "ruea", "bia", "biaNgua"];
 const PIECE_META_BY_TYPE = {
   K: PIECES.khun,
@@ -474,6 +601,12 @@ const dom = {
   soundToggle: $("#soundToggle"),
   glossaryButton: $("#glossaryButton"),
   sidebarGlossary: $("#sidebarGlossary"),
+  displayButton: $("#displayButton"),
+  displayModal: $("#displayModal"),
+  themeGrid: $("#themeGrid"),
+  boardStyleControl: $("#boardStyleControl"),
+  textSizeControl: $("#textSizeControl"),
+  displayReset: $("#displayReset"),
   turnStone: $("#turnStone"),
   turnText: $("#turnText"),
   moveCounter: $("#moveCounter"),
@@ -513,6 +646,18 @@ const dom = {
   resultTitle: $("#resultTitle"),
   resultDetail: $("#resultDetail"),
   resultNewGame: $("#resultNewGame"),
+  reviewStalemateButton: $("#reviewStalemateButton"),
+  stalemateModal: $("#stalemateModal"),
+  stalemateTitle: $("#stalemateTitle"),
+  stalemateSubtitle: $("#stalemateSubtitle"),
+  stalemateBoard: $("#stalemateBoard"),
+  stalemateCheckStatus: $("#stalemateCheckStatus"),
+  stalemateLastMove: $("#stalemateLastMove"),
+  stalemateCause: $("#stalemateCause"),
+  stalemateEscapesTitle: $("#stalemateEscapesTitle"),
+  stalemateEscapesList: $("#stalemateEscapesList"),
+  stalemateRuleNote: $("#stalemateRuleNote"),
+  stalemateNewGame: $("#stalemateNewGame"),
   toastStack: $("#toastStack"),
   brandHome: $("#brandHome"),
 };
@@ -706,6 +851,9 @@ const state = {
   assist: true,
   lang: "en",
   sound: true,
+  theme: "lacquer",
+  textSize: "medium",
+  boardStyle: "checkered",
   history: [],
   captured: { w: [], b: [] },
   selected: null,
@@ -897,6 +1045,56 @@ function isSquareAttacked(board, target, byColor) {
     }
   }
   return false;
+}
+
+function attackersOnSquare(board, target, byColor) {
+  const attackers = [];
+  const targetRow = rowOf(target);
+  const targetCol = colOf(target);
+
+  for (let from = 0; from < 64; from += 1) {
+    const piece = board[from];
+    if (!piece || piece.color !== byColor) continue;
+    const row = rowOf(from);
+    const col = colOf(from);
+    const dr = targetRow - row;
+    const dc = targetCol - col;
+    let attacks = false;
+
+    if (piece.type === "K") {
+      attacks = Math.abs(dr) <= 1 && Math.abs(dc) <= 1 && (dr !== 0 || dc !== 0);
+    } else if (piece.type === "M" || (piece.type === "P" && piece.promoted)) {
+      attacks = Math.abs(dr) === 1 && Math.abs(dc) === 1;
+    } else if (piece.type === "P") {
+      attacks = dr === forwardFor(piece.color) && Math.abs(dc) === 1;
+    } else if (piece.type === "B") {
+      attacks =
+        (Math.abs(dr) === 1 && Math.abs(dc) === 1) ||
+        (dr === forwardFor(piece.color) && dc === 0);
+    } else if (piece.type === "N") {
+      attacks =
+        (Math.abs(dr) === 2 && Math.abs(dc) === 1) ||
+        (Math.abs(dr) === 1 && Math.abs(dc) === 2);
+    } else if (piece.type === "R" && ((dr === 0 && dc !== 0) || (dc === 0 && dr !== 0))) {
+      const rowStep = Math.sign(dr);
+      const colStep = Math.sign(dc);
+      attacks = true;
+      for (
+        let r = row + rowStep, c = col + colStep;
+        r !== targetRow || c !== targetCol;
+        r += rowStep, c += colStep
+      ) {
+        if (board[squareIndex(r, c)]) {
+          attacks = false;
+          break;
+        }
+      }
+    }
+
+    if (attacks) attackers.push({ index: from, piece });
+  }
+
+  return attackers;
 }
 
 function findKing(board, color) {
@@ -1248,6 +1446,7 @@ let pieceLayer = null;
 let highlightLayer = null;
 let lastMoveLayer = null;
 let pickables = [];
+let tileMeshes = [];
 let raycaster = null;
 let pointer = new THREE.Vector2();
 let glowTexture = null;
@@ -1372,6 +1571,7 @@ function createMaterials() {
   });
   materials.tileB = new THREE.MeshStandardMaterial({
     map: woodTextures.tileB,
+    color: 0x7d6c5d,
     roughness: 0.73,
     metalness: 0.02,
   });
@@ -1786,10 +1986,10 @@ function buildBoard() {
   addBox(boardRoot, 8.58, 0.11, 8.58, 0, 0.355, 0, materials.border);
   addBox(boardRoot, 8.18, 0.05, 8.18, 0, 0.425, 0, materials.borderDark);
 
+  tileMeshes = [];
   for (let row = 0; row < 8; row += 1) {
     for (let col = 0; col < 8; col += 1) {
-      // Traditional Makruk boards are uncheckered. The 8×8 grid comes from
-      // the carved seams between tiles, not alternating square colours.
+      const isLight = (row + col) % 2 === 0;
       const tile = addBox(
         boardRoot,
         0.985,
@@ -1798,11 +1998,13 @@ function buildBoard() {
         col - 3.5,
         0.447,
         row - 3.5,
-        materials.tileA,
+        state.boardStyle === "checkered" && !isLight ? materials.tileB : materials.tileA,
       );
       tile.receiveShadow = true;
       tile.castShadow = false;
       tile.userData.square = squareIndex(row, col);
+      tile.userData.isLight = isLight;
+      tileMeshes.push(tile);
     }
   }
 
@@ -2508,6 +2710,83 @@ function updateSoundUI() {
   audio.enabled = state.sound;
 }
 
+function applyTheme(theme, { persist = false } = {}) {
+  const nextTheme = THEMES[theme] ? theme : "lacquer";
+  state.theme = nextTheme;
+  document.documentElement.dataset.theme = nextTheme;
+
+  if (scene) {
+    const config = THEMES[nextTheme].scene;
+    scene.background.setHex(config.background);
+    if (scene.fog) scene.fog.color.setHex(config.fog);
+    if (materials.table?.color) materials.table.color.setHex(config.table);
+    if (dust?.material?.color) dust.material.color.setHex(config.dust);
+  }
+
+  if (persist) savePreferences();
+}
+
+function applyTextSize(size, { persist = false } = {}) {
+  const nextSize = TEXT_SIZES[size] ? size : "medium";
+  state.textSize = nextSize;
+  document.documentElement.dataset.textSize = nextSize;
+  if (persist) savePreferences();
+}
+
+function applyBoardStyle(style, { persist = false } = {}) {
+  const nextStyle = BOARD_STYLES[style] ? style : "checkered";
+  state.boardStyle = nextStyle;
+  for (const tile of tileMeshes) {
+    tile.material = nextStyle === "checkered" && !tile.userData.isLight
+      ? materials.tileB
+      : materials.tileA;
+  }
+  if (persist) savePreferences();
+}
+
+function renderDisplaySettings() {
+  dom.themeGrid.innerHTML = Object.entries(THEMES).map(([key, theme]) => {
+    const active = state.theme === key;
+    return `
+      <button class="theme-card${active ? " is-active" : ""}" type="button" data-theme-choice="${key}" aria-pressed="${active}">
+        <span class="theme-preview is-${key}" aria-hidden="true"></span>
+        <span class="theme-card-copy">
+          <strong>${theme.name[state.lang]}</strong>
+          <small>${theme.description[state.lang]}</small>
+        </span>
+        <span class="theme-check" aria-hidden="true">✓</span>
+      </button>`;
+  }).join("");
+
+  dom.boardStyleControl.innerHTML = Object.entries(BOARD_STYLES).map(([key, style]) => {
+    const active = state.boardStyle === key;
+    return `
+      <button class="board-style-option${active ? " is-active" : ""}" type="button" data-board-style="${key}" aria-pressed="${active}">
+        <span class="board-preview is-${key}" aria-hidden="true"></span>
+        <span class="board-style-copy">
+          <strong>${style.name[state.lang]}</strong>
+          <small>${style.description[state.lang]}</small>
+        </span>
+        <span class="theme-check" aria-hidden="true">✓</span>
+      </button>`;
+  }).join("");
+
+  dom.textSizeControl.innerHTML = Object.entries(TEXT_SIZES).map(([key, size]) => {
+    const active = state.textSize === key;
+    return `
+      <button class="text-size-option${active ? " is-active" : ""}" type="button" data-text-choice="${key}" aria-pressed="${active}">
+        <span class="size-glyph" aria-hidden="true">Aa</span>
+        <small>${size.name[state.lang]}</small>
+        <em>${Math.round(size.scale * 100)}%</em>
+      </button>`;
+  }).join("");
+}
+
+function openDisplaySettings() {
+  renderDisplaySettings();
+  openModal(dom.displayModal);
+}
+
 function updateResultContent() {
   if (!state.statusReason) return;
   let title = t("resultDrawTitle");
@@ -2540,8 +2819,141 @@ function updateResultContent() {
   dom.resultEmblem.textContent = emblem;
   dom.resultTitle.textContent = title;
   dom.resultDetail.textContent = detail;
+  dom.reviewStalemateButton.hidden = state.status !== "stalemate";
   const eyebrowElement = dom.resultModal.querySelector(".eyebrow");
   if (eyebrowElement) eyebrowElement.textContent = eyebrow;
+}
+
+function lastMoveLabel(move, lang = state.lang) {
+  if (!move) return "";
+  const meta = pieceMeta({ type: move.type, promoted: move.promoted });
+  const separator = move.captured ? " × " : " – ";
+  let text = `${meta.name[lang]} ${coordinateOf(move.from)}${separator}${coordinateOf(move.to)}`;
+  if (move.promotionThisMove) text += " ↑";
+  return text;
+}
+
+function renderStalemateReview() {
+  const side = state.turn;
+  const sideName = side === "w" ? t("white") : t("black");
+  const kingIndex = findKing(state.board, side);
+  const kingSquare = kingIndex >= 0 ? coordinateOf(kingIndex) : "—";
+  const lastMove = state.history[state.history.length - 1] || state.lastMove;
+  const escapes = [];
+  const escapeBySquare = new Map();
+
+  if (kingIndex >= 0) {
+    const row = rowOf(kingIndex);
+    const col = colOf(kingIndex);
+    for (const [dr, dc] of KING_STEPS) {
+      const r = row + dr;
+      const c = col + dc;
+      if (!inside(r, c)) continue;
+      const index = squareIndex(r, c);
+      const occupant = state.board[index];
+      let kind = "attacked";
+      let attackers = [];
+      let blockedPiece = null;
+
+      if (occupant && occupant.color === side) {
+        kind = "blocked";
+        blockedPiece = occupant;
+      } else {
+        attackers = attackersOnSquare(state.board, index, opponent(side));
+        if (attackers.length === 0) kind = "open";
+      }
+
+      const escape = { index, kind, attackers, blockedPiece };
+      escapes.push(escape);
+      escapeBySquare.set(index, escape);
+    }
+  }
+
+  dom.stalemateTitle.textContent = t("stalemateReviewTitle");
+  dom.stalemateSubtitle.textContent = t("stalemateReviewSubtitle");
+  dom.stalemateCheckStatus.innerHTML = `<strong>${t("stalemateNotInCheck", { side: sideName, square: kingSquare })}</strong>`;
+  dom.stalemateLastMove.textContent = lastMove ? t("stalemateLastMove", { move: lastMoveLabel(lastMove) }) : "";
+  dom.stalemateLastMove.hidden = !lastMove;
+  const captured = lastMove?.captured;
+  dom.stalemateCause.textContent = lastMove
+    ? captured
+      ? t("stalemateCauseCaptured", {
+        piece: pieceMeta(captured).name[state.lang],
+        square: coordinateOf(lastMove.to),
+        side: sideName,
+      })
+      : t("stalemateCause", { side: sideName })
+    : "";
+  dom.stalemateCause.hidden = !lastMove;
+  dom.stalemateEscapesTitle.textContent = t("stalemateEscapesHeading");
+
+  const lastFrom = lastMove?.from;
+  const lastTo = lastMove?.to;
+  dom.stalemateBoard.innerHTML = "";
+
+  for (let index = 0; index < 64; index += 1) {
+    const row = rowOf(index);
+    const col = colOf(index);
+    const piece = state.board[index];
+    const escape = escapeBySquare.get(index);
+    const square = document.createElement("div");
+    square.className = "mini-square";
+    if ((row + col) % 2 === 1) square.classList.add("is-alt");
+    if (index === kingIndex) square.classList.add("is-king");
+    if (index === lastFrom) square.classList.add("is-last-from");
+    if (index === lastTo) square.classList.add("is-last-to");
+    if (escape?.kind === "attacked") square.classList.add("is-escape");
+    if (escape?.kind === "blocked") square.classList.add("is-blocked");
+
+    const coordinate = coordinateOf(index);
+    const descriptors = [coordinate];
+    if (piece) descriptors.push(pieceMeta(piece).name[state.lang]);
+    if (index === kingIndex) descriptors.push(t("stalemateLegendKing"));
+    if (escape?.kind === "attacked") descriptors.push(t("stalemateLegendEscape"));
+    if (index === lastFrom || index === lastTo) descriptors.push(t("stalemateLegendMove"));
+    square.title = descriptors.join(" — ");
+    square.setAttribute("aria-label", descriptors.join(", "));
+
+    if (piece) {
+      const glyph = document.createElement("span");
+      glyph.className = `mini-piece ${piece.color === "w" ? "is-white" : "is-black"}`;
+      glyph.textContent = pieceGlyph(piece);
+      square.appendChild(glyph);
+    }
+
+    if (index === kingIndex || escape || index === lastFrom || index === lastTo) {
+      const label = document.createElement("span");
+      label.className = "mini-coord";
+      label.textContent = coordinate;
+      square.appendChild(label);
+    }
+
+    dom.stalemateBoard.appendChild(square);
+  }
+
+  const visibleEscapes = escapes.filter((escape) => escape.kind !== "open");
+  if (visibleEscapes.length === 0) {
+    dom.stalemateEscapesList.innerHTML = `<li><span class="escape-square">—</span><span>${t("stalemateNoEscapes")}</span></li>`;
+  } else {
+    dom.stalemateEscapesList.innerHTML = visibleEscapes.map((escape) => {
+      if (escape.kind === "blocked") {
+        const pieceName = pieceMeta(escape.blockedPiece).name[state.lang];
+        return `<li class="is-blocked"><span class="escape-square">${coordinateOf(escape.index)}</span> <span>${t("stalemateEscapeBlocked", { piece: `<strong>${pieceName}</strong>` })}</span></li>`;
+      }
+      const attackerNames = escape.attackers
+        .map((attacker) => `${pieceMeta(attacker.piece).name[state.lang]} ${coordinateOf(attacker.index)}`)
+        .join(" + ");
+      return `<li><span class="escape-square">${coordinateOf(escape.index)}</span> <span>${t("stalemateEscapeAttacked", { attackers: `<strong>${attackerNames}</strong>` })}</span></li>`;
+    }).join("");
+  }
+
+  dom.stalemateRuleNote.innerHTML = t("stalemateRuleNote");
+}
+
+function showStalemateReview() {
+  if (state.status !== "stalemate") return;
+  renderStalemateReview();
+  openModal(dom.stalemateModal);
 }
 
 function updateAllUI() {
@@ -2556,6 +2968,8 @@ function updateAllUI() {
   updateTutor();
   if (!dom.resultModal.hidden) updateResultContent();
   if (!dom.glossaryModal.hidden) renderGlossary();
+  if (!dom.stalemateModal.hidden) renderStalemateReview();
+  if (!dom.displayModal.hidden) renderDisplaySettings();
 }
 
 function renderGlossary() {
@@ -2613,12 +3027,22 @@ function closeModal(modal) {
   if (!modal) return;
   modal.hidden = true;
   modal.setAttribute("aria-hidden", "true");
-  if (dom.glossaryModal.hidden && dom.resultModal.hidden) {
+  if (
+    dom.glossaryModal.hidden &&
+    dom.resultModal.hidden &&
+    dom.stalemateModal.hidden &&
+    dom.displayModal.hidden
+  ) {
     document.body.classList.remove("modal-open");
   }
   if (lastFocusedElement && typeof lastFocusedElement.focus === "function") {
     lastFocusedElement.focus();
   }
+}
+
+function closeEndModals() {
+  if (!dom.stalemateModal.hidden) closeModal(dom.stalemateModal);
+  if (!dom.resultModal.hidden) closeModal(dom.resultModal);
 }
 
 function showGlossary() {
@@ -2900,7 +3324,7 @@ function newGame({ announce = true, resetView = false } = {}) {
   clearTimeout(aiTimer);
   clearTimeout(resultTimer);
   state.aiThinking = false;
-  closeModal(dom.resultModal);
+  closeEndModals();
   resetGameState();
   rebuildPieceMeshes();
   clearSelection();
@@ -2920,7 +3344,7 @@ function changeMode(mode) {
   clearTimeout(aiTimer);
   state.mode = mode;
   state.aiThinking = false;
-  closeModal(dom.resultModal);
+  closeEndModals();
   resetGameState();
   rebuildPieceMeshes();
   clearSelection();
@@ -3024,6 +3448,9 @@ function savePreferences() {
       sound: state.sound,
       assist: state.assist,
       mode: state.mode,
+      theme: state.theme,
+      textSize: state.textSize,
+      boardStyle: state.boardStyle,
     }));
   } catch {
     // Storage can be unavailable in private modes; the game still works.
@@ -3039,6 +3466,9 @@ function loadPreferences() {
     if (typeof prefs.sound === "boolean") state.sound = prefs.sound;
     if (typeof prefs.assist === "boolean") state.assist = prefs.assist;
     if (prefs.mode === "ai" || prefs.mode === "local") state.mode = prefs.mode;
+    if (THEMES[prefs.theme]) state.theme = prefs.theme;
+    if (TEXT_SIZES[prefs.textSize]) state.textSize = prefs.textSize;
+    if (BOARD_STYLES[prefs.boardStyle]) state.boardStyle = prefs.boardStyle;
   } catch {
     // Ignore malformed preferences.
   }
@@ -3083,7 +3513,7 @@ function restoreGameFromPayload(payload, { announce = true, auto = false } = {})
 
   clearTimeout(aiTimer);
   clearTimeout(resultTimer);
-  closeModal(dom.resultModal);
+  closeEndModals();
 
   state.board = deserializeBoard(game.board);
   state.turn = game.turn;
@@ -3119,7 +3549,13 @@ function restoreGameFromPayload(payload, { announce = true, auto = false } = {})
   if (announce) {
     showToast(auto ? t("toastAutoRestored") : t("toastLoaded"), "success", auto ? "↺" : "📂");
   }
-  if (!isTerminal()) scheduleAI();
+  if (!isTerminal()) {
+    scheduleAI();
+  } else if (announce) {
+    window.setTimeout(() => {
+      if (isTerminal()) showResultModal();
+    }, 450);
+  }
   return true;
 }
 
@@ -3190,6 +3626,10 @@ function bindEvents() {
   dom.soundToggle.addEventListener("click", toggleSound);
   dom.glossaryButton.addEventListener("click", showGlossary);
   dom.sidebarGlossary.addEventListener("click", showGlossary);
+  dom.displayButton.addEventListener("click", () => {
+    openDisplaySettings();
+    audio.click();
+  });
   dom.assistToggle.addEventListener("change", toggleAssist);
   dom.resetView.addEventListener("click", () => {
     resetCamera();
@@ -3209,8 +3649,17 @@ function bindEvents() {
   });
 
   dom.resultNewGame.addEventListener("click", () => {
-    closeModal(dom.resultModal);
     newGame({ announce: true });
+  });
+
+  dom.reviewStalemateButton.addEventListener("click", () => {
+    showStalemateReview();
+    audio.click();
+  });
+
+  dom.stalemateNewGame.addEventListener("click", () => {
+    newGame({ announce: true });
+    audio.click();
   });
 
   dom.modeCards.forEach((card) => {
@@ -3218,6 +3667,38 @@ function bindEvents() {
       changeMode(card.dataset.mode);
       audio.click();
     });
+  });
+
+  dom.themeGrid.addEventListener("click", (event) => {
+    const card = event.target.closest("[data-theme-choice]");
+    if (!card) return;
+    applyTheme(card.dataset.themeChoice, { persist: true });
+    renderDisplaySettings();
+    audio.click();
+  });
+
+  dom.boardStyleControl.addEventListener("click", (event) => {
+    const option = event.target.closest("[data-board-style]");
+    if (!option) return;
+    applyBoardStyle(option.dataset.boardStyle, { persist: true });
+    renderDisplaySettings();
+    audio.click();
+  });
+
+  dom.textSizeControl.addEventListener("click", (event) => {
+    const option = event.target.closest("[data-text-choice]");
+    if (!option) return;
+    applyTextSize(option.dataset.textChoice, { persist: true });
+    renderDisplaySettings();
+    audio.click();
+  });
+
+  dom.displayReset.addEventListener("click", () => {
+    applyTheme("lacquer", { persist: true });
+    applyTextSize("medium", { persist: true });
+    applyBoardStyle("checkered", { persist: true });
+    renderDisplaySettings();
+    audio.click();
   });
 
   dom.brandHome.addEventListener("click", (event) => {
@@ -3229,14 +3710,23 @@ function bindEvents() {
   $$("[data-close-modal]").forEach((element) => {
     element.addEventListener("click", () => {
       const name = element.dataset.closeModal;
-      closeModal(name === "glossary" ? dom.glossaryModal : dom.resultModal);
+      const modal = name === "glossary"
+        ? dom.glossaryModal
+        : name === "stalemate"
+          ? dom.stalemateModal
+          : name === "display"
+            ? dom.displayModal
+            : dom.resultModal;
+      closeModal(modal);
       audio.click();
     });
   });
 
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape") return;
-    if (!dom.resultModal.hidden) closeModal(dom.resultModal);
+    if (!dom.displayModal.hidden) closeModal(dom.displayModal);
+    else if (!dom.stalemateModal.hidden) closeModal(dom.stalemateModal);
+    else if (!dom.resultModal.hidden) closeModal(dom.resultModal);
     else if (!dom.glossaryModal.hidden) closeModal(dom.glossaryModal);
   });
 
@@ -3253,11 +3743,15 @@ function bindEvents() {
   // Keep keyboard users oriented inside modal dialogs.
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Tab") return;
-    const openModalElement = !dom.glossaryModal.hidden
-      ? dom.glossaryModal
-      : !dom.resultModal.hidden
-        ? dom.resultModal
-        : null;
+    const openModalElement = !dom.displayModal.hidden
+      ? dom.displayModal
+      : !dom.stalemateModal.hidden
+        ? dom.stalemateModal
+        : !dom.resultModal.hidden
+          ? dom.resultModal
+          : !dom.glossaryModal.hidden
+            ? dom.glossaryModal
+            : null;
     if (!openModalElement) return;
     const focusable = Array.from(openModalElement.querySelectorAll(
       'button:not([disabled]), [href], input:not([disabled]), [tabindex]:not([tabindex="-1"])',
@@ -3281,6 +3775,9 @@ function bindEvents() {
 
 function boot() {
   loadPreferences();
+  applyTextSize(state.textSize);
+  applyTheme(state.theme);
+  applyBoardStyle(state.boardStyle);
   resetGameState();
   const restored = tryRestoreAutoSave();
   if (!restored) {
@@ -3297,6 +3794,8 @@ function boot() {
   }
 
   bindEvents();
+  applyTheme(state.theme);
+  applyBoardStyle(state.boardStyle);
   rebuildPieceMeshes();
   renderHighlights();
   updateAllUI();
@@ -3319,7 +3818,7 @@ boot();
 /* A small, deliberately read-friendly surface for teachers and automated
    smoke tests. It does not expose any private player information. */
 window.Makruk3D = {
-  version: "1.0.0",
+  version: "1.2.0",
   credits: APP_CREDIT,
   getState: () => ({
     turn: state.turn,
@@ -3327,6 +3826,9 @@ window.Makruk3D = {
     assist: state.assist,
     lang: state.lang,
     sound: state.sound,
+    theme: state.theme,
+    textSize: state.textSize,
+    boardStyle: state.boardStyle,
     status: state.status,
     statusReason: state.statusReason,
     winner: state.winner,

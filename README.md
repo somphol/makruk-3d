@@ -12,12 +12,14 @@ An interactive, bilingual 3D Makruk (Thai chess) academy built with vanilla HTML
 
 - **Authentic Makruk rules** — pawns begin on the third/sixth ranks, no double-step, no en passant, no castling, Met moves one diagonal, Khon moves one diagonal or one forward, and promotion happens on the sixth rank.
 - **Procedural 3D pieces** — Khun, Met, Khon, Ma, Ruea, Bia, and Bia Ngua are generated from `LatheGeometry`, `ExtrudeGeometry`, spheres, cones, toruses, and custom profiles. No model files required.
-- **Carved 8×8 wooden board** — uncheckered teak tiles, inlaid gold trim, corner studs, coordinate labels, soft shadows, gold dust, and OrbitControls.
+- **Carved 8×8 wooden board** — choose traditional single-tone teak or a modern checkered light/dark pattern, with inlaid gold trim, corner studs, coordinate labels, soft shadows, gold dust, and OrbitControls.
 - **Beginner Move Assist** — green glowing dots for legal destinations and red pulse rings for captures.
 - **Interactive tutor** — displays the selected piece's English and Thai names, phonetic pronunciation, movement summary, legal move count, and capture count.
 - **Illustrated glossary** — seven piece cards with lore, movement, pronunciation, and 3D modeling notes, plus a Makruk-in-60-seconds rule sheet.
+- **Stalemate review** — after a stalemate, a beginner panel shows the final move, the safe Khun, and every escape square alongside the piece controlling it.
 - **Single Player vs AI or Pass & Play** — a heuristic alpha-beta bot playing Black, or two humans sharing one board.
-- **Instant EN ⇄ TH switching** — all headers, labels, tooltips, tutor copy, move record, result overlay, and glossary update without interrupting a match.
+- **Instant EN ⇄ TH switching** — all headers, labels, tooltips, tutor copy, move record, result overlay, display settings, and glossary update without interrupting a match.
+- **Four display themes & scalable text** — Midnight Lacquer, Ivory Court, Jade Pavilion, and Ruby Palace, plus four text sizes from 90% to 140%. Preferences are saved on the device.
 - **Web Audio synthesis** — wooden piece thuds, capture clacks, check alerts, promotion chimes, victory fanfare, defeat cadence, and draw chords. No audio files.
 - **Persistence** — autosaves to `localStorage`, downloads `makruk_save.json`, and restores matches from JSON.
 - **Responsive** — desktop, tablet, and mobile layouts, with camera framing adjusted for portrait screens.
@@ -49,6 +51,11 @@ npx serve .
 3. Click a highlighted destination to move. Captures, checks, promotions, and the match result are announced in the tutor bar, move record, and sound design.
 4. Use **Save Match** to download `makruk_save.json`; use **Load Match** to restore a saved position.
 5. Switch **EN / TH** at any time without resetting the match.
+6. Open **Theme & text size** to choose a display theme, a traditional or checkered board, and a larger type size.
+
+> **Board note:** Traditional Thai Makruk boards are usually single-tone with carved grid lines; modern Thai club boards often alternate light and dark squares. The academy supports both, with the checkered pattern enabled by default.
+>
+> Sources: [Makruk Game Indy — Thai boards are commonly single-tone or may alternate colours](https://makruk.gameindy.com/manual/lets-get-to-know-basics-of-playing-thai-chess), [PlayBoardGames — traditional boards are not chequered](https://playboardgames.org/how-to-play/makruk).
 
 ### Camera controls
 
@@ -81,7 +88,7 @@ P P P P P P P P     White Bia on rank 3
 R N G K F G N R     White: Ruea, Ma, Khon, Khun, Met, Khon, Ma, Ruea
 ```
 
-The app also detects checkmate, stalemate, threefold repetition, and bare-kings draws.
+The app also detects checkmate, stalemate, threefold repetition, and bare-kings draws. A stalemate opens a **Why is this a draw?** review that highlights the final move, the unchecked Khun, and every covered escape square.
 
 ## Project structure
 
