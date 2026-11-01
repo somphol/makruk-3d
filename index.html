@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0d0906" />
+  <meta name="description" content="Makruk 3D — an authentic Thai chess academy and beginner studio with procedural 3D pieces, bilingual coaching, AI and pass-and-play." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23140d08'/%3E%3Ccircle cx='32' cy='32' r='22' fill='none' stroke='%23d6b36a' stroke-width='2'/%3E%3Ctext x='32' y='42' text-anchor='middle' font-size='28' font-family='serif' fill='%23f3d58e'%3Eม%3C/text%3E%3C/svg%3E" />
+  <title>Makruk 3D — Thai Chess Academy & Beginner Studio</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700&family=Noto+Serif+Thai:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="page-grain" aria-hidden="true"></div>
+
+  <div class="app-shell">
+    <header class="topbar" id="topbar">
+      <a class="brand" href="#" id="brandHome" aria-label="Makruk 3D home">
+        <span class="brand-seal" aria-hidden="true"><span>ม</span></span>
+        <span class="brand-copy">
+          <span class="eyebrow" data-i18n="brandKicker">MAKRUK HERITAGE</span>
+          <span class="brand-line">
+            <strong data-i18n="appTitle">Makruk 3D</strong>
+            <span class="brand-subtitle" data-i18n="appSubtitle">Thai Chess Academy &amp; Beginner Studio</span>
+          </span>
+        </span>
+      </a>
+
+      <div class="top-actions">
+        <button class="lang-toggle" id="langToggle" type="button" aria-label="Switch language" title="Switch language / เปลี่ยนภาษา">
+          <span class="lang-option" data-lang-label="en">EN</span>
+          <span class="lang-divider" aria-hidden="true"></span>
+          <span class="lang-option" data-lang-label="th">TH</span>
+        </button>
+
+        <button class="icon-button" id="soundToggle" type="button" aria-pressed="true" title="Toggle sound / เปิดปิดเสียง">
+          <svg class="icon icon-sound-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Zm12.5 3a4.5 4.5 0 0 0-2.5-4.03v8.06A4.5 4.5 0 0 0 16.5 12Zm-2.5-8.6v2.06a7 7 0 0 1 0 13.08v2.06a9 9 0 0 0 0-17.2Z"/></svg>
+          <svg class="icon icon-sound-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Zm12.3 3 2.4-2.4-1.4-1.4-2.4 2.4-2.4-2.4-1.4 1.4 2.4 2.4-2.4 2.4 1.4 1.4 2.4-2.4 2.4 2.4 1.4-1.4-2.4-2.4Z"/></svg>
+          <span class="icon-label" data-i18n="soundLabel">Sound</span>
+        </button>
+
+        <button class="button button-gold button-rules" id="glossaryButton" type="button">
+          <span class="button-icon" aria-hidden="true">📖</span>
+          <span data-i18n="rulesButton">Rules &amp; Pieces</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <section class="arena" aria-label="Makruk board">
+        <div class="arena-head">
+          <div class="turn-cluster">
+            <span class="turn-stone" id="turnStone" aria-hidden="true"></span>
+            <span class="turn-copy">
+              <span class="micro-label" data-i18n="turnLabel">Turn</span>
+              <strong id="turnText">White to move</strong>
+            </span>
+          </div>
+
+          <div class="arena-chips">
+            <span class="chip" id="moveCounter">Move 1</span>
+            <span class="chip chip-warning" id="checkChip" hidden>Check</span>
+            <span class="chip chip-thinking" id="aiChip" hidden>
+              <span class="thinking-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span data-i18n="botThinking">Bot thinking</span>
+            </span>
+          </div>
+        </div>
+
+        <div class="board-stage" id="boardStage">
+          <canvas id="scene" aria-label="Interactive 3D Makruk board"></canvas>
+          <div class="stage-vignette" aria-hidden="true"></div>
+
+          <div class="stage-toolbar">
+            <button class="stage-button" id="resetView" type="button" title="Reset camera / รีเซ็ตมุมมอง">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5V2L7 6l5 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7Z"/></svg>
+              <span data-i18n="resetView">Reset view</span>
+            </button>
+            <span class="assist-pill" id="assistPill">
+              <span class="assist-dot" aria-hidden="true"></span>
+              <span data-i18n="assistOn">Assist on</span>
+            </span>
+          </div>
+
+          <div class="scene-loader" id="sceneLoader">
+            <span class="loader-mark" aria-hidden="true">ม</span>
+            <span class="loader-line"></span>
+            <span data-i18n="loadingScene">Carving the board…</span>
+          </div>
+
+          <div class="scene-fallback" id="sceneFallback" hidden>
+            <strong data-i18n="webglErrorTitle">The 3D board could not start</strong>
+            <span data-i18n="webglErrorText">Please enable WebGL or try a current browser.</span>
+          </div>
+        </div>
+
+        <div class="tutor" id="tutorBar" aria-live="polite">
+          <div class="tutor-empty" id="tutorEmpty">
+            <span class="tutor-glyph" aria-hidden="true">◇</span>
+            <span>
+              <strong data-i18n="tutorTitle">Learn by touching the pieces</strong>
+              <small data-i18n="tutorHint">Select a piece to see its name, movement and legal destinations.</small>
+            </span>
+          </div>
+          <div class="tutor-content" id="tutorContent" hidden></div>
+        </div>
+
+        <div class="capture-tray" aria-label="Captured pieces">
+          <div class="capture-side">
+            <span class="capture-label" data-i18n="capturedByWhite">Captured by White</span>
+            <span class="capture-pieces" id="capturedByWhite">—</span>
+          </div>
+          <span class="capture-separator" aria-hidden="true"></span>
+          <div class="capture-side capture-side-right">
+            <span class="capture-label" data-i18n="capturedByBlack">Captured by Black</span>
+            <span class="capture-pieces" id="capturedByBlack">—</span>
+          </div>
+        </div>
+      </section>
+
+      <aside class="sidebar" aria-label="Match controls">
+        <section class="panel mode-panel">
+          <div class="panel-heading">
+            <span class="panel-number">01</span>
+            <span>
+              <h2 data-i18n="modeTitle">Choose your table</h2>
+              <p data-i18n="modeSubtitle">One teacher, one rival, or two friends.</p>
+            </span>
+          </div>
+          <div class="mode-grid">
+            <button class="mode-card is-active" type="button" data-mode="ai" aria-pressed="true">
+              <span class="mode-icon" aria-hidden="true">
+                <svg viewBox="0 0 32 32"><path d="M9 11h14a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3v-8a3 3 0 0 1 3-3Zm7-6v6m-4 0h8M11 18h.01M21 18h.01M11 22h10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </span>
+              <span class="mode-copy">
+                <strong data-i18n="modeAiTitle">Single Player</strong>
+                <small data-i18n="modeAiSubtitle">Play White against the academy bot</small>
+              </span>
+              <span class="mode-tick" aria-hidden="true">✓</span>
+            </button>
+
+            <button class="mode-card" type="button" data-mode="local" aria-pressed="false">
+              <span class="mode-icon" aria-hidden="true">
+                <svg viewBox="0 0 32 32"><path d="M12 14a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm8 0a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM3 28v-2a7 7 0 0 1 7-7h4a7 7 0 0 1 7 7v2m2-16a5 5 0 0 1 5 5v1h1a2 2 0 0 1 2 2v6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </span>
+              <span class="mode-copy">
+                <strong data-i18n="modeLocalTitle">Pass &amp; Play</strong>
+                <small data-i18n="modeLocalSubtitle">Two players sharing one screen</small>
+              </span>
+              <span class="mode-tick" aria-hidden="true">✓</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="panel assist-panel">
+          <div class="assist-copy">
+            <div class="panel-heading compact">
+              <span class="panel-number">02</span>
+              <span>
+                <h2 data-i18n="assistTitle">Beginner Move Assist</h2>
+                <p data-i18n="assistSubtitle">Green dots for legal moves, red rings for captures.</p>
+              </span>
+            </div>
+          </div>
+          <label class="switch" for="assistToggle">
+            <input type="checkbox" id="assistToggle" checked />
+            <span class="switch-track" aria-hidden="true"><span class="switch-knob"></span></span>
+            <span class="sr-only" data-i18n="assistToggleLabel">Toggle beginner move assist</span>
+          </label>
+        </section>
+
+        <section class="panel record-panel">
+          <div class="panel-heading record-heading">
+            <span class="panel-number">03</span>
+            <span>
+              <h2 data-i18n="recordTitle">Match Record</h2>
+              <p data-i18n="recordSubtitle">Every move, transcribed in real time.</p>
+            </span>
+            <span class="record-count" id="plyCount">0</span>
+          </div>
+          <div class="move-list" id="moveList">
+            <p class="move-empty" data-i18n="recordEmpty">The first move is yours.</p>
+          </div>
+          <div class="record-foot">
+            <span class="record-status-dot" aria-hidden="true"></span>
+            <span id="recordStatus" data-i18n="recordReady">Ready to play</span>
+          </div>
+        </section>
+
+        <section class="panel actions-panel">
+          <button class="button button-primary button-new" id="newGameButton" type="button">
+            <span aria-hidden="true">↻</span>
+            <span data-i18n="newGame">New Game</span>
+          </button>
+          <div class="action-grid">
+            <button class="button button-quiet" id="saveButton" type="button">
+              <span aria-hidden="true">💾</span>
+              <span data-i18n="saveMatch">Save Match</span>
+            </button>
+            <button class="button button-quiet" id="loadButton" type="button">
+              <span aria-hidden="true">📂</span>
+              <span data-i18n="loadMatch">Load Match</span>
+            </button>
+          </div>
+          <button class="text-button" id="sidebarGlossary" type="button">
+            <span aria-hidden="true">📖</span>
+            <span data-i18n="openGlossary">Open the illustrated Makruk glossary</span>
+            <span aria-hidden="true">→</span>
+          </button>
+        </section>
+
+        <section class="panel wisdom-panel">
+          <span class="wisdom-mark" aria-hidden="true">“</span>
+          <p data-i18n="wisdom">The boat is mightier than the seed. Guard the lord, advance the shells, and let patience win the board.</p>
+          <span class="wisdom-source" data-i18n="wisdomSource">Makruk proverb for beginners</span>
+        </section>
+      </aside>
+    </main>
+
+    <footer class="footer">
+      <span>© 2026 Makruk 3D</span>
+      <span class="footer-dot" aria-hidden="true"></span>
+      <span data-i18n="footerCredit">Crafted in OpenCode with DeepSeek V4.1 Flash</span>
+      <span class="footer-dot" aria-hidden="true"></span>
+      <span data-i18n="footerHeritage">Inspired by the Thai chess tradition</span>
+    </footer>
+  </div>
+
+  <input type="file" id="loadFileInput" accept="application/json,.json" hidden />
+
+  <!-- Illustrated glossary -->
+  <div class="modal" id="glossaryModal" hidden aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal="glossary"></div>
+    <div class="modal-panel glossary-modal-panel" role="dialog" aria-modal="true" aria-labelledby="glossaryTitle">
+      <button class="modal-close" type="button" data-close-modal="glossary" aria-label="Close glossary">×</button>
+      <header class="modal-head">
+        <span class="eyebrow" data-i18n="glossaryEyebrow">THE MAKRUK COMPENDIUM</span>
+        <h2 id="glossaryTitle">Rules &amp; Pieces</h2>
+        <p id="glossarySubtitle">Seven silhouettes, one ancient battlefield.</p>
+      </header>
+      <div class="modal-scroll">
+        <div class="glossary-grid" id="glossaryGrid"></div>
+        <section class="rules-section">
+          <div class="rules-heading">
+            <span class="panel-number">✦</span>
+            <span>
+              <h3 id="rulesHeading">Makruk in sixty seconds</h3>
+              <p id="rulesIntro">The essentials that make Thai chess different from the international game.</p>
+            </span>
+          </div>
+          <div class="rules-grid" id="rulesGrid"></div>
+        </section>
+        <section class="heritage-strip">
+          <span class="heritage-seal" aria-hidden="true">ม</span>
+          <div>
+            <strong id="heritageTitle">A living court game</strong>
+            <p id="heritageText">Makruk has been played in Siam for centuries. Its short-range Met and five-direction Khon preserve an older, more deliberate rhythm of chess.</p>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- Result overlay -->
+  <div class="modal" id="resultModal" hidden aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal="result"></div>
+    <div class="modal-panel result-panel" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+      <button class="modal-close" type="button" data-close-modal="result" aria-label="Close result">×</button>
+      <div class="result-emblem" id="resultEmblem" aria-hidden="true">♔</div>
+      <span class="eyebrow" data-i18n="resultEyebrow">THE MATCH IS DECIDED</span>
+      <h2 id="resultTitle">Checkmate</h2>
+      <p id="resultDetail"></p>
+      <div class="result-actions">
+        <button class="button button-gold" id="resultNewGame" type="button">
+          <span aria-hidden="true">↻</span>
+          <span data-i18n="newGame">New Game</span>
+        </button>
+        <button class="button button-quiet" type="button" data-close-modal="result" data-i18n="reviewBoard">Review board</button>
+      </div>
+      <p class="result-credit" data-i18n="resultCredit">A lesson completed at the Makruk academy.</p>
+    </div>
+  </div>
+
+  <div class="toast-stack" id="toastStack" aria-live="polite" aria-atomic="true"></div>
+
+  <noscript>
+    <div class="noscript-note">Makruk 3D needs JavaScript enabled to render the board.</div>
+  </noscript>
+
+  <script type="module" src="script.js"></script>
+  <script>
+    // If the CDN modules cannot load, replace the endless carving screen with
+    // a useful diagnostic rather than leaving the board hidden forever.
+    window.setTimeout(function () {
+      if (window.__MAKRUK_READY__) return;
+      var loader = document.getElementById("sceneLoader");
+      var fallback = document.getElementById("sceneFallback");
+      if (loader) loader.classList.add("is-hidden");
+      if (fallback) fallback.hidden = false;
+    }, 12000);
+  </script>
+</body>
+</html>
