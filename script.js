@@ -3847,7 +3847,7 @@ function setTopView(enabled, { announce = true } = {}) {
     };
     topViewActive = true;
     const aspect = Math.max(0.55, dom.boardStage.clientWidth / Math.max(1, dom.boardStage.clientHeight));
-    const distance = 14.5 * aspectDistanceMultiplier(aspect) * (boardFocus ? 0.9 : 1);
+    const distance = 15.8 * aspectDistanceMultiplier(aspect) * (boardFocus ? 0.9 : 1);
     controls.target.set(0, 0.35, 0);
     camera.position.set(0.001, distance * 0.985, distance * 0.17);
     camera.lookAt(controls.target);
