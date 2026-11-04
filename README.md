@@ -4,15 +4,18 @@
 
 **Live demo:** <https://somphol.github.io/makruk-3d/>
 
-An interactive, bilingual 3D Makruk (Thai chess) academy built with vanilla HTML5, CSS3, ES6 JavaScript, and Three.js. It uses authentic procedural piece silhouettes, a carved teak board, beginner move coaching, a heuristic AI opponent, local pass-and-play, synthesized Web Audio sound, and portable JSON match saves.
+An interactive, bilingual 3D Makruk (Thai chess) academy built with vanilla HTML5, CSS3, ES6 JavaScript, and Three.js. It pairs two procedural piece families with a high-contrast carved board, beginner move coaching, a four-level heuristic AI with an adjustable thinking budget, local pass-and-play, synthesized Web Audio sound, and portable JSON match saves.
 
 [![Makruk 3D board](docs/hero.webp)](https://somphol.github.io/makruk-3d/)
 
 ## Highlights
 
 - **Authentic Makruk rules** — pawns begin on the third/sixth ranks, no double-step, no en passant, no castling, Met moves one diagonal, Khon moves one diagonal or one forward, and promotion happens on the sixth rank.
-- **Procedural 3D pieces** — Khun, Met, Khon, Ma, Ruea, Bia, and Bia Ngua are generated from `LatheGeometry`, `ExtrudeGeometry`, spheres, cones, toruses, and custom profiles. No model files required.
-- **Carved 8×8 board** — choose traditional single-tone or modern checkered patterns, with four material finishes including teak, Carrara/Marquina marble, travertine/granite, and jade/slate. Inlaid gold trim, corner studs, coordinate labels, soft shadows, gold dust, and OrbitControls included.
+- **Procedural 3D pieces in two families** — Court uses carved `LatheGeometry` profiles; Tournament exaggerates every officer with a crown, diamond, brimmed helmet, horse head, towered barge and shell spire. Both are generated from native Three.js primitives with no model files.
+- **Two opponent finishes** — the default **Ivory & Ruby** pair keeps the opponent vivid against every square; **Ivory & Ebony** is available for the classic look.
+- **High-contrast 8×8 board** — choose traditional single-tone or modern checkered patterns, with five material finishes including **Maple & Slate** for the crispest read, plus teak, Carrara/Marquina marble, travertine/granite, and jade/slate. Inlaid gold trim, corner studs, coordinate labels, soft shadows, gold dust, and OrbitControls included.
+- **Four bot strengths with adjustable thinking time** — Simple, Medium, Hard and Super Super Hard share one search engine; each starts at its own time preset (0.5 s to 12 s) and the 0.5–20 s slider lets you dial the thinking budget up or down. Hard is the default at 5 s.
+- **A bot that converts** — repetition-aware root search, king-and-rook mop-up evaluation, full-window root scoring and deterministic tie-breaking stop the engine from shuffling when it is ahead.
 - **Full-size board mode** — hides the side panels and header so the board can fill the viewport; exit with the same button or Escape.
 - **Honed, anti-glare board** — every board finish uses matte stone or low-sheen wood so the key light cannot wash out a square.
 - **Beginner Move Assist** — green glowing dots for legal destinations and red pulse rings for captures.
@@ -21,7 +24,7 @@ An interactive, bilingual 3D Makruk (Thai chess) academy built with vanilla HTML
 - **Interactive 3D piece preview** — click any Rules & Pieces card, or the **View in 3D** link inside the tutor bar, to open a separate orbit-controlled model with auto-rotate, reset view, and Thai pronunciation buttons.
 - **Thai pronunciation** — every piece card and preview panel plays a bundled Thai recording (macOS **Kanya** voice) for ขุน, เม็ด, โคน, ม้า, เรือ, เบี้ย and เบี้ยหงาย, with browser speech synthesis as a fallback. Repeated clicks restart the clip reliably and respect the sound toggle.
 - **Stalemate review** — after a stalemate, a beginner panel shows the final move, the safe Khun, and every escape square alongside the piece controlling it.
-- **Single Player vs AI or Pass & Play** — a heuristic alpha-beta bot playing Black, or two humans sharing one board.
+- **Single Player vs AI or Pass & Play** — a heuristic alpha-beta bot playing Black with four strengths and an adjustable thinking budget, or two humans sharing one board.
 - **Instant EN ⇄ TH switching** — all headers, labels, tooltips, tutor copy, move record, result overlay, display settings, and glossary update without interrupting a match.
 - **Four display themes & scalable text** — Midnight Lacquer, Ivory Court, Jade Pavilion, and Ruby Palace, plus four text sizes from 90% to 140%. Preferences are saved on the device.
 - **Adjustable stage palette** — choose the coloured room/backdrop behind the board from six presets or any custom colour. Light stages soften the vignette and table automatically.
@@ -52,12 +55,12 @@ npx serve .
 
 ## How to play
 
-1. Choose **Single Player** to command White against the academy bot, or **Pass & Play** for two local players.
+1. Choose **Single Player** to command White against the academy bot, or **Pass & Play** for two local players. In Single Player, pick **Simple**, **Medium**, **Hard** or **Super Super Hard**, then set the **Thinking time** slider (0.5–20 s).
 2. Click a piece. With **Beginner Move Assist** enabled, green dots show legal moves and red rings show captures.
 3. Click a highlighted destination to move. Captures, checks, promotions, and the match result are announced in the tutor bar, move record, and sound design.
 4. Use **Save Match** to download `makruk_save.json`; use **Load Match** to restore a saved position.
 5. Switch **EN / TH** at any time without resetting the match.
-6. Open **Theme & text size** to choose a display theme, a board pattern, a board material, a stage colour, and a larger type size.
+6. Open **Theme & text size** to choose a display theme, a board pattern, a board material, a piece set, an opponent colour, a stage colour, and a larger type size.
 7. Use **Move view** to drag the board to a new position, or right-drag/two-finger drag at any time. **Reset view** recentres it.
 8. Use **Full size** to expand the board into an immersive viewport. Press the button again or Escape to return.
 
@@ -75,12 +78,35 @@ Open **Rules & Pieces** and click any card, or select a piece on the board and u
 
 | Finish | Character |
 | --- | --- |
+| Maple & Slate | Pale maple against blue-grey slate — the default, and the crispest piece contrast. |
 | Teak & Ebony | Warm carved wood, the original academy board. |
 | Carrara & Marquina | Honed white marble against deep black stone. |
 | Travertine & Granite | Honed ivory travertine with warm charcoal granite. |
 | Jade & Slate | Green stone inlay with pale quartz squares. |
 
-The stone finishes use a low-glare honed treatment and are inspired by publicly sold stone table-top boards, where contrasting natural stones are inlaid flush into the playing surface. References: [stone chess board styles](http://pebblez.com/stone-chess-boards.html), [marble chess-set buying guide](https://marbleseven.com/marble-chess-set-handcrafted-stone-chess-boards-buying-guide/), [travertine chess tables](https://www.1stdibs.com/furniture/tables/game-tables/1960s-pedestal-travertine-chess-table/id-f_33774512/).
+The stone finishes use a low-glare honed treatment and are inspired by publicly sold stone table-top boards, where contrasting natural stones are inlaid flush into the playing surface. The Maple & Slate pairing follows the same principle: separate the two square values as far as possible so the pieces, not the board, carry the eye. References: [stone chess board styles](http://pebblez.com/stone-chess-boards.html), [marble chess-set buying guide](https://marbleseven.com/marble-chess-set-handcrafted-stone-chess-boards-buying-guide/), [travertine chess tables](https://www.1stdibs.com/furniture/tables/game-tables/1960s-pedestal-travertine-chess-table/id-f_33774512/).
+
+### Piece sets
+
+Open **Theme & text size → Piece set** to switch families at any time; the board, tutor, glossary and 3D preview all follow the choice.
+
+| Set | Design language |
+| --- | --- |
+| Court | Rounded lathe turnings with flared collars and gold bands, closest to a ceremonial Thai set. |
+| Tournament | Blocky, high-silhouette pieces: a five-point crown for the Khun, a faceted diamond for the Met, a wide-brimmed helmet for the Khon, an exaggerated horse head for the Ma, a crenellated barge for the Ruea, and a spired shell for the promoted Bia. |
+
+The opponent defaults to **Ivory & Ruby** because a near-black piece can vanish into a warm wooden square at a distance. Choose **Ivory & Ebony** in the same panel if you prefer the classic pairing.
+
+### Bot levels and thinking time
+
+| Level | Default thinking time | Character |
+| --- | ---: | --- |
+| Simple | 0.5 s | Shallow search with deliberate near-best choices. |
+| Medium | 1.5 s | A solid club opponent that still misses deep tactics. |
+| Hard | 5 s | Quiescence search, full-window root scoring and a winning mop-up term. |
+| Super Super Hard | 12 s | The same engine with the deepest budget and no randomness. |
+
+The slider ranges from 0.5 s to 20 s. Choosing a level resets the slider to that level's preset; after that you can dial it freely. A longer budget lets iterative deepening reach further, but the level's search depth, quiescence and blunder policy still apply. Search runs on the main thread, so the board pauses while the bot thinks; the thinking chip names the level and budget.
 
 ## Camera controls
 
@@ -129,28 +155,36 @@ makruk-3d/
 ├── audio/th/        # Bundled Thai pronunciation WAVs (Kanya voice)
 ├── docs/
 │   ├── hero.webp
-│   └── mobile.webp
+│   ├── mobile.webp
+│   ├── piece-preview.webp
+│   ├── ARCHITECTURE.md
+│   └── REPRODUCTION.md
+├── scripts/
+│   └── check.mjs    # Dependency-free release verification
 ├── README.md
+├── AGENTS.md        # Agent handoff and constraints
 └── STATE.md         # Build timing, token usage, and session credits
 ```
 
 ## 3D modeling notes
 
-| Piece | Geometry strategy |
-| --- | --- |
-| Khun | A 26-point `LatheGeometry` profile: bell base, tapered waist, flared collar, tiered crown, gold finial. |
-| Met | A compact bud profile from `LatheGeometry`, smooth dome, gold collar and finial bead. |
-| Khon | A stupa/lotus-bud lathe with stacked gold rings and a tapered spire. |
-| Ma | A hand-drawn `THREE.Shape` horse-head silhouette extruded with bevels, plus layered mane cones, eyes, and a golden cheek disc. |
-| Ruea | A custom-extruded longboat hull with sweeping bow and stern, deck rails, cabin ridge, and gold bow eyes. |
-| Bia | A flattened hemisphere cowrie shell on a turned foot, with a gold slit and end beads. |
-| Bia Ngua | The inverted shell marked with a raised golden inlay ring, dark concave centre, and gold bead. |
+The **Court** set uses rounded lathe profiles; the **Tournament** set shares a stepped eight-sided base but gives every officer a different crown.
 
-The board is built from 64 carved tile meshes on a layered teak plinth. All material grain is generated procedurally with canvas textures; no bitmap assets ship with the app.
+| Piece | Court | Tournament |
+| --- | --- | --- |
+| Khun | A 26-point `LatheGeometry` profile: bell base, tapered waist, flared collar, tiered crown, gold finial. | A tall pagoda body under a five-point gold crown with one taller centre prong. |
+| Met | A compact bud profile from `LatheGeometry`, smooth dome, gold collar and finial bead. | A slender stem topped by a vertically stretched octahedron — the only diamond on the board. |
+| Khon | A stupa/lotus-bud lathe with stacked gold rings and a tapered spire. | A wide-brimmed warrior helmet: the disc brim separates it from the Ma at a glance. |
+| Ma | A hand-drawn `THREE.Shape` horse-head silhouette extruded with bevels, plus layered mane cones, eyes, and a golden cheek disc. | A larger, longer horse head with raised ears, a jagged gold mane, bridle straps and a taller base. |
+| Ruea | A custom-extruded longboat hull with sweeping bow and stern, deck rails, cabin ridge, and gold bow eyes. | The same barge hull under a crenellated cabin tower, so it reads as a rook. |
+| Bia | A flattened hemisphere cowrie shell on a turned foot, with a gold slit and end beads. | The same shell on the shared stepped plinth with a gold slit. |
+| Bia Ngua | The inverted shell marked with a raised golden inlay ring, dark concave centre, and gold bead. | A taller promoted shell with a gold ring, dark centre and a gold spire. |
+
+The board is built from 64 carved tile meshes on a layered plinth. All material grain is generated procedurally with canvas textures; no bitmap assets ship with the app.
 
 ## AI
 
-The bot uses a legal-move generator, iterative deepening, alpha-beta pruning, MVV-LVA-style capture ordering, piece-square evaluation, pawn-advance bonuses, king safety, and a search deadline of roughly 620 ms. It plays Black only in Single Player mode.
+Four levels share one engine: legal-move generation, iterative deepening, alpha-beta pruning, MVV-LVA capture ordering, killer moves, a history heuristic, quiescence search on Hard and Super Super Hard, and a piece-square evaluation with pawn advancement, open files, king safety, enemy-king pressure and an endgame mop-up term. The root is searched with a full window so every candidate has an exact score; ties are broken toward captures, promotions and advancement, with repetition penalties when the bot is ahead. The search budget is the slider value (0.5–20 s), and the level preset supplies the starting budget. It plays Black only in Single Player mode.
 
 ## Save format
 
@@ -187,9 +221,19 @@ The same payload is auto-saved under `makruk3d.match.v1` in browser storage.
 - **Rendering:** [Three.js](https://threejs.org) r160 via CDN, with `OrbitControls`
 - **Typography:** Cormorant Garamond, Manrope, Noto Sans Thai, and Noto Serif Thai via Google Fonts
 - **Cultural inspiration:** the Thai Makruk tradition, its court pieces, and the Thai river-barge silhouette of the Ruea
+- **Contrast and identification direction:** [Full 3D Chess Academy](https://github.com/somphol/full-3d-chess-academy), whose maple-and-slate board and legible piece family informed the 1.8.0 readability pass
 - **Thai pronunciation audio:** generated with the macOS **Kanya** Thai system voice
 
 Build timing and token usage are recorded in [STATE.md](STATE.md).
+
+## Documentation
+
+- [AGENTS.md](AGENTS.md) — agent handoff, commands, architecture and constraints.
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — module, rules, AI and scene map.
+- [docs/REPRODUCTION.md](docs/REPRODUCTION.md) — rebuild and verification book.
+- [docs/TESTING.md](docs/TESTING.md) — what was verified and what was not.
+- [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) — Pages runbook.
+- [STATE.md](STATE.md) — historical build timing, tokens and session credits.
 
 ## License
 

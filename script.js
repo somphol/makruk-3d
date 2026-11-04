@@ -31,7 +31,6 @@ const DIAGONALS = [[-1, -1], [-1, 1], [1, -1], [1, 1]];
 const ORTHOGONALS = [[-1, 0], [1, 0], [0, -1], [0, 1]];
 
 const MATE_SCORE = 100000;
-const SEARCH_BUDGET_MS = 620;
 
 /* =========================================================================
    Bilingual copy
@@ -67,6 +66,16 @@ const I18N = {
     modeSubtitle: "One teacher, one rival, or two friends.",
     modeAiTitle: "Single Player",
     modeAiSubtitle: "Play White against the academy bot",
+    botLevelLabel: "Bot strength",
+    botLevelSimple: "Simple",
+    botLevelMedium: "Medium",
+    botLevelHard: "Hard",
+    botLevelSuper: "Super Super Hard",
+    botLevelChanged: "Bot strength: {level}",
+    botLevelHint: "Hard is the default. Super thinks longer and searches captures more deeply.",
+    thinkTimeLabel: "Thinking time",
+    thinkTimeValue: "{seconds} s",
+    thinkTimeChanged: "Thinking time: {seconds} s",
     modeLocalTitle: "Pass & Play",
     modeLocalSubtitle: "Two players sharing one screen",
     assistTitle: "Beginner Move Assist",
@@ -89,7 +98,19 @@ const I18N = {
     boardPatternHeading: "Board pattern",
     boardPatternSubtitle: "Traditional Makruk boards are single-tone; modern club boards often alternate light and dark squares.",
     boardMaterialHeading: "Board material",
-    boardMaterialSubtitle: "Low-glare teak and honed stone table-top finishes, from classic Carrara marble to warm travertine.",
+    boardMaterialSubtitle: "Low-glare wood and honed stone table-top finishes. Maple & Slate gives the crispest piece contrast.",
+    pieceSetHeading: "Piece set",
+    pieceSetSubtitle: "Two hand-built families, both drawn for instant recognition. Court follows Thai tradition; Tournament exaggerates each silhouette.",
+    pieceSetCourt: "Court",
+    pieceSetCourtDesc: "Carved lathe forms inspired by ceremonial Makruk sets.",
+    pieceSetTournament: "Tournament",
+    pieceSetTournamentDesc: "Bold, blocky silhouettes with a unique crown on every officer.",
+    opponentColourHeading: "Opponent colour",
+    opponentColourSubtitle: "Ruby reads clearly against every board finish and cannot be mistaken for a shadow.",
+    pieceFinishRuby: "Ivory & Ruby",
+    pieceFinishRubyDesc: "Warm ivory White against a vivid red opponent.",
+    pieceFinishEbony: "Ivory & Ebony",
+    pieceFinishEbonyDesc: "The classic ivory and near-black pairing.",
     stageColorHeading: "Stage colour",
     stageColorSubtitle: "Choose the room around the board, or follow the active theme.",
     stageColorCustom: "Custom colour",
@@ -209,6 +230,8 @@ const I18N = {
     piecePreviewAutoOn: "Auto-rotate on",
     piecePreviewAutoOff: "Auto-rotate off",
     piecePreviewModel: "3D model",
+    modelCourtNote: "Shown in the Court set: rounded, carved profiles.",
+    modelTournamentNote: "Shown in the Tournament set: bold silhouettes with a crown, diamond, brimmed helmet, horse head, towered barge and shell spire.",
     viewIn3D: "View in 3D",
     hearThai: "Hear Thai",
     pronounceHint: "Thai pronunciation",
@@ -261,6 +284,16 @@ const I18N = {
     modeSubtitle: "ครูหนึ่งคน คู่แข่งหนึ่งคน หรือเพื่อนสองคน",
     modeAiTitle: "เล่นคนเดียว",
     modeAiSubtitle: "เล่นฝ่ายขาวกับบอทของสถาบัน",
+    botLevelLabel: "ระดับบอท",
+    botLevelSimple: "ง่าย",
+    botLevelMedium: "ปานกลาง",
+    botLevelHard: "ยาก",
+    botLevelSuper: "ยากสุด ๆ",
+    botLevelChanged: "ระดับบอท: {level}",
+    botLevelHint: "ค่าเริ่มต้นคือยาก ส่วนยากสุด ๆ จะคิดนานขึ้นและค้นหาการกินลึกกว่า",
+    thinkTimeLabel: "เวลาคิด",
+    thinkTimeValue: "{seconds} วินาที",
+    thinkTimeChanged: "เวลาคิด: {seconds} วินาที",
     modeLocalTitle: "ผู้เล่น 2 คน",
     modeLocalSubtitle: "ผลัดกันเล่นบนหน้าจอเดียว",
     assistTitle: "ตัวช่วยผู้เล่นใหม่",
@@ -283,7 +316,19 @@ const I18N = {
     boardPatternHeading: "รูปแบบกระดาน",
     boardPatternSubtitle: "กระดานหมากรุกไทยดั้งเดิมเป็นสีเดียว ส่วนกระดานแข่งขันสมัยใหม่มักสลับช่องสว่างและเข้ม",
     boardMaterialHeading: "วัสดุกระดาน",
-    boardMaterialSubtitle: "ผิวไม้และหินขัดด้านลดแสงสะท้อน จากหินอ่อนคาร์ราราคลาสสิกถึงทราเวอร์ทีนอบอุ่น",
+    boardMaterialSubtitle: "ผิวไม้และหินขัดด้านลดแสงสะท้อน เมเปิลกับสเลตให้ความต่างสีของหมากชัดที่สุด",
+    pieceSetHeading: "ชุดหมาก",
+    pieceSetSubtitle: "สองตระกูลที่ปั้นด้วยมือ ทั้งคู่ออกแบบให้เห็นชนิดหมากได้ทันที ราชสำนักคงความเป็นไทย ส่วนแข่งขันเน้นรูปทรงให้ชัดเกินจริง",
+    pieceSetCourt: "ราชสำนัก",
+    pieceSetCourtDesc: "รูปทรงกลึงแบบหมากรุกพิธีการไทย",
+    pieceSetTournament: "แข่งขัน",
+    pieceSetTournamentDesc: "รูปทรงเหลี่ยมชัดเจน พร้อมยอดต่างกันทุกตัว",
+    opponentColourHeading: "สีฝ่ายตรงข้าม",
+    opponentColourSubtitle: "สีทับทิมมองเห็นชัดบนกระดานทุกผิว และไม่มีทางถูกมองเป็นเงาดำ",
+    pieceFinishRuby: "งาช้างและทับทิม",
+    pieceFinishRubyDesc: "ฝ่ายขาวสีงาช้างอบอุ่น ฝ่ายตรงข้ามสีแดงสด",
+    pieceFinishEbony: "งาช้างและไม้ดำ",
+    pieceFinishEbonyDesc: "คู่สีคลาสสิกงาช้างกับดำสนิท",
     stageColorHeading: "สีของเวที",
     stageColorSubtitle: "เลือกสีห้องรอบกระดาน หรือใช้สีตามธีมที่เลือก",
     stageColorCustom: "เลือกสีเอง",
@@ -403,6 +448,8 @@ const I18N = {
     piecePreviewAutoOn: "เปิดหมุนอัตโนมัติ",
     piecePreviewAutoOff: "ปิดหมุนอัตโนมัติ",
     piecePreviewModel: "แบบจำลองสามมิติ",
+    modelCourtNote: "แสดงในชุดราชสำนัก: รูปทรงกลึงโค้งมนแบบงานแกะสลัก",
+    modelTournamentNote: "แสดงในชุดแข่งขัน: รูปทรงเหลี่ยมชัด พร้อมมงกุฎ เพชร หมวกปีกกว้าง หัวม้า เรือมีหอ และยอดหอย",
     viewIn3D: "ดูในสามมิติ",
     hearThai: "ฟังเสียงไทย",
     pronounceHint: "คำอ่านภาษาไทย",
@@ -628,9 +675,15 @@ const BOARD_STYLES = {
 const BOARD_MATERIALS = {
   teak: {
     name: { en: "Teak & Ebony", th: "ไม้สักและไม้ดำ" },
-    description: { en: "Matte carved wood, the academy classic.", th: "ไม้แกะสลักผิวด้าน ฉบับคลาสสิกของสถาบัน" },
-    light: "#6d4528",
-    dark: "#4a2a18",
+    description: { en: "Warm carved teak against deep ebony, the academy classic.", th: "ไม้สักแกะสลักอบอุ่นสลับไม้ดำเข้ม ฉบับคลาสสิกของสถาบัน" },
+    light: "#c29a67",
+    dark: "#4c3120",
+  },
+  maple: {
+    name: { en: "Maple & Slate", th: "เมเปิลและสเลต" },
+    description: { en: "Pale maple and blue-grey slate for the strongest read.", th: "เมเปิลอ่อนสลับสเลตเทาฟ้า ให้ภาพหมากชัดที่สุด" },
+    light: "#e0c9a4",
+    dark: "#3d4854",
   },
   carrara: {
     name: { en: "Carrara & Marquina", th: "คาร์ราราและมาร์กินา" },
@@ -650,6 +703,63 @@ const BOARD_MATERIALS = {
     light: "#d5ddcf",
     dark: "#234c3e",
   },
+};
+
+const PIECE_SETS = {
+  court: {
+    name: { en: "Court", th: "ราชสำนัก" },
+    description: {
+      en: "Carved lathe forms inspired by ceremonial Makruk sets.",
+      th: "รูปทรงกลึงแบบหมากรุกพิธีการไทย",
+    },
+  },
+  tournament: {
+    name: { en: "Tournament", th: "แข่งขัน" },
+    description: {
+      en: "Bold, blocky silhouettes with a unique crown on every officer.",
+      th: "รูปทรงเหลี่ยมชัดเจน พร้อมยอดต่างกันทุกตัว",
+    },
+  },
+};
+
+const PIECE_FINISHES = {
+  ruby: {
+    name: { en: "Ivory & Ruby", th: "งาช้างและทับทิม" },
+    description: {
+      en: "Warm ivory White against a vivid red opponent.",
+      th: "ฝ่ายขาวสีงาช้างอบอุ่น ฝ่ายตรงข้ามสีแดงสด",
+    },
+    darkMaterial: "ruby",
+    darkAccentMaterial: "rubyAccent",
+    swatch: "#b4232c",
+  },
+  ebony: {
+    name: { en: "Ivory & Ebony", th: "งาช้างและไม้ดำ" },
+    description: {
+      en: "The classic ivory and near-black pairing.",
+      th: "คู่สีคลาสสิกงาช้างกับดำสนิท",
+    },
+    darkMaterial: "dark",
+    darkAccentMaterial: "darkAccent",
+    swatch: "#2a1912",
+  },
+};
+
+const PIECE_SET_ICONS = {
+  court: `<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false">
+    <path d="M20 4.5c2.5 0 4 1.7 4 3.7 0 1.5-.8 2.5-1.8 3.1 3 .8 5.2 2.8 5.2 5.3 0 2-1.1 3.4-2.5 4.2 2.3 1.3 3.8 3.2 4.5 5.7H10.6c.7-2.5 2.2-4.4 4.5-5.7-1.4-.8-2.5-2.2-2.5-4.2 0-2.5 2.2-4.5 5.2-5.3-1-.6-1.8-1.6-1.8-3.1 0-2 1.5-3.7 4-3.7Z" fill="currentColor"/>
+    <ellipse cx="20" cy="30" rx="11.5" ry="2.4" fill="currentColor" opacity=".65"/>
+  </svg>`,
+  tournament: `<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false">
+    <path d="M7.5 7.5 12 15V9l6.5 7V7l3 3 3-3v9L31 9v6l4.5-7.5-3.5 11H11L7.5 7.5Z" fill="currentColor"/>
+    <path d="M15 21h10l1.6 6H13.4L15 21Z" fill="currentColor" opacity=".85"/>
+    <rect x="9" y="29" width="22" height="4.6" rx="1.6" fill="currentColor"/>
+  </svg>`,
+};
+
+const PIECE_FINISH_ICONS = {
+  ruby: `<span class="finish-swatch"><i style="background:#f4e7cc"></i><i style="background:#b4232c"></i></span>`,
+  ebony: `<span class="finish-swatch"><i style="background:#f4e7cc"></i><i style="background:#2a1912"></i></span>`,
 };
 
 const STAGE_COLORS = {
@@ -732,6 +842,8 @@ const dom = {
   themeGrid: $("#themeGrid"),
   boardStyleControl: $("#boardStyleControl"),
   boardMaterialControl: $("#boardMaterialControl"),
+  pieceSetControl: $("#pieceSetControl"),
+  pieceFinishControl: $("#pieceFinishControl"),
   stageColorControl: $("#stageColorControl"),
   stageColorInput: $("#stageColorInput"),
   stageColorCurrent: $("#stageColorCurrent"),
@@ -744,6 +856,7 @@ const dom = {
   moveCounter: $("#moveCounter"),
   checkChip: $("#checkChip"),
   aiChip: $("#aiChip"),
+  aiChipLevel: $("#aiChipLevel"),
   boardStage: $("#boardStage"),
   scene: $("#scene"),
   sceneLoader: $("#sceneLoader"),
@@ -755,6 +868,10 @@ const dom = {
   capturedByWhite: $("#capturedByWhite"),
   capturedByBlack: $("#capturedByBlack"),
   modeCards: $$(".mode-card"),
+  botSettings: $("#botSettings"),
+  botLevelControl: $("#botLevelControl"),
+  thinkTimeInput: $("#thinkTimeInput"),
+  thinkTimeValue: $("#thinkTimeValue"),
   assistToggle: $("#assistToggle"),
   moveList: $("#moveList"),
   plyCount: $("#plyCount"),
@@ -1024,13 +1141,17 @@ const state = {
   board: [],
   turn: "w",
   mode: "ai",
+  botLevel: "hard",
+  thinkTimeMs: 5000,
   assist: true,
   lang: "en",
   sound: true,
   theme: "lacquer",
   textSize: "medium",
   boardStyle: "checkered",
-  boardMaterial: "teak",
+  boardMaterial: "maple",
+  pieceSet: "court",
+  pieceFinish: "ruby",
   stageColor: "auto",
   history: [],
   captured: { w: [], b: [] },
@@ -1468,37 +1589,164 @@ const PIECE_VALUES = {
   P: 100,
 };
 
+// Four strengths share one engine. `margin` lets a weaker level choose among
+// near-best moves; `blunder` occasionally picks a merely-reasonable one.
+const AI_LEVELS = {
+  easy: {
+    nameKey: "botLevelSimple",
+    maxDepth: 3,
+    defaultMs: 500,
+    quiescence: false,
+    margin: 150,
+    blunder: 0.32,
+  },
+  medium: {
+    nameKey: "botLevelMedium",
+    maxDepth: 5,
+    defaultMs: 1500,
+    quiescence: false,
+    margin: 55,
+    blunder: 0.08,
+  },
+  hard: {
+    nameKey: "botLevelHard",
+    maxDepth: 8,
+    defaultMs: 5000,
+    quiescence: true,
+    margin: 0,
+    blunder: 0,
+  },
+  super: {
+    nameKey: "botLevelSuper",
+    maxDepth: 12,
+    defaultMs: 12000,
+    quiescence: true,
+    margin: 0,
+    blunder: 0,
+  },
+};
+
+const THINK_TIME_MIN_MS = 500;
+const THINK_TIME_MAX_MS = 20000;
+const THINK_TIME_STEP_MS = 250;
+
+function activeAILevel() {
+  return AI_LEVELS[state.botLevel] || AI_LEVELS.hard;
+}
+
 function pieceValue(piece) {
   if (!piece) return 0;
   if (piece.type === "P" && piece.promoted) return 190;
   return PIECE_VALUES[piece.type] || 0;
 }
 
+function materialBalance(board, color) {
+  let score = 0;
+  for (let i = 0; i < 64; i += 1) {
+    const piece = board[i];
+    if (!piece) continue;
+    score += piece.color === color ? pieceValue(piece) : -pieceValue(piece);
+  }
+  return score;
+}
+
 function evaluateBoard(board, perspective) {
+  const biaFiles = { w: new Array(8).fill(0), b: new Array(8).fill(0) };
+  const kingIndex = { w: -1, b: -1 };
+  const sideMaterial = { w: 0, b: 0 };
+  const rookIndexes = { w: [], b: [] };
+  let totalMaterial = 0;
+  for (let i = 0; i < 64; i += 1) {
+    const piece = board[i];
+    if (!piece) continue;
+    if (piece.type === "K") kingIndex[piece.color] = i;
+    else {
+      sideMaterial[piece.color] += pieceValue(piece);
+      totalMaterial += pieceValue(piece);
+    }
+    if (piece.type === "P" && !piece.promoted) biaFiles[piece.color][colOf(i)] += 1;
+    if (piece.type === "R") rookIndexes[piece.color].push(i);
+  }
+  const endgame = totalMaterial < 1800;
+  const stronger = sideMaterial.w > sideMaterial.b + 120
+    ? "w"
+    : sideMaterial.b > sideMaterial.w + 120
+      ? "b"
+      : null;
+
   let score = 0;
   for (let i = 0; i < 64; i += 1) {
     const piece = board[i];
     if (!piece) continue;
     const row = rowOf(i);
     const col = colOf(i);
+    const enemyKing = kingIndex[opponent(piece.color)];
+    const centerDistance = Math.max(Math.abs(row - 3.5), Math.abs(col - 3.5));
     let value = pieceValue(piece);
 
-    const centerDistance = Math.max(Math.abs(row - 3.5), Math.abs(col - 3.5));
     if (piece.type === "N" || piece.type === "B" || piece.type === "M") {
-      value += Math.max(0, 3.5 - centerDistance) * 2.2;
+      value += Math.max(0, 3.5 - centerDistance) * 3.2;
+      if (enemyKing >= 0) {
+        const kingDistance = Math.abs(row - rowOf(enemyKing)) + Math.abs(col - colOf(enemyKing));
+        if (kingDistance <= 5) value += (6 - kingDistance) * 3.5;
+      }
     }
     if (piece.type === "P" && !piece.promoted) {
       const progress = piece.color === "w" ? 5 - row : row - 2;
-      value += Math.max(0, progress) * 9;
+      value += Math.max(0, progress) * 14;
+      // A Bia one step from promotion is worth far more than a rank count.
+      if (progress >= 2) value += progress >= 3 ? 42 : 18;
     }
     if (piece.type === "K") {
-      if (piece.color === "w" && row >= 6) value += 16;
-      if (piece.color === "b" && row <= 1) value += 16;
+      const homeRow = piece.color === "w" ? 7 : 0;
+      if (!endgame) {
+        if (row === homeRow) value += 20;
+        if (piece.color === "w" ? row < 5 : row > 2) value -= 18;
+      } else {
+        // In the endgame, the lord must join the attack instead of hiding.
+        value += Math.max(0, 3.5 - centerDistance) * 7;
+      }
     }
-    if (piece.type === "R") value += Math.max(0, 3.5 - centerDistance) * 1.2;
+    if (piece.type === "R") {
+      value += Math.max(0, 3.5 - centerDistance) * 1.6;
+      if (biaFiles[piece.color][col] === 0) value += 20;
+      if (enemyKing >= 0) {
+        const kingDistance = Math.abs(row - rowOf(enemyKing)) + Math.abs(col - colOf(enemyKing));
+        if (kingDistance <= 5) value += (6 - kingDistance) * 2.5;
+        // Cutting the enemy Khun along a rank or file is how a Ruea mates.
+        if (row === rowOf(enemyKing) || col === colOf(enemyKing)) value += 14;
+      }
+    }
 
     score += piece.color === perspective ? value : -value;
   }
+
+  // Mop-up: with a decisive material lead, drive the lone Khun to the edge,
+  // walk the winning Khun in, and cut with the Ruea. Without this, a winning
+  // engine happily shuffles because every quiet move evaluates the same.
+  if (endgame && stronger) {
+    const enemyKing = kingIndex[opponent(stronger)];
+    const ownKing = kingIndex[stronger];
+    if (enemyKing >= 0 && ownKing >= 0) {
+      const enemyRow = rowOf(enemyKing);
+      const enemyCol = colOf(enemyKing);
+      const edgeDistance = Math.min(enemyRow, 7 - enemyRow, enemyCol, 7 - enemyCol);
+      const kingDistance = Math.max(
+        Math.abs(rowOf(ownKing) - enemyRow),
+        Math.abs(colOf(ownKing) - enemyCol),
+      );
+      let bonus = (3 - edgeDistance) * 30 + Math.max(0, 7 - kingDistance) * 12;
+
+      for (const i of rookIndexes[stronger]) {
+        if (rowOf(i) === enemyRow || colOf(i) === enemyCol) bonus += 22;
+        const rookDistance = Math.abs(rowOf(i) - enemyRow) + Math.abs(colOf(i) - enemyCol);
+        if (rookDistance <= 3) bonus += 12;
+      }
+
+      score += stronger === perspective ? bonus : -bonus;
+    }
+  }
+
   return score;
 }
 
@@ -1514,9 +1762,18 @@ function moveOrderScore(move, board) {
   return score;
 }
 
-function orderMoves(moves, board) {
+function orderMoves(moves, board, ply = -1) {
+  const killers = ply >= 0 && killerMoves[ply] ? killerMoves[ply] : null;
   return moves
-    .map((move) => ({ move, score: moveOrderScore(move, board) }))
+    .map((move) => {
+      let score = moveOrderScore(move, board);
+      if (killers) {
+        if (killers[0] && killers[0].from === move.from && killers[0].to === move.to) score += 900;
+        else if (killers[1] && killers[1].from === move.from && killers[1].to === move.to) score += 500;
+      }
+      if (ply >= 0) score += historyHeuristic[move.from * 64 + move.to];
+      return { move, score };
+    })
     .sort((a, b) => b.score - a.score)
     .map((entry) => entry.move);
 }
@@ -1531,25 +1788,34 @@ function shuffleMoves(moves) {
 
 let searchDeadline = 0;
 let searchAborted = false;
+let searchStats = { depth: 0, nodes: 0, ms: 0, aborted: false, level: "hard" };
+const killerMoves = [];
+const historyHeuristic = new Int32Array(64 * 64);
 
-function negamax(board, color, depth, alpha, beta, ply) {
+function searchExpired() {
   if (performance.now() > searchDeadline) {
     searchAborted = true;
-    return evaluateBoard(board, color);
+    return true;
   }
+  return false;
+}
 
-  if (depth <= 0) return evaluateBoard(board, color);
+function quiesce(board, color, alpha, beta, ply, remaining = 4) {
+  searchStats.nodes += 1;
+  if (searchExpired()) return evaluateBoard(board, color);
+  const standPat = evaluateBoard(board, color);
+  if (remaining <= 0) return standPat;
+  if (standPat >= beta) return beta;
+  if (standPat > alpha) alpha = standPat;
 
-  const moves = getLegalMoves(color, board);
-  if (moves.length === 0) {
-    return isInCheck(color, board) ? -MATE_SCORE + ply : 0;
-  }
+  const captures = getLegalMoves(color, board).filter((move) => move.captured || move.promoted);
+  if (captures.length === 0) return standPat;
+  orderMoves(captures, board, ply);
 
-  orderMoves(moves, board);
-  let best = -Infinity;
-  for (const move of moves) {
+  let best = standPat;
+  for (const move of captures) {
     const undo = applyMoveRaw(board, move.from, move.to);
-    const score = -negamax(board, opponent(color), depth - 1, -beta, -alpha, ply + 1);
+    const score = -quiesce(board, opponent(color), -beta, -alpha, ply + 1, remaining - 1);
     undoMoveRaw(board, move.from, move.to, undo);
     if (searchAborted) return best;
     if (score > best) best = score;
@@ -1559,51 +1825,150 @@ function negamax(board, color, depth, alpha, beta, ply) {
   return best;
 }
 
+function negamax(board, color, depth, alpha, beta, ply, cfg) {
+  searchStats.nodes += 1;
+  if (searchExpired()) return evaluateBoard(board, color);
+
+  if (depth <= 0) {
+    return cfg.quiescence
+      ? quiesce(board, color, alpha, beta, ply)
+      : evaluateBoard(board, color);
+  }
+
+  const moves = getLegalMoves(color, board);
+  if (moves.length === 0) {
+    return isInCheck(color, board) ? -MATE_SCORE + ply : 0;
+  }
+
+  orderMoves(moves, board, ply);
+  let best = -Infinity;
+  for (const move of moves) {
+    const undo = applyMoveRaw(board, move.from, move.to);
+    const score = -negamax(board, opponent(color), depth - 1, -beta, -alpha, ply + 1, cfg);
+    undoMoveRaw(board, move.from, move.to, undo);
+    if (searchAborted) return best;
+    if (score > best) best = score;
+    if (score > alpha) alpha = score;
+    if (alpha >= beta) {
+      if (!move.captured) {
+        if (!killerMoves[ply]) killerMoves[ply] = [];
+        if (killerMoves[ply][0]?.from !== move.from || killerMoves[ply][0]?.to !== move.to) {
+          killerMoves[ply][1] = killerMoves[ply][0];
+          killerMoves[ply][0] = { from: move.from, to: move.to };
+        }
+        historyHeuristic[move.from * 64 + move.to] += depth * depth;
+      }
+      break;
+    }
+  }
+  return best;
+}
+
+function rootProgressScore(move, board) {
+  const piece = board[move.from];
+  let score = 0;
+  if (move.captured) score += 70 + pieceValue(move.captured) * 0.5;
+  if (move.promoted) score += 55;
+  if (piece && piece.type === "P") {
+    const advance = piece.color === "w"
+      ? rowOf(move.from) - rowOf(move.to)
+      : rowOf(move.to) - rowOf(move.from);
+    score += advance * 9;
+  }
+  const centerDistance = Math.max(Math.abs(rowOf(move.to) - 3.5), Math.abs(colOf(move.to) - 3.5));
+  score += (3.5 - centerDistance) * 2.5;
+  // Moving a piece straight back where it came from is the classic shuffle.
+  const last = state.lastMove;
+  if (last && last.color === "b" && move.to === last.from && move.from === last.to) score -= 55;
+  return score;
+}
+
+function rootRepetitionPenalty(move, avoidDraw) {
+  if (!avoidDraw) return 0;
+  const undo = applyMoveRaw(state.board, move.from, move.to);
+  const key = positionKey(state.board, opponent("b"));
+  undoMoveRaw(state.board, move.from, move.to, undo);
+  const seen = state.positionCounts[key] || 0;
+  if (seen >= 2) return 50000;
+  if (seen === 1) return 140;
+  return 0;
+}
+
 function chooseAIMove() {
+  const cfg = activeAILevel();
   const rootMoves = getLegalMoves("b", state.board);
   if (rootMoves.length === 0) return null;
   if (rootMoves.length === 1) return rootMoves[0];
 
-  const orderedRoot = orderMoves(shuffleMoves([...rootMoves]), state.board);
-  let bestMove = orderedRoot[0];
-  let bestScore = -Infinity;
-  searchDeadline = performance.now() + SEARCH_BUDGET_MS;
+  const startedAt = performance.now();
+  const avoidDraw = materialBalance(state.board, "b") > 120;
+  searchStats = { depth: 0, nodes: 0, ms: 0, aborted: false, level: state.botLevel };
+  killerMoves.length = 0;
+  historyHeuristic.fill(0);
 
-  for (let depth = 1; depth <= 3; depth += 1) {
+  orderMoves(rootMoves, state.board);
+  let bestMove = rootMoves[0];
+  let bestScore = -Infinity;
+  let rootScores = [];
+  searchDeadline = startedAt + Math.max(THINK_TIME_MIN_MS, state.thinkTimeMs);
+
+  for (let depth = 1; depth <= cfg.maxDepth; depth += 1) {
     searchAborted = false;
-    let alpha = -Infinity;
     let depthBest = null;
     let depthBestScore = -Infinity;
+    const scores = [];
 
-    const candidates = depth === 1 ? shuffleMoves([...orderedRoot]) : orderedRoot;
+    const candidates = depth === 1 ? shuffleMoves([...rootMoves]) : rootMoves;
     for (const move of candidates) {
       const undo = applyMoveRaw(state.board, move.from, move.to);
-      const score = -negamax(
-        state.board,
-        "w",
-        depth - 1,
-        -Infinity,
-        -alpha,
-        1,
-      );
+      // Full window at the root: a narrow window returns the same bound for
+      // every move that fails low, which makes unrelated moves look tied and
+      // lets tie-breaking shuffle instead of converting a win.
+      const score = -negamax(state.board, "w", depth - 1, -Infinity, Infinity, 1, cfg);
       undoMoveRaw(state.board, move.from, move.to, undo);
       if (searchAborted) break;
 
+      scores.push({ move, score });
       if (score > depthBestScore) {
         depthBestScore = score;
         depthBest = move;
       }
-      if (score > alpha) alpha = score;
     }
 
     if (!searchAborted && depthBest) {
       bestMove = depthBest;
       bestScore = depthBestScore;
+      rootScores = scores;
+      searchStats.depth = depth;
     }
     if (searchAborted || bestScore > MATE_SCORE - 1000) break;
+    if (performance.now() > searchDeadline) break;
   }
 
-  return bestMove;
+  searchStats.ms = Math.round(performance.now() - startedAt);
+  searchStats.aborted = searchAborted;
+
+  if (rootScores.length === 0) return bestMove;
+
+  // Repetition is a resource for the losing side, never for the winning side.
+  const adjusted = rootScores.map((entry) => ({
+    move: entry.move,
+    score: entry.score - rootRepetitionPenalty(entry.move, avoidDraw),
+    progress: rootProgressScore(entry.move, state.board),
+  }));
+  const maxScore = Math.max(...adjusted.map((entry) => entry.score));
+  let pool = adjusted.filter((entry) => entry.score >= maxScore - cfg.margin);
+
+  if (cfg.blunder > 0 && Math.random() < cfg.blunder) {
+    const safe = adjusted.filter((entry) => entry.score >= maxScore - 450);
+    pool = safe.length ? safe : adjusted;
+  }
+
+  if (cfg.margin <= 0) {
+    pool.sort((a, b) => b.progress - a.progress);
+    return pool[0].move;
+  }
+  return pool[Math.floor(Math.random() * pool.length)].move;
 }
 
 /* =========================================================================
@@ -1825,6 +2190,28 @@ function makeStoneTexture(baseColor, accentColor, seed, style = "marble", repeat
       ctx.fill();
     }
     ctx.globalAlpha = 1;
+  } else if (style === "slate") {
+    for (let layer = 0; layer < 22; layer += 1) {
+      const y = random() * 420 - 18;
+      ctx.beginPath();
+      for (let x = -20; x <= 404; x += 10) {
+        const wave = Math.sin(x * (0.006 + random() * 0.004) + layer) * (1.5 + random() * 4);
+        if (x === -20) ctx.moveTo(x, y + wave);
+        else ctx.lineTo(x, y + wave);
+      }
+      ctx.strokeStyle = accentColor;
+      ctx.globalAlpha = 0.04 + random() * 0.1;
+      ctx.lineWidth = 0.7 + random() * 3.4;
+      ctx.stroke();
+    }
+    for (let fleck = 0; fleck < 900; fleck += 1) {
+      const x = random() * 384;
+      const y = random() * 384;
+      ctx.globalAlpha = 0.05 + random() * 0.18;
+      ctx.fillStyle = random() > 0.6 ? "#cfe0ee" : "#0d1319";
+      ctx.fillRect(x, y, 1, 1);
+    }
+    ctx.globalAlpha = 1;
   }
 
   for (let dot = 0; dot < 360; dot += 1) {
@@ -1859,8 +2246,8 @@ function makeGlowTexture() {
 }
 
 function createMaterials() {
-  woodTextures.tileA = makeWoodTexture("#6d4528", "rgba(40,22,10,ALPHA)", 42);
-  woodTextures.tileB = makeWoodTexture("#71482b", "rgba(38,20,9,ALPHA)", 89);
+  woodTextures.tileA = makeWoodTexture("#c29a67", "rgba(96,58,26,ALPHA)", 42);
+  woodTextures.tileB = makeWoodTexture("#5b3a24", "rgba(20,10,4,ALPHA)", 89);
   woodTextures.border = makeWoodTexture("#482919", "rgba(18,9,4,ALPHA)", 17, 2.2);
   woodTextures.table = makeWoodTexture("#21130c", "rgba(0,0,0,ALPHA)", 71, 3.4);
 
@@ -1871,7 +2258,6 @@ function createMaterials() {
   });
   materials.tileB = new THREE.MeshStandardMaterial({
     map: woodTextures.tileB,
-    color: 0x7d6c5d,
     roughness: 0.84,
     metalness: 0.01,
   });
@@ -1898,16 +2284,16 @@ function createMaterials() {
     metalness: 0.01,
   });
   materials.ivory = new THREE.MeshPhysicalMaterial({
-    color: 0xe4cda2,
+    color: 0xf4e7cc,
     roughness: 0.34,
     metalness: 0.015,
     clearcoat: 0.34,
     clearcoatRoughness: 0.44,
     sheen: 0.18,
-    sheenColor: new THREE.Color(0xffe8b0),
+    sheenColor: new THREE.Color(0xfff3da),
   });
   materials.ivoryAccent = new THREE.MeshPhysicalMaterial({
-    color: 0xd9be8b,
+    color: 0xe6d2ab,
     roughness: 0.4,
     metalness: 0.01,
     clearcoat: 0.25,
@@ -1926,6 +2312,27 @@ function createMaterials() {
     roughness: 0.38,
     metalness: 0.03,
     clearcoat: 0.38,
+  });
+  // Ruby is the default opponent finish: it separates from every board tone
+  // and keeps its hue in shadow, where near-black pieces disappear.
+  materials.ruby = new THREE.MeshPhysicalMaterial({
+    color: 0xb4232c,
+    roughness: 0.33,
+    metalness: 0.06,
+    clearcoat: 0.62,
+    clearcoatRoughness: 0.3,
+    sheen: 0.34,
+    sheenColor: new THREE.Color(0xff9a86),
+    emissive: 0x2c0508,
+    emissiveIntensity: 0.3,
+  });
+  materials.rubyAccent = new THREE.MeshPhysicalMaterial({
+    color: 0x86131b,
+    roughness: 0.4,
+    metalness: 0.04,
+    clearcoat: 0.4,
+    emissive: 0x1a0204,
+    emissiveIntensity: 0.22,
   });
   materials.gold = new THREE.MeshStandardMaterial({
     color: 0xd1a84c,
@@ -1951,6 +2358,8 @@ function createMaterials() {
   const travertineDark = makeStoneTexture("#403a34", "#9a8b78", 604, "granite", 1.1);
   const jadeLight = makeStoneTexture("#d5ddcf", "#799887", 605, "marble", 1.2);
   const jadeDark = makeStoneTexture("#234c3e", "#9bc2ad", 606, "jade", 1.25);
+  const mapleLight = makeWoodTexture("#e0c9a4", "rgba(132,88,42,ALPHA)", 607, 1.15);
+  const slateDark = makeStoneTexture("#3d4854", "#9db2c4", 608, "slate", 1.2);
 
   // Honed, low-glare surfaces keep the board readable under the key light.
   const marbleLightMaterial = new THREE.MeshStandardMaterial({
@@ -1983,9 +2392,20 @@ function createMaterials() {
     roughness: 0.5,
     metalness: 0,
   });
+  const mapleLightMaterial = new THREE.MeshStandardMaterial({
+    map: mapleLight,
+    roughness: 0.66,
+    metalness: 0,
+  });
+  const slateDarkMaterial = new THREE.MeshStandardMaterial({
+    map: slateDark,
+    roughness: 0.7,
+    metalness: 0.06,
+  });
 
   materials.boardSets = {
     teak: { light: materials.tileA, dark: materials.tileB },
+    maple: { light: mapleLightMaterial, dark: slateDarkMaterial },
     carrara: { light: marbleLightMaterial, dark: marbleDarkMaterial },
     travertine: { light: travertineLightMaterial, dark: travertineDarkMaterial },
     jade: { light: jadeLightMaterial, dark: jadeDarkMaterial },
@@ -2033,11 +2453,15 @@ function addBaseFoot(parent, radius, height, material) {
 }
 
 function getSetMaterial(piece) {
-  return piece.color === "w" ? materials.ivory : materials.dark;
+  if (piece.color === "w") return materials.ivory;
+  const finish = PIECE_FINISHES[state.pieceFinish] || PIECE_FINISHES.ruby;
+  return materials[finish.darkMaterial] || materials.ruby;
 }
 
 function getSetAccent(piece) {
-  return piece.color === "w" ? materials.ivoryAccent : materials.darkAccent;
+  if (piece.color === "w") return materials.ivoryAccent;
+  const finish = PIECE_FINISHES[state.pieceFinish] || PIECE_FINISHES.ruby;
+  return materials[finish.darkAccentMaterial] || materials.rubyAccent;
 }
 
 function createKhun(piece) {
@@ -2053,6 +2477,19 @@ function createKhun(piece) {
   ], body);
   addGoldRing(group, 0.55, 0.31, 0.011);
   addGoldRing(group, 0.735, 0.247, 0.01);
+  // A small five-point crown keeps the Court Khun distinct from the Khon's
+  // spire at board distance without abandoning the carved lathe language.
+  for (let i = 0; i < 5; i += 1) {
+    const angle = (i / 5) * Math.PI * 2 - Math.PI / 2;
+    const point = addMesh(
+      group,
+      new THREE.ConeGeometry(0.026, 0.09, 12),
+      materials.gold,
+      new THREE.Vector3(Math.cos(angle) * 0.185, 0.825, Math.sin(angle) * 0.185),
+    );
+    point.rotation.z = Math.cos(angle) * 0.18;
+    point.rotation.x = -Math.sin(angle) * 0.18;
+  }
   addMesh(group, new THREE.SphereGeometry(0.038, 24, 16), materials.gold, new THREE.Vector3(0, 1.015, 0));
   return { group, height: 1.05 };
 }
@@ -2081,6 +2518,9 @@ function createKhon(piece) {
     [0.105, 0.65], [0.08, 0.71], [0.055, 0.765], [0.03, 0.815], [0, 0.865],
   ], body);
   addGoldRing(group, 0.222, 0.204, 0.009);
+  // A thin brim is the fastest visual cue that this is a Khon, not a Ma.
+  addMesh(group, new THREE.CylinderGeometry(0.238, 0.21, 0.028, 48), body, new THREE.Vector3(0, 0.4, 0));
+  addGoldRing(group, 0.397, 0.236, 0.011);
   addGoldRing(group, 0.373, 0.168, 0.008);
   addGoldRing(group, 0.455, 0.139, 0.0075);
   addMesh(group, new THREE.ConeGeometry(0.036, 0.12, 20), materials.gold, new THREE.Vector3(0, 0.915, 0));
@@ -2270,14 +2710,284 @@ function createBia(piece) {
   return { group, height: promoted ? 0.235 : 0.25 };
 }
 
+function addTournamentBase(parent, body, radius = 0.36) {
+  addMesh(
+    parent,
+    new THREE.CylinderGeometry(radius, radius * 1.1, 0.055, 8),
+    body,
+    new THREE.Vector3(0, 0.0275, 0),
+  );
+  addMesh(
+    parent,
+    new THREE.CylinderGeometry(radius * 0.84, radius * 0.94, 0.055, 40),
+    body,
+    new THREE.Vector3(0, 0.0825, 0),
+  );
+  addGoldRing(parent, 0.113, radius * 0.84, 0.008);
+}
+
+/* Tournament set — every officer gets a silhouette that cannot be mistaken
+   for another: crown, diamond, brimmed helmet, horse head, towered barge. */
+
+function createTournamentKhun(piece) {
+  const group = new THREE.Group();
+  const body = getSetMaterial(piece);
+  addTournamentBase(group, body, 0.39);
+  addLathe(group, [
+    [0, 0.11], [0.3, 0.11], [0.265, 0.17], [0.205, 0.3],
+    [0.175, 0.42], [0.185, 0.48], [0.245, 0.53], [0.265, 0.575],
+    [0.235, 0.61], [0.19, 0.63], [0.225, 0.665], [0.245, 0.705],
+    [0.225, 0.735], [0.185, 0.755], [0.205, 0.785], [0.16, 0.815],
+    [0.09, 0.84], [0, 0.85],
+  ], body);
+  addGoldRing(group, 0.545, 0.257, 0.011);
+  addGoldRing(group, 0.735, 0.22, 0.009);
+
+  // Five-point crown: a tall centre prong with two shorter guards each side.
+  for (let i = 0; i < 5; i += 1) {
+    const angle = (i / 5) * Math.PI * 2 - Math.PI / 2;
+    const tall = i === 0;
+    const h = tall ? 0.3 : 0.19;
+    const prong = addMesh(
+      group,
+      new THREE.ConeGeometry(tall ? 0.045 : 0.034, h, 4),
+      materials.gold,
+      new THREE.Vector3(Math.cos(angle) * 0.175, 0.855 + h / 2, Math.sin(angle) * 0.175),
+    );
+    prong.rotation.y = -angle;
+  }
+  addMesh(group, new THREE.SphereGeometry(0.05, 22, 16), materials.gold, new THREE.Vector3(0, 0.905, 0));
+  addMesh(group, new THREE.CylinderGeometry(0.055, 0.085, 0.07, 24), body, new THREE.Vector3(0, 0.86, 0));
+  return { group, height: 1.05 };
+}
+
+function createTournamentMet(piece) {
+  const group = new THREE.Group();
+  const body = getSetMaterial(piece);
+  addTournamentBase(group, body, 0.34);
+  addLathe(group, [
+    [0, 0.11], [0.245, 0.11], [0.215, 0.16], [0.145, 0.27],
+    [0.105, 0.38], [0.1, 0.46], [0.13, 0.52], [0.16, 0.555],
+    [0.135, 0.585], [0.105, 0.61], [0.085, 0.635], [0, 0.65],
+  ], body);
+  addGoldRing(group, 0.545, 0.152, 0.009);
+  addGoldRing(group, 0.63, 0.09, 0.007);
+  const diamond = addMesh(
+    group,
+    new THREE.OctahedronGeometry(0.145, 0),
+    body,
+    new THREE.Vector3(0, 0.775, 0),
+  );
+  diamond.scale.set(1, 1.55, 1);
+  addMesh(group, new THREE.SphereGeometry(0.032, 20, 14), materials.gold, new THREE.Vector3(0, 0.95, 0));
+  return { group, height: 0.98 };
+}
+
+function createTournamentKhon(piece) {
+  const group = new THREE.Group();
+  const body = getSetMaterial(piece);
+  addTournamentBase(group, body, 0.36);
+  addLathe(group, [
+    [0, 0.11], [0.265, 0.11], [0.235, 0.17], [0.165, 0.29],
+    [0.135, 0.38], [0.15, 0.43], [0.285, 0.465], [0.3, 0.49],
+    [0.235, 0.515], [0.19, 0.525], [0, 0.53],
+  ], body);
+  addGoldRing(group, 0.487, 0.297, 0.011);
+  // A brimmed warrior helmet: the wide disc is what separates Khon from Ma.
+  const dome = addMesh(
+    group,
+    new THREE.ConeGeometry(0.228, 0.35, 44),
+    body,
+    new THREE.Vector3(0, 0.69, 0),
+  );
+  dome.castShadow = true;
+  addGoldRing(group, 0.62, 0.155, 0.008);
+  addMesh(group, new THREE.SphereGeometry(0.036, 20, 14), materials.gold, new THREE.Vector3(0, 0.878, 0));
+  addMesh(group, new THREE.ConeGeometry(0.018, 0.08, 16), materials.gold, new THREE.Vector3(0, 0.925, 0));
+  return { group, height: 0.97 };
+}
+
+function createTournamentMa(piece) {
+  const group = new THREE.Group();
+  const body = getSetMaterial(piece);
+  addTournamentBase(group, body, 0.35);
+  addMesh(group, new THREE.CylinderGeometry(0.26, 0.31, 0.075, 40), body, new THREE.Vector3(0, 0.15, 0));
+
+  const headGroup = new THREE.Group();
+  headGroup.position.y = 0.16;
+  headGroup.rotation.y = piece.color === "w" ? Math.PI / 2 : -Math.PI / 2;
+
+  const shape = new THREE.Shape();
+  shape.moveTo(-0.25, 0.04);
+  shape.lineTo(-0.255, 0.3);
+  shape.bezierCurveTo(-0.29, 0.5, -0.22, 0.65, -0.08, 0.73);
+  shape.lineTo(-0.115, 0.92);
+  shape.lineTo(-0.005, 0.795);
+  shape.lineTo(0.06, 0.925);
+  shape.lineTo(0.115, 0.78);
+  shape.bezierCurveTo(0.27, 0.79, 0.43, 0.7, 0.52, 0.6);
+  shape.lineTo(0.635, 0.545);
+  shape.lineTo(0.615, 0.42);
+  shape.bezierCurveTo(0.46, 0.4, 0.35, 0.335, 0.27, 0.255);
+  shape.lineTo(0.21, 0.18);
+  shape.bezierCurveTo(0.17, 0.1, 0.21, 0.04, 0.27, 0.04);
+  shape.lineTo(-0.25, 0.04);
+
+  const headGeometry = new THREE.ExtrudeGeometry(shape, {
+    depth: 0.23,
+    bevelEnabled: true,
+    bevelSegments: 3,
+    steps: 1,
+    bevelSize: 0.02,
+    bevelThickness: 0.025,
+    curveSegments: 30,
+  });
+  headGeometry.translate(0, 0, -0.115);
+  addMesh(headGroup, headGeometry, body);
+
+  for (const [x, y, angle, size] of [
+    [-0.215, 0.44, -0.5, 1.05],
+    [-0.185, 0.54, -0.55, 1.0],
+    [-0.145, 0.63, -0.6, 0.9],
+    [-0.1, 0.71, -0.65, 0.78],
+  ]) {
+    const mane = addMesh(
+      headGroup,
+      new THREE.ConeGeometry(0.04 * size, 0.145 * size, 5),
+      materials.gold,
+      new THREE.Vector3(x, y, 0),
+    );
+    mane.rotation.z = angle;
+    mane.scale.x = 0.6;
+    const back = mane.clone();
+    back.position.z = -0.1;
+    headGroup.add(back);
+  }
+
+  const eyeGeometry = new THREE.SphereGeometry(0.03, 16, 12);
+  for (const side of [-1, 1]) {
+    addMesh(headGroup, eyeGeometry, materials.eye, new THREE.Vector3(0.235, 0.63, side * 0.13));
+  }
+  addBox(headGroup, 0.28, 0.028, 0.028, 0.33, 0.49, 0.13, materials.gold);
+  addBox(headGroup, 0.28, 0.028, 0.028, 0.33, 0.49, -0.13, materials.gold);
+  addMesh(
+    headGroup,
+    new THREE.TorusGeometry(0.075, 0.009, 6, 30, Math.PI * 1.25),
+    materials.gold,
+    new THREE.Vector3(0.35, 0.58, 0),
+  ).rotation.set(Math.PI / 2, 0, -0.25);
+
+  headGroup.traverse((object) => {
+    if (object.isMesh) {
+      object.castShadow = true;
+      object.receiveShadow = true;
+    }
+  });
+  group.add(headGroup);
+  return { group, height: 1.08 };
+}
+
+function createTournamentRuea(piece) {
+  const group = new THREE.Group();
+  const body = getSetMaterial(piece);
+  const accent = getSetAccent(piece);
+
+  const hull = new THREE.Shape();
+  hull.moveTo(-0.54, 0.255);
+  hull.bezierCurveTo(-0.5, 0.105, -0.43, 0.03, -0.3, 0.03);
+  hull.lineTo(0.3, 0.03);
+  hull.bezierCurveTo(0.43, 0.03, 0.5, 0.105, 0.545, 0.275);
+  hull.bezierCurveTo(0.48, 0.21, 0.42, 0.18, 0.33, 0.18);
+  hull.lineTo(-0.34, 0.18);
+  hull.bezierCurveTo(-0.43, 0.18, -0.49, 0.21, -0.54, 0.255);
+  hull.closePath();
+
+  const hullGeometry = new THREE.ExtrudeGeometry(hull, {
+    depth: 0.36,
+    bevelEnabled: true,
+    bevelSegments: 3,
+    steps: 1,
+    bevelSize: 0.018,
+    bevelThickness: 0.02,
+    curveSegments: 32,
+  });
+  hullGeometry.translate(0, 0, -0.18);
+  addMesh(group, hullGeometry, body);
+
+  addBox(group, 0.66, 0.03, 0.26, 0, 0.2, 0, accent);
+  addBox(group, 0.78, 0.02, 0.02, 0, 0.228, 0.135, materials.gold);
+  addBox(group, 0.78, 0.02, 0.02, 0, 0.228, -0.135, materials.gold);
+
+  // Crenellated cabin — the rook read, kept inside the barge silhouette.
+  addBox(group, 0.34, 0.3, 0.24, 0, 0.35, 0, accent);
+  addBox(group, 0.38, 0.045, 0.28, 0, 0.52, 0, materials.gold);
+  for (const x of [-0.125, 0, 0.125]) {
+    addBox(group, 0.085, 0.12, 0.24, x, 0.6, 0, body);
+  }
+  addBox(group, 0.085, 0.05, 0.28, 0, 0.545, 0, materials.gold);
+
+  const bowEyeGeometry = new THREE.TorusGeometry(0.04, 0.009, 6, 22);
+  for (const x of [-0.5, 0.505]) {
+    const eye = addMesh(group, bowEyeGeometry, materials.gold, new THREE.Vector3(x, 0.245, 0.18));
+    eye.rotation.y = Math.PI / 2;
+    const eyeBack = eye.clone();
+    eyeBack.position.z = -0.18;
+    group.add(eyeBack);
+  }
+  addMesh(group, new THREE.SphereGeometry(0.03, 16, 12), materials.gold, new THREE.Vector3(0.548, 0.278, 0));
+  addMesh(group, new THREE.SphereGeometry(0.028, 16, 12), materials.gold, new THREE.Vector3(-0.542, 0.258, 0));
+  return { group, height: 0.67 };
+}
+
+function createTournamentBia(piece) {
+  const group = new THREE.Group();
+  const body = getSetMaterial(piece);
+  const promoted = Boolean(piece.promoted);
+
+  addTournamentBase(group, body, promoted ? 0.33 : 0.3);
+  const shellGeometry = new THREE.SphereGeometry(0.32, 40, 24, 0, Math.PI * 2, 0, Math.PI / 2);
+  shellGeometry.scale(1, promoted ? 0.62 : 0.46, 0.74);
+  addMesh(group, shellGeometry, body, new THREE.Vector3(0, 0.115, 0));
+  addGoldRing(group, 0.135, 0.3, 0.008);
+
+  if (promoted) {
+    addMesh(group, new THREE.TorusGeometry(0.16, 0.02, 8, 48), materials.gold, new THREE.Vector3(0, 0.315, 0))
+      .rotation.x = Math.PI / 2;
+    addMesh(group, new THREE.CylinderGeometry(0.12, 0.095, 0.02, 40), getSetAccent(piece), new THREE.Vector3(0, 0.318, 0));
+    addMesh(group, new THREE.ConeGeometry(0.055, 0.2, 20), materials.gold, new THREE.Vector3(0, 0.42, 0));
+    addMesh(group, new THREE.SphereGeometry(0.03, 18, 12), materials.gold, new THREE.Vector3(0, 0.525, 0));
+  } else {
+    addBox(group, 0.16, 0.012, 0.024, 0, 0.262, 0, materials.goldDark);
+    addMesh(group, new THREE.SphereGeometry(0.02, 12, 8), materials.gold, new THREE.Vector3(-0.088, 0.263, 0));
+    addMesh(group, new THREE.SphereGeometry(0.02, 12, 8), materials.gold, new THREE.Vector3(0.088, 0.263, 0));
+  }
+
+  return { group, height: promoted ? 0.55 : 0.28 };
+}
+
+const PIECE_BUILDERS = {
+  court: {
+    K: createKhun,
+    M: createMet,
+    B: createKhon,
+    N: createMa,
+    R: createRuea,
+    P: createBia,
+  },
+  tournament: {
+    K: createTournamentKhun,
+    M: createTournamentMet,
+    B: createTournamentKhon,
+    N: createTournamentMa,
+    R: createTournamentRuea,
+    P: createTournamentBia,
+  },
+};
+
 function createPieceGroup(piece) {
-  let created;
-  if (piece.type === "K") created = createKhun(piece);
-  else if (piece.type === "M") created = createMet(piece);
-  else if (piece.type === "B") created = createKhon(piece);
-  else if (piece.type === "N") created = createMa(piece);
-  else if (piece.type === "R") created = createRuea(piece);
-  else created = createBia(piece);
+  const builders = PIECE_BUILDERS[state.pieceSet] || PIECE_BUILDERS.court;
+  const builder = builders[piece.type] || builders.P;
+  const created = builder(piece);
 
   const group = created.group;
   group.userData.height = created.height;
@@ -2412,10 +3122,10 @@ function buildBoard() {
 }
 
 function createEnvironment() {
-  const hemisphere = new THREE.HemisphereLight(0xffe3ba, 0x120a05, 1.15);
+  const hemisphere = new THREE.HemisphereLight(0xffe9c8, 0x1a1008, 1.38);
   scene.add(hemisphere);
 
-  const key = new THREE.DirectionalLight(0xffdfae, 2.2);
+  const key = new THREE.DirectionalLight(0xffdfae, 2.45);
   key.position.set(6.2, 11.5, 7.4);
   key.castShadow = true;
   key.shadow.mapSize.set(2048, 2048);
@@ -2429,15 +3139,20 @@ function createEnvironment() {
   key.shadow.normalBias = 0.018;
   scene.add(key);
 
-  const fill = new THREE.DirectionalLight(0x8cb4df, 0.62);
+  const fill = new THREE.DirectionalLight(0x8cb4df, 0.7);
   fill.position.set(-7, 5, -6);
   scene.add(fill);
+
+  // A camera-side fill keeps the near faces of dark and red pieces readable.
+  const frontFillDirectional = new THREE.DirectionalLight(0xffe0b8, 0.58);
+  frontFillDirectional.position.set(1.5, 6.5, 10);
+  scene.add(frontFillDirectional);
 
   const warmRim = new THREE.PointLight(0xffa956, 18, 14, 2);
   warmRim.position.set(-4.5, 3.7, -4);
   scene.add(warmRim);
 
-  const frontFill = new THREE.PointLight(0xffd8a2, 8, 13, 2);
+  const frontFill = new THREE.PointLight(0xffd8a2, 10, 13, 2);
   frontFill.position.set(3.5, 3, 5);
   scene.add(frontFill);
 }
@@ -2945,6 +3660,9 @@ function updateTurnUI() {
   dom.checkChip.hidden = !(state.inCheck && state.status === "playing");
   dom.checkChip.textContent = t("check");
   dom.aiChip.hidden = !state.aiThinking;
+  if (dom.aiChipLevel) {
+    dom.aiChipLevel.textContent = `${t(AI_LEVELS[state.botLevel].nameKey)} · ${(state.thinkTimeMs / 1000).toFixed(1)}s`;
+  }
   const fullMove = Math.floor(state.history.length / 2) + 1;
   dom.moveCounter.textContent = t("moveLabel", { n: fullMove });
 }
@@ -3100,12 +3818,53 @@ function updateTutor() {
   dom.tutorContent.innerHTML = "";
 }
 
+function formatThinkTime(ms) {
+  return t("thinkTimeValue", { seconds: (ms / 1000).toFixed(1) });
+}
+
+function syncBotControls() {
+  if (dom.botSettings) dom.botSettings.hidden = state.mode !== "ai";
+  if (dom.botLevelControl) {
+    dom.botLevelControl.setAttribute("aria-label", t("botLevelLabel"));
+    dom.botLevelControl.querySelectorAll("[data-bot-level]").forEach((button) => {
+      const active = button.dataset.botLevel === state.botLevel;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+  }
+  if (dom.thinkTimeInput) {
+    dom.thinkTimeInput.setAttribute("aria-label", t("thinkTimeLabel"));
+    dom.thinkTimeInput.value = String(state.thinkTimeMs);
+    dom.thinkTimeInput.setAttribute("aria-valuetext", formatThinkTime(state.thinkTimeMs));
+  }
+  if (dom.thinkTimeValue) dom.thinkTimeValue.textContent = formatThinkTime(state.thinkTimeMs);
+}
+
+function applyBotLevel(level, { persist = true } = {}) {
+  if (!AI_LEVELS[level]) return;
+  state.botLevel = level;
+  state.thinkTimeMs = AI_LEVELS[level].defaultMs;
+  syncBotControls();
+  if (persist) savePreferences();
+}
+
+function applyThinkTime(ms, { persist = true } = {}) {
+  const clamped = Math.min(
+    THINK_TIME_MAX_MS,
+    Math.max(THINK_TIME_MIN_MS, Math.round(Number(ms) / THINK_TIME_STEP_MS) * THINK_TIME_STEP_MS),
+  );
+  state.thinkTimeMs = clamped;
+  syncBotControls();
+  if (persist) savePreferences();
+}
+
 function updateModeUI() {
   dom.modeCards.forEach((card) => {
     const active = card.dataset.mode === state.mode;
     card.classList.toggle("is-active", active);
     card.setAttribute("aria-pressed", String(active));
   });
+  syncBotControls();
 }
 
 function updateAssistUI() {
@@ -3222,6 +3981,25 @@ function applyBoardMaterial(materialKey, { persist = false } = {}) {
   if (persist) savePreferences();
 }
 
+function refreshPieceGeometry() {
+  rebuildPieceMeshes();
+  if (!dom.piecePreviewModal.hidden && piecePreview.key) {
+    fitPiecePreview(piecePreview.key);
+  }
+}
+
+function applyPieceSet(setKey, { persist = false } = {}) {
+  state.pieceSet = PIECE_SETS[setKey] ? setKey : "court";
+  refreshPieceGeometry();
+  if (persist) savePreferences();
+}
+
+function applyPieceFinish(finishKey, { persist = false } = {}) {
+  state.pieceFinish = PIECE_FINISHES[finishKey] ? finishKey : "ruby";
+  refreshPieceGeometry();
+  if (persist) savePreferences();
+}
+
 function stageColorLabel() {
   if (state.stageColor === "auto") {
     return `${t("stageColorAuto")} · ${THEMES[state.theme].name[state.lang]}`;
@@ -3270,6 +4048,32 @@ function renderDisplaySettings() {
         <span class="board-material-copy">
           <strong>${material.name[state.lang]}</strong>
           <small>${material.description[state.lang]}</small>
+        </span>
+        <span class="theme-check" aria-hidden="true">✓</span>
+      </button>`;
+  }).join("");
+
+  dom.pieceSetControl.innerHTML = Object.entries(PIECE_SETS).map(([key, set]) => {
+    const active = state.pieceSet === key;
+    return `
+      <button class="board-style-option piece-option${active ? " is-active" : ""}" type="button" data-piece-set="${key}" aria-pressed="${active}">
+        <span class="piece-set-preview is-${key}" aria-hidden="true">${PIECE_SET_ICONS[key] || ""}</span>
+        <span class="board-style-copy">
+          <strong>${set.name[state.lang]}</strong>
+          <small>${set.description[state.lang]}</small>
+        </span>
+        <span class="theme-check" aria-hidden="true">✓</span>
+      </button>`;
+  }).join("");
+
+  dom.pieceFinishControl.innerHTML = Object.entries(PIECE_FINISHES).map(([key, finish]) => {
+    const active = state.pieceFinish === key;
+    return `
+      <button class="board-style-option piece-option${active ? " is-active" : ""}" type="button" data-piece-finish="${key}" aria-pressed="${active}">
+        <span class="piece-finish-preview" aria-hidden="true">${PIECE_FINISH_ICONS[key] || ""}</span>
+        <span class="board-style-copy">
+          <strong>${finish.name[state.lang]}</strong>
+          <small>${finish.description[state.lang]}</small>
         </span>
         <span class="theme-check" aria-hidden="true">✓</span>
       </button>`;
@@ -3506,6 +4310,7 @@ function renderGlossary() {
   dom.glossaryGrid.innerHTML = PIECE_ORDER.map((key) => {
     const piece = PIECES[key];
     const otherLang = state.lang === "en" ? "th" : "en";
+    const setNote = t(state.pieceSet === "tournament" ? "modelTournamentNote" : "modelCourtNote");
     return `
       <article class="glossary-card" data-piece-key="${key}" role="button" tabindex="0"
         aria-label="${t("viewIn3D")}: ${piece.name[state.lang]}">
@@ -3520,7 +4325,7 @@ function renderGlossary() {
           <span class="glossary-phonetic">${piece.role[state.lang]} · ${piece.phonetic}</span>
           <p class="glossary-lore">${piece.lore[state.lang]}</p>
           <p class="glossary-move"><b>${t("movement")}:</b> ${piece.movement[state.lang]}</p>
-          <span class="glossary-model">${piece.model[state.lang]}</span>
+          <span class="glossary-model">${piece.model[state.lang]} ${setNote}</span>
           <span class="glossary-view3d">${t("viewIn3D")} <i aria-hidden="true">↗</i></span>
         </div>
       </article>`;
@@ -3698,7 +4503,10 @@ function renderPiecePreviewCopy(key) {
   if (dom.piecePreviewRole) dom.piecePreviewRole.textContent = `${meta.role[state.lang]} · ${meta.phonetic}`;
   if (dom.piecePreviewLore) dom.piecePreviewLore.textContent = meta.lore[state.lang];
   if (dom.piecePreviewMovement) dom.piecePreviewMovement.textContent = meta.movement[state.lang];
-  if (dom.piecePreviewModel) dom.piecePreviewModel.textContent = meta.model[state.lang];
+  if (dom.piecePreviewModel) {
+    const setNote = t(state.pieceSet === "tournament" ? "modelTournamentNote" : "modelCourtNote");
+    dom.piecePreviewModel.textContent = `${meta.model[state.lang]} ${setNote}`;
+  }
   if (dom.piecePronounceButton) {
     dom.piecePronounceButton.setAttribute("aria-label", `${t("hearThai")}: ${meta.name.th}`);
   }
@@ -4399,10 +5207,14 @@ function savePreferences() {
       sound: state.sound,
       assist: state.assist,
       mode: state.mode,
+      botLevel: state.botLevel,
+      thinkTimeMs: state.thinkTimeMs,
       theme: state.theme,
       textSize: state.textSize,
       boardStyle: state.boardStyle,
       boardMaterial: state.boardMaterial,
+      pieceSet: state.pieceSet,
+      pieceFinish: state.pieceFinish,
       stageColor: state.stageColor,
     }));
   } catch {
@@ -4419,10 +5231,20 @@ function loadPreferences() {
     if (typeof prefs.sound === "boolean") state.sound = prefs.sound;
     if (typeof prefs.assist === "boolean") state.assist = prefs.assist;
     if (prefs.mode === "ai" || prefs.mode === "local") state.mode = prefs.mode;
+    if (AI_LEVELS[prefs.botLevel]) state.botLevel = prefs.botLevel;
+    if (Number.isFinite(prefs.thinkTimeMs)) {
+      const clamped = Math.min(
+        THINK_TIME_MAX_MS,
+        Math.max(THINK_TIME_MIN_MS, prefs.thinkTimeMs),
+      );
+      state.thinkTimeMs = Math.round(clamped / THINK_TIME_STEP_MS) * THINK_TIME_STEP_MS;
+    }
     if (THEMES[prefs.theme]) state.theme = prefs.theme;
     if (TEXT_SIZES[prefs.textSize]) state.textSize = prefs.textSize;
     if (BOARD_STYLES[prefs.boardStyle]) state.boardStyle = prefs.boardStyle;
     if (BOARD_MATERIALS[prefs.boardMaterial]) state.boardMaterial = prefs.boardMaterial;
+    if (PIECE_SETS[prefs.pieceSet]) state.pieceSet = prefs.pieceSet;
+    if (PIECE_FINISHES[prefs.pieceFinish]) state.pieceFinish = prefs.pieceFinish;
     if (prefs.stageColor === "auto" || /^#[0-9a-f]{6}$/i.test(String(prefs.stageColor))) {
       state.stageColor = String(prefs.stageColor).toLowerCase();
     }
@@ -4668,6 +5490,28 @@ function bindEvents() {
     });
   });
 
+  dom.botLevelControl.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-bot-level]");
+    if (!button) return;
+    applyBotLevel(button.dataset.botLevel);
+    showToast(t("botLevelChanged", { level: t(AI_LEVELS[state.botLevel].nameKey) }), "info", "◈");
+    audio.click();
+  });
+
+  dom.thinkTimeInput.addEventListener("input", () => {
+    state.thinkTimeMs = Math.min(
+      THINK_TIME_MAX_MS,
+      Math.max(THINK_TIME_MIN_MS, Math.round(Number(dom.thinkTimeInput.value) / THINK_TIME_STEP_MS) * THINK_TIME_STEP_MS),
+    );
+    if (dom.thinkTimeValue) dom.thinkTimeValue.textContent = formatThinkTime(state.thinkTimeMs);
+  });
+
+  dom.thinkTimeInput.addEventListener("change", () => {
+    applyThinkTime(dom.thinkTimeInput.value);
+    showToast(t("thinkTimeChanged", { seconds: (state.thinkTimeMs / 1000).toFixed(1) }), "info", "◷");
+    audio.click();
+  });
+
   dom.themeGrid.addEventListener("click", (event) => {
     const card = event.target.closest("[data-theme-choice]");
     if (!card) return;
@@ -4688,6 +5532,22 @@ function bindEvents() {
     const option = event.target.closest("[data-board-material]");
     if (!option) return;
     applyBoardMaterial(option.dataset.boardMaterial, { persist: true });
+    renderDisplaySettings();
+    audio.click();
+  });
+
+  dom.pieceSetControl.addEventListener("click", (event) => {
+    const option = event.target.closest("[data-piece-set]");
+    if (!option) return;
+    applyPieceSet(option.dataset.pieceSet, { persist: true });
+    renderDisplaySettings();
+    audio.click();
+  });
+
+  dom.pieceFinishControl.addEventListener("click", (event) => {
+    const option = event.target.closest("[data-piece-finish]");
+    if (!option) return;
+    applyPieceFinish(option.dataset.pieceFinish, { persist: true });
     renderDisplaySettings();
     audio.click();
   });
@@ -4732,7 +5592,9 @@ function bindEvents() {
     applyTheme("lacquer", { persist: true });
     applyTextSize("medium", { persist: true });
     applyBoardStyle("checkered", { persist: true });
-    applyBoardMaterial("teak", { persist: true });
+    applyBoardMaterial("maple", { persist: true });
+    applyPieceSet("court", { persist: true });
+    applyPieceFinish("ruby", { persist: true });
     applyStageColor("auto", { persist: true });
     renderDisplaySettings();
     audio.click();
@@ -4870,11 +5732,13 @@ boot();
 /* A small, deliberately read-friendly surface for teachers and automated
    smoke tests. It does not expose any private player information. */
 window.Makruk3D = {
-  version: "1.7.0",
+  version: "1.8.0",
   credits: APP_CREDIT,
   getState: () => ({
     turn: state.turn,
     mode: state.mode,
+    botLevel: state.botLevel,
+    thinkTimeMs: state.thinkTimeMs,
     assist: state.assist,
     lang: state.lang,
     sound: state.sound,
@@ -4882,6 +5746,8 @@ window.Makruk3D = {
     textSize: state.textSize,
     boardStyle: state.boardStyle,
     boardMaterial: state.boardMaterial,
+    pieceSet: state.pieceSet,
+    pieceFinish: state.pieceFinish,
     stageColor: state.stageColor,
     panMode,
     boardFocus,
@@ -4911,6 +5777,16 @@ window.Makruk3D = {
   },
   selectSquare,
   playMove: (from, to) => performMove(from, to),
+  setBotLevel: (level) => applyBotLevel(level),
+  setThinkTime: (ms) => applyThinkTime(ms),
+  setPieceSet: (setKey) => applyPieceSet(setKey),
+  setPieceFinish: (finishKey) => applyPieceFinish(finishKey),
+  setBoardMaterial: (materialKey) => applyBoardMaterial(materialKey),
+  previewBotMove: () => {
+    const move = chooseAIMove();
+    return move ? { from: move.from, to: move.to } : null;
+  },
+  getSearchStats: () => ({ ...searchStats }),
   newGame: () => newGame({ announce: false }),
   getView: () => ({
     panMode,

@@ -89,6 +89,7 @@
             <span class="chip chip-thinking" id="aiChip" hidden>
               <span class="thinking-dots" aria-hidden="true"><i></i><i></i><i></i></span>
               <span data-i18n="botThinking">Bot thinking</span>
+              <span class="chip-level" id="aiChipLevel"></span>
             </span>
           </div>
         </div>
@@ -185,6 +186,27 @@
               </span>
               <span class="mode-tick" aria-hidden="true">✓</span>
             </button>
+          </div>
+
+          <div class="bot-settings" id="botSettings">
+            <div class="bot-settings-head">
+              <span class="micro-label" data-i18n="botLevelLabel">Bot strength</span>
+              <small data-i18n="botLevelHint">Hard is the default. Super thinks longer and searches captures more deeply.</small>
+            </div>
+            <div class="bot-level-grid" id="botLevelControl" role="group" aria-label="Bot strength">
+              <button class="bot-level-button" type="button" data-bot-level="easy" aria-pressed="false" data-i18n="botLevelSimple">Simple</button>
+              <button class="bot-level-button" type="button" data-bot-level="medium" aria-pressed="false" data-i18n="botLevelMedium">Medium</button>
+              <button class="bot-level-button" type="button" data-bot-level="hard" aria-pressed="false" data-i18n="botLevelHard">Hard</button>
+              <button class="bot-level-button" type="button" data-bot-level="super" aria-pressed="false" data-i18n="botLevelSuper">Super Super Hard</button>
+            </div>
+            <div class="think-time">
+              <label for="thinkTimeInput">
+                <span data-i18n="thinkTimeLabel">Thinking time</span>
+                <output id="thinkTimeValue" for="thinkTimeInput">5.0 s</output>
+              </label>
+              <input type="range" id="thinkTimeInput" min="500" max="20000" step="250" value="5000"
+                aria-label="Thinking time in seconds" />
+            </div>
           </div>
         </section>
 
@@ -370,8 +392,20 @@
 
           <section class="display-section">
             <h3 data-i18n="boardMaterialHeading">Board material</h3>
-            <p data-i18n="boardMaterialSubtitle">Teak and stone table-top finishes, from classic Carrara marble to warm travertine.</p>
+            <p data-i18n="boardMaterialSubtitle">Low-glare wood and honed stone table-top finishes. Maple &amp; Slate gives the crispest piece contrast.</p>
             <div class="board-material-control" id="boardMaterialControl"></div>
+          </section>
+
+          <section class="display-section">
+            <h3 data-i18n="pieceSetHeading">Piece set</h3>
+            <p data-i18n="pieceSetSubtitle">Two hand-built families, both drawn for instant recognition. Court follows Thai tradition; Tournament exaggerates each silhouette.</p>
+            <div class="board-style-control" id="pieceSetControl"></div>
+          </section>
+
+          <section class="display-section">
+            <h3 data-i18n="opponentColourHeading">Opponent colour</h3>
+            <p data-i18n="opponentColourSubtitle">Ruby reads clearly against every board finish and cannot be mistaken for a shadow.</p>
+            <div class="board-style-control" id="pieceFinishControl"></div>
           </section>
 
           <section class="display-section">

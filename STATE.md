@@ -5,12 +5,22 @@
 
 > Latest completion snapshot for the build, post-release review features, display themes, and GitHub publication.
 
+## Release 1.8.0 — board readability and opponent strength
+
+The 1.7.0 timing and token tables below are the historical build record and are not re-measured. This release addresses three pieces of player feedback:
+
+- **Board and piece contrast.** The teak light square was raised to `#c29a67`, Maple & Slate became the default finish, and the opponent defaults to Ivory & Ruby. A camera-side fill light and a slightly higher exposure lift the near faces.
+- **Two piece families.** Court keeps the carved lathe set; Tournament adds distinct crowns for the Khun, Met, Khon, Ma, Ruea and promoted Bia. Both are selectable in Display settings.
+- **Four bot levels with an adjustable clock.** Simple, Medium, Hard and Super Super Hard start at 0.5 s, 1.5 s, 5 s and 12 s; the slider ranges 0.5–20 s. The search now uses a full-window root, quiescence on Hard/Super, killer moves, a history heuristic, repetition avoidance when ahead and an endgame mop-up term.
+
+Verification for this release is recorded in [docs/TESTING.md](docs/TESTING.md).
+
 ## Status
 
 | Field | Value |
 | --- | --- |
 | Project status | ✅ Complete and published |
-| App version | `1.7.0` |
+| App version | `1.8.0` |
 | Repository | <https://github.com/somphol/makruk-3d> |
 | Live page | <https://somphol.github.io/makruk-3d/> (GitHub Pages deployment enabled) |
 | Primary branch | `main` |
