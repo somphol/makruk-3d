@@ -44,6 +44,8 @@ Conversion test: a constructed endgame of Black Khun + Ruea + Met versus a lone 
 
 Replay test: after the bot replied, the **Replay** button animated the last move and returned `replayActive` to false; move count, turn and board signature were unchanged. A separate capture position showed the captured-piece ghost. The button is disabled while the bot is thinking and reads `Replay the opponent's last move` in Single Player.
 
+Full-game replay test: loading the 40-ply save and pressing **Replay game** rebuilt the board from the opening, advanced the bar and move record, paused, stepped forward and back, and disabled Save/Load. Exiting restored the exact 25-piece board signature, White-to-move turn and 40-ply history, re-enabled Save and hid the replay bar. No console errors.
+
 Saved-position audit: `makruk_save (3).json` replays legally through all 40 history moves and produces the same 25-piece board that the file stores; the 25 rendered meshes match the 25 board entries with no position mismatches. It is White's turn, so the bot does not move until White moves. Subsequent White moves at Hard produce a reply after the 5 s budget.
 
 Camera-during-search test: with a 5 s budget and the bot thinking, an orbit drag changed the camera position while the search continued; the bot still replied afterwards.

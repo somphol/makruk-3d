@@ -28,6 +28,7 @@ An interactive, bilingual 3D Makruk (Thai chess) academy built with vanilla HTML
 - **Instant EN ⇄ TH switching** — all headers, labels, tooltips, tutor copy, move record, result overlay, display settings, and glossary update without interrupting a match.
 - **Side-aware labels** — in Single Player the second side is called **Opponent**, not Black; its turn stone, move dots and capture labels follow the ruby finish. Pass & Play names the side **Ruby** or **Black** to match the selected finish.
 - **Replay the last move** — a **Replay** button in the Match Record re-animates the opponent's last move (including captures) without changing the position, so a long think cannot make you miss it.
+- **Replay the whole game** — **Replay game** rebuilds the match from the initial position and animates every stored move, with play/pause, previous/next and exit controls. The live position is restored exactly when you leave.
 - **Readable coordinates** — file and rank labels are large, outlined and repeated on all four edges of the board.
 - **Live camera while the bot thinks** — the search yields to the browser every ~70 ms, so you can still orbit and zoom the board during a long think.
 - **Display controls on the board** — a **Display** button in the stage toolbar opens theme, piece, opponent-colour and text-size settings, so the customisation is not buried in the sidebar.
@@ -111,7 +112,13 @@ The opponent defaults to **Ivory & Ruby** because a near-black piece can vanish 
 | Hard | 5 s | Quiescence search, full-window root scoring and a winning mop-up term. |
 | Super Super Hard | 12 s | The same engine with the deepest budget and no randomness. |
 
-The slider ranges from 0.5 s to 20 s. Choosing a level resets the slider to that level's preset; after that you can dial it freely. A longer budget lets iterative deepening reach further, but the level's search depth, quiescence and blunder policy still apply. Search runs on the main thread, so the board pauses while the bot thinks; the thinking chip names the level and budget.
+The slider ranges from 0.5 s to 20 s. Choosing a level resets the slider to that level's preset; after that you can dial it freely. A longer budget lets iterative deepening reach further, but the level's search depth, quiescence and blunder policy still apply. The search yields to the browser while it runs, so the board stays orbitable during a long think; the thinking chip names the level and budget.
+
+### Replay
+
+- **Replay** in the Match Record header replays the last move, including a captured-piece ghost, without changing the position.
+- **Replay game** in the actions panel rebuilds the match from the opening and animates every stored move. A floating bar provides play/pause, previous, next and exit. Save and Load are disabled while the replay runs.
+- On exit, the live board, turn, captures, move record and result status are restored exactly. Replay never overwrites the autosave.
 
 ## Camera controls
 

@@ -123,6 +123,16 @@
             </span>
           </div>
 
+          <div class="replay-bar" id="replayBar" hidden>
+            <span class="replay-step" id="replayStepLabel">0 / 0</span>
+            <span class="replay-divider" aria-hidden="true"></span>
+            <button class="replay-button" id="replayPrev" type="button" aria-label="Previous move" title="Previous move">⏮</button>
+            <button class="replay-button replay-play" id="replayToggle" type="button" aria-label="Pause replay" title="Pause replay">❚❚</button>
+            <button class="replay-button" id="replayNext" type="button" aria-label="Next move" title="Next move">⏭</button>
+            <span class="replay-divider" aria-hidden="true"></span>
+            <button class="replay-exit" id="replayExit" type="button" aria-label="Exit replay" title="Exit replay">✕</button>
+          </div>
+
           <div class="scene-loader" id="sceneLoader">
             <span class="loader-mark" aria-hidden="true">ม</span>
             <span class="loader-line"></span>
@@ -293,6 +303,10 @@
             <span aria-hidden="true">🎨</span>
             <span data-i18n="openDisplay">Theme, pieces &amp; text</span>
             <span class="display-entry-arrow" aria-hidden="true">→</span>
+          </button>
+          <button class="button button-quiet replay-entry" id="replayGameButton" type="button" hidden>
+            <span aria-hidden="true">▸</span>
+            <span data-i18n="replayGame">Replay game</span>
           </button>
           <div class="action-grid">
             <button class="button button-quiet" id="saveButton" type="button">

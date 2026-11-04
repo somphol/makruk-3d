@@ -16,7 +16,7 @@ A single-page, bilingual 3D **Makruk** academy delivered as three static files p
 - **Bot:** Four levels (Simple, Medium, Hard, Super Super Hard) with a 0.5–20 s thinking-time slider, quiescence search, a repetition-aware root and an endgame mop-up term.
 - **Audio:** synthesised Web Audio effects plus seven bundled Thai WAVs, with browser speech synthesis as fallback.
 - **Persistence:** `localStorage` autosave, `makruk_save.json` download and restore.
-- **Release:** **1.8.2**, MIT, deployed on GitHub Pages.
+- **Release:** **1.8.3**, MIT, deployed on GitHub Pages.
 
 **Not reproduced:** Thai endgame counting rules, 50-move rule, draw agreement, resignation, server play, accounts, a strong engine, or international-chess rules. See §9.
 
@@ -272,7 +272,7 @@ python3 -m http.server 8080
 In the console:
 
 ```js
-Makruk3D.version                       // "1.8.2"
+Makruk3D.version                       // "1.8.3"
 Makruk3D.getLegalMoves().length        // 23 at the opening
 Makruk3D.playMove(44, 36)              // true (e3–e4); bot replies
 Makruk3D.getState().moveCount          // 2 after the reply

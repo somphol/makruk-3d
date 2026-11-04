@@ -91,6 +91,16 @@ const I18N = {
     replayOpponentMove: "Replay the opponent's last move",
     replayLastMoveShort: "Replay",
     replayingShort: "Replaying…",
+    replayGame: "Replay game",
+    replayGameTitle: "Replay the whole game",
+    replayProgress: "{current} / {total}",
+    replayPlay: "Play replay",
+    replayPause: "Pause replay",
+    replayPrev: "Previous move",
+    replayNext: "Next move",
+    replayExit: "Exit replay",
+    replayFinished: "Replay finished",
+    replayStarted: "Replaying the game — use the controls to pause, step or exit.",
     recordEmpty: "The first move is yours.",
     recordReady: "Ready to play",
     newGame: "New Game",
@@ -325,6 +335,16 @@ const I18N = {
     replayOpponentMove: "เล่นซ้ำตาของคู่ต่อสู้",
     replayLastMoveShort: "เล่นซ้ำ",
     replayingShort: "กำลังเล่นซ้ำ…",
+    replayGame: "เล่นซ้ำทั้งเกม",
+    replayGameTitle: "เล่นซ้ำทั้งเกม",
+    replayProgress: "{current} / {total}",
+    replayPlay: "เล่นต่อ",
+    replayPause: "หยุดพัก",
+    replayPrev: "ตาก่อนหน้า",
+    replayNext: "ตาถัดไป",
+    replayExit: "ออกจากการเล่นซ้ำ",
+    replayFinished: "เล่นซ้ำจบแล้ว",
+    replayStarted: "กำลังเล่นซ้ำทั้งเกม — ใช้ปุ่มควบคุมเพื่อหยุด ทีละตา หรือออก",
     recordEmpty: "ตาแรกเป็นของคุณ",
     recordReady: "พร้อมเล่น",
     newGame: "เริ่มเกมใหม่",
@@ -924,6 +944,13 @@ const dom = {
   plyCount: $("#plyCount"),
   replayLastMove: $("#replayLastMove"),
   replayLastMoveLabel: $("#replayLastMoveLabel"),
+  replayGameButton: $("#replayGameButton"),
+  replayBar: $("#replayBar"),
+  replayStepLabel: $("#replayStepLabel"),
+  replayPrev: $("#replayPrev"),
+  replayToggle: $("#replayToggle"),
+  replayNext: $("#replayNext"),
+  replayExit: $("#replayExit"),
   recordStatus: $("#recordStatus"),
   recordStatusDot: $(".record-status-dot"),
   newGameButton: $("#newGameButton"),
@@ -1187,6 +1214,14 @@ let resultTimer = null;
 let replayTimer = null;
 let lastFocusedElement = null;
 const replayFx = [];
+const gameReplay = {
+  active: false,
+  playing: false,
+  index: 0,
+  timer: null,
+  snapshot: null,
+  duration: 850,
+};
 
 const state = {
   board: [],
@@ -1563,6 +1598,7 @@ function evaluateGameState() {
 }
 
 function resetGameState() {
+  abortGameReplay();
   clearTimeout(aiTimer);
   clearTimeout(resultTimer);
   clearTimeout(replayTimer);
@@ -1628,7 +1664,7 @@ function isTerminal() {
 }
 
 function canHumanInteract() {
-  if (isTerminal() || state.aiThinking || state.replayActive) return false;
+  if (isTerminal() || state.aiThinking || state.replayActive || gameReplay.active) return false;
   if (state.mode === "ai" && state.turn === "b") return false;
   return true;
 }
@@ -3760,7 +3796,7 @@ function finishReplay() {
 }
 
 function replayLastMove() {
-  if (!sceneReady || !state.lastMove || state.aiThinking || state.replayActive) return false;
+  if (!sceneReady || !state.lastMove || state.aiThinking || state.replayActive || gameReplay.active) return false;
   const move = state.lastMove;
   const piece = state.board[move.to];
   const entry = piece ? meshById.get(piece.id) : null;
@@ -3784,6 +3820,278 @@ function replayLastMove() {
 
   replayTimer = window.setTimeout(finishReplay, 1000);
   return true;
+}
+
+/* =========================================================================
+   Full-game replay
+   ========================================================================= */
+
+function snapshotLiveGame() {
+  return {
+    board: state.board.map((piece) => (piece ? { ...piece } : null)),
+    turn: state.turn,
+    captured: {
+      w: state.captured.w.map((piece) => ({ ...piece })),
+      b: state.captured.b.map((piece) => ({ ...piece })),
+    },
+    history: state.history.slice(),
+    lastMove: state.lastMove ? { ...state.lastMove } : null,
+    status: state.status,
+    statusReason: state.statusReason,
+    winner: state.winner,
+    inCheck: state.inCheck,
+    halfmove: state.halfmove,
+    positionCounts: { ...state.positionCounts },
+    selected: state.selected,
+    selectedMoves: state.selectedMoves.slice(),
+  };
+}
+
+function resetReplayPosition() {
+  state.board = createStartingBoard();
+  state.turn = "w";
+  state.captured = { w: [], b: [] };
+  state.history = [];
+  state.lastMove = null;
+  state.status = "playing";
+  state.statusReason = "";
+  state.winner = null;
+  state.inCheck = false;
+  state.halfmove = 0;
+  state.selected = null;
+  state.selectedMoves = [];
+  state.positionCounts = { [positionKey()]: 1 };
+}
+
+function applyReplayMove(move, { animate = true, sound = true, ui = true } = {}) {
+  const moving = state.board[move.from];
+  if (!moving) return false;
+  const captured = state.board[move.to] || null;
+  const undo = applyMoveRaw(state.board, move.from, move.to);
+  state.turn = opponent(state.turn);
+  state.halfmove = captured || moving.type === "P" ? 0 : state.halfmove + 1;
+  if (captured) {
+    state.captured[moving.color].push({
+      type: captured.type,
+      color: captured.color,
+      promoted: captured.promoted,
+    });
+  }
+  state.lastMove = {
+    from: move.from,
+    to: move.to,
+    color: moving.color,
+    type: moving.type,
+    promoted: moving.promoted,
+    promotionThisMove: undo.promotedNow,
+    captured: captured ? captured.type : null,
+  };
+  state.history.push({ ...move });
+  registerPosition();
+  updateGameStatus();
+  state.selected = null;
+  state.selectedMoves = [];
+
+  if (sound) {
+    if (undo.promotedNow) audio.promote();
+    else if (captured) audio.capture();
+    else audio.move();
+  }
+  if (ui) {
+    syncPieceMeshes({ animate });
+    renderHighlights();
+    updateAllUI();
+  }
+  return true;
+}
+
+function renderReplayPosition(index) {
+  if (!gameReplay.active) return;
+  const total = gameReplay.snapshot?.history.length || 0;
+  const target = Math.max(0, Math.min(total, index));
+  clearTimeout(gameReplay.timer);
+  gameReplay.timer = null;
+  gameReplay.index = target;
+  resetReplayPosition();
+  for (let i = 0; i < target; i += 1) {
+    applyReplayMove(gameReplay.snapshot.history[i], { animate: false, sound: false, ui: false });
+  }
+  rebuildPieceMeshes();
+  renderHighlights();
+  updateAllUI();
+  updateReplayBar();
+}
+
+function updateReplayBar() {
+  if (!dom.replayBar) return;
+  dom.replayBar.hidden = !gameReplay.active;
+  if (!gameReplay.active) return;
+  const total = gameReplay.snapshot?.history.length || 0;
+  if (dom.replayStepLabel) {
+    dom.replayStepLabel.textContent = t("replayProgress", {
+      current: gameReplay.index,
+      total,
+    });
+  }
+  if (dom.replayToggle) {
+    dom.replayToggle.textContent = gameReplay.playing ? "❚❚" : "▶";
+    const label = gameReplay.playing ? t("replayPause") : t("replayPlay");
+    dom.replayToggle.setAttribute("aria-label", label);
+    dom.replayToggle.title = label;
+  }
+  if (dom.replayPrev) {
+    dom.replayPrev.disabled = gameReplay.index <= 0;
+    dom.replayPrev.setAttribute("aria-label", t("replayPrev"));
+    dom.replayPrev.title = t("replayPrev");
+  }
+  if (dom.replayNext) {
+    dom.replayNext.disabled = gameReplay.index >= total;
+    dom.replayNext.setAttribute("aria-label", t("replayNext"));
+    dom.replayNext.title = t("replayNext");
+  }
+  if (dom.replayExit) {
+    dom.replayExit.setAttribute("aria-label", t("replayExit"));
+    dom.replayExit.title = t("replayExit");
+  }
+}
+
+function scheduleReplayStep(delay = gameReplay.duration) {
+  clearTimeout(gameReplay.timer);
+  gameReplay.timer = null;
+  if (!gameReplay.active || !gameReplay.playing) return;
+  const total = gameReplay.snapshot?.history.length || 0;
+  if (gameReplay.index >= total) {
+    gameReplay.playing = false;
+    updateReplayBar();
+    return;
+  }
+  gameReplay.timer = window.setTimeout(() => {
+    if (!gameReplay.active || !gameReplay.playing) return;
+    applyReplayMove(gameReplay.snapshot.history[gameReplay.index]);
+    gameReplay.index += 1;
+    updateReplayBar();
+    if (isTerminal() || gameReplay.index >= total) {
+      gameReplay.playing = false;
+      updateReplayBar();
+      return;
+    }
+    scheduleReplayStep();
+  }, delay);
+}
+
+function startGameReplay() {
+  if (gameReplay.active || state.aiThinking || state.replayActive || !sceneReady) return false;
+  if (!state.history.length) return false;
+
+  gameReplay.snapshot = snapshotLiveGame();
+  gameReplay.active = true;
+  gameReplay.playing = true;
+  gameReplay.index = 0;
+  clearTimeout(replayTimer);
+  replayTimer = null;
+
+  if (dom.saveButton) dom.saveButton.disabled = true;
+  if (dom.loadButton) dom.loadButton.disabled = true;
+  resetReplayPosition();
+  rebuildPieceMeshes();
+  renderHighlights();
+  updateAllUI();
+  updateReplayBar();
+  scheduleReplayStep(600);
+  showToast(t("replayStarted"), "info", "▸");
+  return true;
+}
+
+function pauseGameReplay() {
+  gameReplay.playing = false;
+  clearTimeout(gameReplay.timer);
+  gameReplay.timer = null;
+  updateReplayBar();
+}
+
+function stepGameReplay(delta) {
+  if (!gameReplay.active) return;
+  pauseGameReplay();
+  const total = gameReplay.snapshot?.history.length || 0;
+  if (delta > 0 && gameReplay.index < total) {
+    applyReplayMove(gameReplay.snapshot.history[gameReplay.index]);
+    gameReplay.index += 1;
+    updateReplayBar();
+    if (isTerminal()) gameReplay.playing = false;
+    return;
+  }
+  renderReplayPosition(Math.max(0, Math.min(total, gameReplay.index + delta)));
+}
+
+function toggleGameReplayPlay() {
+  if (!gameReplay.active) return;
+  if (gameReplay.playing) {
+    pauseGameReplay();
+    return;
+  }
+  const total = gameReplay.snapshot?.history.length || 0;
+  if (gameReplay.index >= total) {
+    renderReplayPosition(0);
+  }
+  gameReplay.playing = true;
+  updateReplayBar();
+  scheduleReplayStep(300);
+}
+
+function exitGameReplay() {
+  if (!gameReplay.active) return;
+  clearTimeout(gameReplay.timer);
+  gameReplay.timer = null;
+  gameReplay.active = false;
+  gameReplay.playing = false;
+  const snapshot = gameReplay.snapshot;
+  gameReplay.snapshot = null;
+  if (snapshot) {
+    state.board = snapshot.board.map((piece) => (piece ? { ...piece } : null));
+    state.turn = snapshot.turn;
+    state.captured = {
+      w: snapshot.captured.w.map((piece) => ({ ...piece })),
+      b: snapshot.captured.b.map((piece) => ({ ...piece })),
+    };
+    state.history = snapshot.history.slice();
+    state.lastMove = snapshot.lastMove ? { ...snapshot.lastMove } : null;
+    state.status = snapshot.status;
+    state.statusReason = snapshot.statusReason;
+    state.winner = snapshot.winner;
+    state.inCheck = snapshot.inCheck;
+    state.halfmove = snapshot.halfmove;
+    state.positionCounts = { ...snapshot.positionCounts };
+    state.selected = snapshot.selected;
+    state.selectedMoves = snapshot.selectedMoves.slice();
+  }
+  state.aiThinking = false;
+  state.replayActive = false;
+  if (dom.replayBar) dom.replayBar.hidden = true;
+  if (dom.saveButton) dom.saveButton.disabled = false;
+  if (dom.loadButton) dom.loadButton.disabled = false;
+  rebuildPieceMeshes();
+  renderHighlights();
+  updateAllUI();
+  saveGameToStorage();
+  if (isTerminal()) {
+    window.setTimeout(() => {
+      if (isTerminal()) showResultModal();
+    }, 300);
+  } else if (state.mode === "ai" && state.turn === "b") {
+    scheduleAI();
+  }
+}
+
+function abortGameReplay() {
+  if (!gameReplay.active) return;
+  clearTimeout(gameReplay.timer);
+  gameReplay.timer = null;
+  gameReplay.active = false;
+  gameReplay.playing = false;
+  gameReplay.snapshot = null;
+  if (dom.replayBar) dom.replayBar.hidden = true;
+  if (dom.saveButton) dom.saveButton.disabled = false;
+  if (dom.loadButton) dom.loadButton.disabled = false;
 }
 
 /* =========================================================================
@@ -3853,8 +4161,9 @@ function updateTurnUI() {
 function updateReplayButton() {
   if (!dom.replayLastMove) return;
   const move = state.lastMove;
-  dom.replayLastMove.hidden = !move;
-  const available = Boolean(move) && !state.aiThinking && !state.replayActive;
+  const replaying = gameReplay.active;
+  dom.replayLastMove.hidden = !move || replaying;
+  const available = Boolean(move) && !state.aiThinking && !state.replayActive && !replaying;
   dom.replayLastMove.disabled = !available;
   const opponentMove = Boolean(move) && state.mode === "ai" && move.color === "b";
   const labelKey = opponentMove ? "replayOpponentMove" : "replayLastMove";
@@ -3862,6 +4171,13 @@ function updateReplayButton() {
   dom.replayLastMove.title = available ? t(labelKey) : shortLabel;
   dom.replayLastMove.setAttribute("aria-label", t(labelKey));
   if (dom.replayLastMoveLabel) dom.replayLastMoveLabel.textContent = shortLabel;
+
+  if (dom.replayGameButton) {
+    dom.replayGameButton.hidden = replaying || state.history.length === 0;
+    dom.replayGameButton.disabled = state.aiThinking || state.replayActive || state.history.length === 0;
+    dom.replayGameButton.title = t("replayGameTitle");
+    dom.replayGameButton.setAttribute("aria-label", t("replayGameTitle"));
+  }
 }
 
 function renderRecordStatus() {
@@ -4505,6 +4821,7 @@ function updateAllUI() {
   updateSoundUI();
   updateTurnUI();
   updateReplayButton();
+  updateReplayBar();
   renderRecordStatus();
   renderMoveList();
   renderCaptures();
@@ -5240,7 +5557,7 @@ function performMove(from, to, { fromAI = false } = {}) {
 function scheduleAI() {
   clearTimeout(aiTimer);
   aiTimer = null;
-  if (state.mode !== "ai" || state.turn !== "b" || isTerminal()) {
+  if (gameReplay.active || state.mode !== "ai" || state.turn !== "b" || isTerminal()) {
     if (state.aiThinking) {
       state.aiThinking = false;
       updateAllUI();
@@ -5515,6 +5832,7 @@ function restoreGameFromPayload(payload, { announce = true, auto = false } = {})
   clearTimeout(aiTimer);
   clearTimeout(resultTimer);
   clearTimeout(replayTimer);
+  abortGameReplay();
   replayTimer = null;
   state.replayActive = false;
   searchGeneration += 1;
@@ -5695,6 +6013,25 @@ function bindEvents() {
   dom.saveButton.addEventListener("click", downloadSave);
   dom.replayLastMove.addEventListener("click", () => {
     if (replayLastMove()) audio.click();
+  });
+  dom.replayGameButton.addEventListener("click", () => {
+    if (startGameReplay()) audio.click();
+  });
+  dom.replayPrev.addEventListener("click", () => {
+    stepGameReplay(-1);
+    audio.click();
+  });
+  dom.replayNext.addEventListener("click", () => {
+    stepGameReplay(1);
+    audio.click();
+  });
+  dom.replayToggle.addEventListener("click", () => {
+    toggleGameReplayPlay();
+    audio.click();
+  });
+  dom.replayExit.addEventListener("click", () => {
+    exitGameReplay();
+    audio.click();
   });
   dom.loadButton.addEventListener("click", () => {
     audio.click();
@@ -5974,7 +6311,7 @@ boot();
 /* A small, deliberately read-friendly surface for teachers and automated
    smoke tests. It does not expose any private player information. */
 window.Makruk3D = {
-  version: "1.8.2",
+  version: "1.8.3",
   credits: APP_CREDIT,
   getState: () => ({
     turn: state.turn,
@@ -6001,6 +6338,8 @@ window.Makruk3D = {
     selected: state.selected,
     aiThinking: state.aiThinking,
     replayActive: state.replayActive,
+    gameReplayActive: gameReplay.active,
+    gameReplayIndex: gameReplay.index,
   }),
   getLegalMoves: () => getLegalMoves(state.turn, state.board).map((move) => ({
     from: move.from,
@@ -6029,6 +6368,8 @@ window.Makruk3D = {
   selectSquare,
   playMove: (from, to) => performMove(from, to),
   replayLastMove: () => replayLastMove(),
+  replayGame: () => startGameReplay(),
+  exitGameReplay: () => exitGameReplay(),
   setBotLevel: (level) => applyBotLevel(level),
   setThinkTime: (ms) => applyThinkTime(ms),
   setPieceSet: (setKey) => applyPieceSet(setKey),

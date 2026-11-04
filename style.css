@@ -761,6 +761,86 @@ html[data-piece-finish="ruby"] .turn-stone.is-black {
   fill: currentColor;
 }
 
+.replay-bar {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  z-index: 4;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 8px;
+  border: 1px solid rgba(214, 179, 106, 0.3);
+  border-radius: 999px;
+  color: var(--cream-dim);
+  background: rgba(10, 7, 4, 0.82);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 244, 218, 0.06);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.replay-bar[hidden] {
+  display: none;
+}
+
+.replay-step {
+  padding: 0 7px;
+  color: var(--gold-bright);
+  font-size: calc(9px * var(--text-scale));
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.replay-divider {
+  width: 1px;
+  height: 17px;
+  background: rgba(214, 179, 106, 0.24);
+}
+
+.replay-button,
+.replay-exit {
+  width: 27px;
+  height: 27px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(214, 179, 106, 0.18);
+  border-radius: 50%;
+  color: var(--gold);
+  background: rgba(214, 179, 106, 0.05);
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.replay-button:hover:not(:disabled),
+.replay-exit:hover {
+  color: var(--gold-bright);
+  border-color: rgba(214, 179, 106, 0.5);
+  background: rgba(214, 179, 106, 0.14);
+}
+
+.replay-button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.replay-play {
+  width: 31px;
+  height: 31px;
+  color: var(--gold-bright);
+  border-color: rgba(214, 179, 106, 0.46);
+  background: rgba(214, 179, 106, 0.13);
+}
+
+.replay-exit {
+  font-size: 12px;
+  color: var(--muted);
+}
+
 .assist-pill {
   transition: opacity 180ms ease, border-color 180ms ease;
 }
@@ -1837,6 +1917,20 @@ html[data-piece-finish="ruby"] .move-stone.is-black {
 
 .display-entry:hover .display-entry-arrow {
   transform: translateX(3px);
+}
+
+.replay-entry {
+  width: 100%;
+  justify-content: flex-start;
+  color: var(--gold);
+  border-color: rgba(214, 179, 106, 0.22);
+  background: rgba(8, 5, 3, 0.24);
+}
+
+.replay-entry:hover {
+  color: var(--gold-bright);
+  border-color: rgba(214, 179, 106, 0.44);
+  background: rgba(8, 5, 3, 0.38);
 }
 
 .text-button {

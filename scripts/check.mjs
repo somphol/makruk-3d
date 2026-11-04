@@ -22,7 +22,7 @@ function ok(condition, label, detail = "") {
   return condition;
 }
 
-const VERSION = "1.8.2";
+const VERSION = "1.8.3";
 
 const required = [
   "index.html",
@@ -224,6 +224,8 @@ const featured = [
   ["AI", "async function chooseAIMove("],
   ["AI", "function yieldToBrowser("],
   ["AI", "function replayLastMove("],
+  ["AI", "function startGameReplay("],
+  ["AI", "function applyReplayMove("],
   ["AI", 'boardMaterial: "jade"'],
   ["AI", 'pieceFinish: "ruby"'],
   ["AI", 'botLevel: "hard"'],
@@ -238,7 +240,7 @@ const sections = {
 for (const [section, needle] of featured) {
   ok(sections[section].includes(needle), `missing feature wiring (${section})`, needle);
 }
-for (const id of ["pieceSetControl", "pieceFinishControl", "botLevelControl", "thinkTimeInput", "aiChipLevel", "displayButtonStage", "capturedByBlackLabel", "replayLastMove"]) {
+for (const id of ["pieceSetControl", "pieceFinishControl", "botLevelControl", "thinkTimeInput", "aiChipLevel", "displayButtonStage", "capturedByBlackLabel", "replayLastMove", "replayGameButton", "replayBar", "replayToggle", "replayExit"]) {
   ok(html.includes(`id="${id}"`), "index.html is missing control", id);
   ok(script.includes(`#${id}`), "script.js does not cache control", id);
 }

@@ -5,7 +5,7 @@
 
 > Latest completion snapshot for the build, post-release review features, display themes, and GitHub publication.
 
-## Release 1.8.2 — replay, readable coordinates and a responsive search
+## Release 1.8.3 — full-game replay
 
 The 1.7.0 timing and token tables below are the historical build record and are not re-measured. This release addresses three pieces of player feedback:
 
@@ -14,6 +14,7 @@ The 1.7.0 timing and token tables below are the historical build record and are 
 - **Four bot levels with an adjustable clock.** Simple, Medium, Hard and Super Super Hard start at 0.5 s, 1.5 s, 5 s and 12 s; the slider ranges 0.5–20 s. The search now uses a full-window root, quiescence on Hard/Super, killer moves, a history heuristic, repetition avoidance when ahead and an endgame mop-up term.
 - **1.8.1 UI pass.** Jade & Slate became the default board; the bot selector became a set of ranked strength cards with a custom slider; player-facing labels are side-aware ("Opponent" in Single Player, "Ruby" or "Black" in Pass & Play); the thinking chip uses an hourglass; and a Display button now sits in the board toolbar.
 - **1.8.2 replay and readability.** Coordinate labels are larger, outlined and repeated on all four edges. The match record carries a **Replay** button that re-animates the last move (with a captured-piece ghost) without touching the position. The AI search yields to the browser every ~70 ms, so orbiting and zooming remain available while the bot thinks.
+- **1.8.3 full-game replay.** A **Replay game** button in the actions panel rebuilds the match from the initial position and animates every stored move. A floating bar offers play/pause, previous/next and exit; exiting restores the live board, turn, captures, history and status exactly. Replay is read-only: Save and Load are disabled while it runs.
 
 Verification for this release is recorded in [docs/TESTING.md](docs/TESTING.md).
 
@@ -22,7 +23,7 @@ Verification for this release is recorded in [docs/TESTING.md](docs/TESTING.md).
 | Field | Value |
 | --- | --- |
 | Project status | ✅ Complete and published |
-| App version | `1.8.2` |
+| App version | `1.8.3` |
 | Repository | <https://github.com/somphol/makruk-3d> |
 | Live page | <https://somphol.github.io/makruk-3d/> (GitHub Pages deployment enabled) |
 | Primary branch | `main` |

@@ -163,6 +163,8 @@ Materials are `MeshPhysicalMaterial` ivory/ruby/dark for pieces, `MeshStandardMa
 
 `replayLastMove()` animates the existing mesh from the stored `from` square to `to`, spawns a temporary ghost for a captured piece, and restores the mesh at the end. It never edits the board, history, turn or repetition counts; `state.replayActive` blocks board input for the ~1 s replay.
 
+`startGameReplay()` snapshots the live state, resets to `createStartingBoard()`, and steps `snapshot.history` through `applyReplayMove()` (a silent apply that updates the board, capture tray and move record but never calls `performMove`, the AI scheduler or autosave). The floating `#replayBar` drives `stepGameReplay`, `toggleGameReplayPlay` and `exitGameReplay`; exit restores the snapshot and rebuilds the meshes. Save and Load are disabled while `gameReplay.active`.
+
 `renderGlossary()` rebuilds seven `PIECE_ORDER` cards from `PIECES` and six rule cards from `I18N.rule1…rule6`. Cards are `role="button"`, keyboard-activatable, and carry a `data-pronounce` speaker button plus `data-piece-key` for the 3D preview.
 
 `renderStalemateReview()` builds a 64-cell mini-board from the final position, finds the side to move's Khun, enumerates all eight adjacent squares with `attackersOnSquare`, and classifies each as attacked, blocked by a friendly piece, or open. Only attacked/blocked squares are listed. `showStalemateReview()` is offered only when `status === "stalemate"`.
