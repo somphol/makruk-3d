@@ -72,7 +72,11 @@ const I18N = {
     botLevelHard: "Hard",
     botLevelSuper: "Super Super Hard",
     botLevelChanged: "Bot strength: {level}",
-    botLevelHint: "Hard is the default. Super thinks longer and searches captures more deeply.",
+    botLevelSubtitle: "Four strengths share one engine. Each preset starts at its own thinking time; the slider below fine-tunes it.",
+    botLevelSimpleMeta: "Shallow · 0.5 s",
+    botLevelMediumMeta: "Club · 1.5 s",
+    botLevelHardMeta: "Deep · 5 s",
+    botLevelSuperMeta: "Deepest · 12 s",
     thinkTimeLabel: "Thinking time",
     thinkTimeValue: "{seconds} s",
     thinkTimeChanged: "Thinking time: {seconds} s",
@@ -89,10 +93,11 @@ const I18N = {
     saveMatch: "Save Match",
     loadMatch: "Load Match",
     openGlossary: "Open the illustrated Makruk glossary",
-    openDisplay: "Theme & text size",
+    openDisplay: "Theme, pieces & text",
+    openDisplayShort: "Display",
     displayEyebrow: "READING COMFORT",
     displayTitle: "Display & reading",
-    displaySubtitle: "Choose a board-house palette and a type size that feels comfortable.",
+    displaySubtitle: "Choose a board palette, a piece family, an opponent colour and a type size that feels comfortable.",
     themeHeading: "Board-house theme",
     themeSubtitle: "Four moods drawn from Thai court interiors.",
     boardPatternHeading: "Board pattern",
@@ -158,6 +163,13 @@ const I18N = {
 
     white: "White",
     black: "Black",
+    opponent: "Opponent",
+    turnToMove: "{side} to move",
+    turnInCheck: "{side} is in check",
+    turnThinkingSide: "{side} is thinking…",
+    sideWins: "{side} wins",
+    checkmateBy: "{side} delivered checkmate. The lord has nowhere left to stand.",
+    capturedBy: "Captured by {side}",
     turnWhite: "White to move",
     turnBlack: "Black to move",
     turnWhiteCheck: "White is in check",
@@ -290,7 +302,11 @@ const I18N = {
     botLevelHard: "ยาก",
     botLevelSuper: "ยากสุด ๆ",
     botLevelChanged: "ระดับบอท: {level}",
-    botLevelHint: "ค่าเริ่มต้นคือยาก ส่วนยากสุด ๆ จะคิดนานขึ้นและค้นหาการกินลึกกว่า",
+    botLevelSubtitle: "ทั้งสี่ระดับใช้เอนจินเดียวกัน แต่ละระดับเริ่มที่เวลาคิดของตัวเอง แล้วปรับละเอียดได้ด้วยแถบด้านล่าง",
+    botLevelSimpleMeta: "ตื้น · 0.5 วินาที",
+    botLevelMediumMeta: "ระดับคลับ · 1.5 วินาที",
+    botLevelHardMeta: "ลึก · 5 วินาที",
+    botLevelSuperMeta: "ลึกที่สุด · 12 วินาที",
     thinkTimeLabel: "เวลาคิด",
     thinkTimeValue: "{seconds} วินาที",
     thinkTimeChanged: "เวลาคิด: {seconds} วินาที",
@@ -307,10 +323,11 @@ const I18N = {
     saveMatch: "บันทึกแมตช์",
     loadMatch: "โหลดแมตช์",
     openGlossary: "เปิดคู่มือหมากรุกไทยแบบภาพ",
-    openDisplay: "ธีมและขนาดตัวอักษร",
+    openDisplay: "ธีม ชุดหมาก และตัวอักษร",
+    openDisplayShort: "แสดงผล",
     displayEyebrow: "ความสบายในการอ่าน",
     displayTitle: "การแสดงผลและการอ่าน",
-    displaySubtitle: "เลือกชุดสีของห้องกระดานและขนาดตัวอักษรที่อ่านสบาย",
+    displaySubtitle: "เลือกสีกระดาน ชุดหมาก สีฝ่ายตรงข้าม และขนาดตัวอักษรที่อ่านสบาย",
     themeHeading: "ธีมห้องกระดาน",
     themeSubtitle: "สี่บรรยากาศจากภายในราชสำนักไทย",
     boardPatternHeading: "รูปแบบกระดาน",
@@ -376,6 +393,13 @@ const I18N = {
 
     white: "ขาว",
     black: "ดำ",
+    opponent: "คู่ต่อสู้",
+    turnToMove: "{side}เดิน",
+    turnInCheck: "{side}ถูกรุก",
+    turnThinkingSide: "{side}กำลังคิด…",
+    sideWins: "{side}ชนะ",
+    checkmateBy: "{side}รุกจน ฝ่ายตรงข้ามไม่มีที่ให้ขุนหลบ",
+    capturedBy: "{side}กินได้",
     turnWhite: "ฝ่ายขาวเดิน",
     turnBlack: "ฝ่ายดำเดิน",
     turnWhiteCheck: "ขาวถูกรุก",
@@ -673,17 +697,23 @@ const BOARD_STYLES = {
 };
 
 const BOARD_MATERIALS = {
-  teak: {
-    name: { en: "Teak & Ebony", th: "ไม้สักและไม้ดำ" },
-    description: { en: "Warm carved teak against deep ebony, the academy classic.", th: "ไม้สักแกะสลักอบอุ่นสลับไม้ดำเข้ม ฉบับคลาสสิกของสถาบัน" },
-    light: "#c29a67",
-    dark: "#4c3120",
+  jade: {
+    name: { en: "Jade & Slate", th: "หยกและหินชนวน" },
+    description: { en: "Pale quartz inlay against deep green stone, the default board.", th: "หินควอตซ์อ่อนสลับหยกเขียวเข้ม กระดานค่าเริ่มต้น" },
+    light: "#d5ddcf",
+    dark: "#234c3e",
   },
   maple: {
     name: { en: "Maple & Slate", th: "เมเปิลและสเลต" },
     description: { en: "Pale maple and blue-grey slate for the strongest read.", th: "เมเปิลอ่อนสลับสเลตเทาฟ้า ให้ภาพหมากชัดที่สุด" },
     light: "#e0c9a4",
     dark: "#3d4854",
+  },
+  teak: {
+    name: { en: "Teak & Ebony", th: "ไม้สักและไม้ดำ" },
+    description: { en: "Warm carved teak against deep ebony, the academy classic.", th: "ไม้สักแกะสลักอบอุ่นสลับไม้ดำเข้ม ฉบับคลาสสิกของสถาบัน" },
+    light: "#c29a67",
+    dark: "#4c3120",
   },
   carrara: {
     name: { en: "Carrara & Marquina", th: "คาร์ราราและมาร์กินา" },
@@ -696,12 +726,6 @@ const BOARD_MATERIALS = {
     description: { en: "Honed ivory travertine and warm charcoal granite.", th: "หินทราเวอร์ทีนงาช้างด้านและแกรนิตถ่านอบอุ่น" },
     light: "#cbb38f",
     dark: "#403a34",
-  },
-  jade: {
-    name: { en: "Jade & Slate", th: "หยกและหินชนวน" },
-    description: { en: "Honed green stone inlay with pale quartz squares.", th: "หยกเขียวฝังผิวด้านสลับหินควอตซ์อ่อน" },
-    light: "#d5ddcf",
-    dark: "#234c3e",
   },
 };
 
@@ -732,6 +756,7 @@ const PIECE_FINISHES = {
     darkMaterial: "ruby",
     darkAccentMaterial: "rubyAccent",
     swatch: "#b4232c",
+    side: { en: "Ruby", th: "ทับทิม" },
   },
   ebony: {
     name: { en: "Ivory & Ebony", th: "งาช้างและไม้ดำ" },
@@ -742,6 +767,7 @@ const PIECE_FINISHES = {
     darkMaterial: "dark",
     darkAccentMaterial: "darkAccent",
     swatch: "#2a1912",
+    side: { en: "Black", th: "ดำ" },
   },
 };
 
@@ -824,6 +850,16 @@ const pieceViewerKey = (piece) => {
 };
 const opponent = (color) => (color === "w" ? "b" : "w");
 
+// The bot side is always "b" internally, but calling it Black while its pieces
+// are ruby is confusing. In Single Player it is the opponent; in Pass & Play
+// it takes the name of the active finish.
+function sideLabel(color) {
+  if (color === "w") return t("white");
+  if (state.mode === "ai") return t("opponent");
+  const finish = PIECE_FINISHES[state.pieceFinish] || PIECE_FINISHES.ruby;
+  return finish.side ? finish.side[state.lang] : t("black");
+}
+
 /* =========================================================================
    DOM references
    ========================================================================= */
@@ -838,6 +874,7 @@ const dom = {
   glossaryButton: $("#glossaryButton"),
   sidebarGlossary: $("#sidebarGlossary"),
   displayButton: $("#displayButton"),
+  displayButtonStage: $("#displayButtonStage"),
   displayModal: $("#displayModal"),
   themeGrid: $("#themeGrid"),
   boardStyleControl: $("#boardStyleControl"),
@@ -867,6 +904,8 @@ const dom = {
   tutorContent: $("#tutorContent"),
   capturedByWhite: $("#capturedByWhite"),
   capturedByBlack: $("#capturedByBlack"),
+  capturedByWhiteLabel: $("#capturedByWhiteLabel"),
+  capturedByBlackLabel: $("#capturedByBlackLabel"),
   modeCards: $$(".mode-card"),
   botSettings: $("#botSettings"),
   botLevelControl: $("#botLevelControl"),
@@ -1149,7 +1188,7 @@ const state = {
   theme: "lacquer",
   textSize: "medium",
   boardStyle: "checkered",
-  boardMaterial: "maple",
+  boardMaterial: "jade",
   pieceSet: "court",
   pieceFinish: "ruby",
   stageColor: "auto",
@@ -3640,21 +3679,23 @@ function applyStaticTranslations() {
 
 function updateTurnUI() {
   const isWhite = state.turn === "w";
+  const side = sideLabel(state.turn);
   dom.turnStone.classList.toggle("is-black", !isWhite);
+  dom.turnStone.dataset.side = isWhite ? "w" : "b";
 
   let turnText;
   if (state.status === "checkmate") {
-    turnText = state.winner === "w" ? t("resultWhiteWins") : t("resultBlackWins");
+    turnText = t("sideWins", { side: sideLabel(state.winner) });
   } else if (state.status === "stalemate") {
     turnText = t("resultStalemateTitle");
   } else if (state.status === "draw") {
     turnText = t("resultDrawTitle");
   } else if (state.aiThinking) {
-    turnText = t("turnThinking");
+    turnText = t("turnThinkingSide", { side });
   } else if (state.inCheck) {
-    turnText = isWhite ? t("turnWhiteCheck") : t("turnBlackCheck");
+    turnText = t("turnInCheck", { side });
   } else {
-    turnText = isWhite ? t("turnWhite") : t("turnBlack");
+    turnText = t("turnToMove", { side });
   }
   dom.turnText.textContent = turnText;
   dom.checkChip.hidden = !(state.inCheck && state.status === "playing");
@@ -3688,7 +3729,7 @@ function renderRecordStatus() {
     return;
   }
   if (state.inCheck) {
-    dom.recordStatus.textContent = state.turn === "w" ? t("turnWhiteCheck") : t("turnBlackCheck");
+    dom.recordStatus.textContent = t("turnInCheck", { side: sideLabel(state.turn) });
     dom.recordStatusDot.classList.add("is-warning");
     return;
   }
@@ -3754,6 +3795,12 @@ function renderMoveList() {
 }
 
 function renderCaptures() {
+  if (dom.capturedByWhiteLabel) {
+    dom.capturedByWhiteLabel.textContent = t("capturedBy", { side: sideLabel("w") });
+  }
+  if (dom.capturedByBlackLabel) {
+    dom.capturedByBlackLabel.textContent = t("capturedBy", { side: sideLabel("b") });
+  }
   const renderSide = (target, list) => {
     if (!list.length) {
       target.textContent = "—";
@@ -3824,18 +3871,26 @@ function formatThinkTime(ms) {
 
 function syncBotControls() {
   if (dom.botSettings) dom.botSettings.hidden = state.mode !== "ai";
+  const order = ["easy", "medium", "hard", "super"];
+  const activeIndex = Math.max(0, order.indexOf(state.botLevel));
   if (dom.botLevelControl) {
     dom.botLevelControl.setAttribute("aria-label", t("botLevelLabel"));
     dom.botLevelControl.querySelectorAll("[data-bot-level]").forEach((button) => {
+      const levelIndex = order.indexOf(button.dataset.botLevel);
       const active = button.dataset.botLevel === state.botLevel;
       button.classList.toggle("is-active", active);
       button.setAttribute("aria-pressed", String(active));
+      button.querySelectorAll(".bot-level-pips i").forEach((pip, index) => {
+        pip.classList.toggle("is-on", index <= (levelIndex < 0 ? activeIndex : levelIndex));
+      });
     });
   }
   if (dom.thinkTimeInput) {
     dom.thinkTimeInput.setAttribute("aria-label", t("thinkTimeLabel"));
     dom.thinkTimeInput.value = String(state.thinkTimeMs);
     dom.thinkTimeInput.setAttribute("aria-valuetext", formatThinkTime(state.thinkTimeMs));
+    const progress = ((state.thinkTimeMs - THINK_TIME_MIN_MS) / (THINK_TIME_MAX_MS - THINK_TIME_MIN_MS)) * 100;
+    dom.thinkTimeInput.style.setProperty("--range-progress", `${Math.max(0, Math.min(100, progress))}%`);
   }
   if (dom.thinkTimeValue) dom.thinkTimeValue.textContent = formatThinkTime(state.thinkTimeMs);
 }
@@ -3996,7 +4051,10 @@ function applyPieceSet(setKey, { persist = false } = {}) {
 
 function applyPieceFinish(finishKey, { persist = false } = {}) {
   state.pieceFinish = PIECE_FINISHES[finishKey] ? finishKey : "ruby";
+  document.documentElement.dataset.pieceFinish = state.pieceFinish;
   refreshPieceGeometry();
+  updateTurnUI();
+  renderCaptures();
   if (persist) savePreferences();
 }
 
@@ -4127,7 +4185,7 @@ function updateResultContent() {
     if (state.mode === "ai") {
       detail = state.winner === "w" ? t("resultCheckmateYou") : t("resultCheckmateBot");
     } else {
-      detail = state.winner === "w" ? t("resultCheckmateWhite") : t("resultCheckmateBlack");
+      detail = t("checkmateBy", { side: sideLabel(state.winner) });
     }
   } else if (state.status === "stalemate") {
     title = t("resultStalemateTitle");
@@ -4144,6 +4202,7 @@ function updateResultContent() {
   }
 
   dom.resultEmblem.textContent = emblem;
+  dom.resultEmblem.dataset.side = state.status === "checkmate" && state.winner ? state.winner : "";
   dom.resultTitle.textContent = title;
   dom.resultDetail.textContent = detail;
   dom.reviewStalemateButton.hidden = state.status !== "stalemate";
@@ -4162,7 +4221,7 @@ function lastMoveLabel(move, lang = state.lang) {
 
 function renderStalemateReview() {
   const side = state.turn;
-  const sideName = side === "w" ? t("white") : t("black");
+  const sideName = sideLabel(side);
   const kingIndex = findKing(state.board, side);
   const kingSquare = kingIndex >= 0 ? coordinateOf(kingIndex) : "—";
   const lastMove = state.history[state.history.length - 1] || state.lastMove;
@@ -5443,6 +5502,10 @@ function bindEvents() {
     openDisplaySettings();
     audio.click();
   });
+  dom.displayButtonStage?.addEventListener("click", () => {
+    openDisplaySettings();
+    audio.click();
+  });
   dom.assistToggle.addEventListener("change", toggleAssist);
   dom.resetView.addEventListener("click", () => {
     resetCamera();
@@ -5503,6 +5566,8 @@ function bindEvents() {
       THINK_TIME_MAX_MS,
       Math.max(THINK_TIME_MIN_MS, Math.round(Number(dom.thinkTimeInput.value) / THINK_TIME_STEP_MS) * THINK_TIME_STEP_MS),
     );
+    const progress = ((state.thinkTimeMs - THINK_TIME_MIN_MS) / (THINK_TIME_MAX_MS - THINK_TIME_MIN_MS)) * 100;
+    dom.thinkTimeInput.style.setProperty("--range-progress", `${Math.max(0, Math.min(100, progress))}%`);
     if (dom.thinkTimeValue) dom.thinkTimeValue.textContent = formatThinkTime(state.thinkTimeMs);
   });
 
@@ -5592,7 +5657,7 @@ function bindEvents() {
     applyTheme("lacquer", { persist: true });
     applyTextSize("medium", { persist: true });
     applyBoardStyle("checkered", { persist: true });
-    applyBoardMaterial("maple", { persist: true });
+    applyBoardMaterial("jade", { persist: true });
     applyPieceSet("court", { persist: true });
     applyPieceFinish("ruby", { persist: true });
     applyStageColor("auto", { persist: true });
@@ -5680,6 +5745,7 @@ function bindEvents() {
 
 function boot() {
   loadPreferences();
+  applyPieceFinish(state.pieceFinish);
   warmSpeechVoices();
   applyTextSize(state.textSize);
   applyTheme(state.theme);
@@ -5732,7 +5798,7 @@ boot();
 /* A small, deliberately read-friendly surface for teachers and automated
    smoke tests. It does not expose any private player information. */
 window.Makruk3D = {
-  version: "1.8.0",
+  version: "1.8.1",
   credits: APP_CREDIT,
   getState: () => ({
     turn: state.turn,

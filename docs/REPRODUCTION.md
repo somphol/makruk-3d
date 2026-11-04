@@ -12,11 +12,11 @@ A single-page, bilingual 3D **Makruk** academy delivered as three static files p
 - **Modes:** Single Player (human White vs heuristic Black bot) and Pass & Play (two humans).
 - **Languages:** English and Thai, switched live without interrupting the match.
 - **Teaching layer:** legal-move dots and capture rings, selected-piece tutor, seven-card illustrated glossary, six rule cards, post-stalemate review, per-piece interactive 3D viewer with Thai pronunciation.
-- **Presentation:** Three.js r160 board with 64 procedural pieces/board/tiles; two piece families (Court and Tournament); five board finishes including Maple & Slate; Ivory & Ruby or Ivory & Ebony; checkered or traditional single-tone; four display themes; four text sizes; seven stage-colour choices; orbit/pan/full-size camera.
+- **Presentation:** Three.js r160 board with 64 procedural pieces/board/tiles; two piece families (Court and Tournament); five board finishes with Jade & Slate as the default; Ivory & Ruby or Ivory & Ebony; checkered or traditional single-tone; four display themes; four text sizes; seven stage-colour choices; orbit/pan/full-size camera.
 - **Bot:** Four levels (Simple, Medium, Hard, Super Super Hard) with a 0.5–20 s thinking-time slider, quiescence search, a repetition-aware root and an endgame mop-up term.
 - **Audio:** synthesised Web Audio effects plus seven bundled Thai WAVs, with browser speech synthesis as fallback.
 - **Persistence:** `localStorage` autosave, `makruk_save.json` download and restore.
-- **Release:** **1.8.0**, MIT, deployed on GitHub Pages.
+- **Release:** **1.8.1**, MIT, deployed on GitHub Pages.
 
 **Not reproduced:** Thai endgame counting rules, 50-move rule, draw agreement, resignation, server play, accounts, a strong engine, or international-chess rules. See §9.
 
@@ -272,7 +272,7 @@ python3 -m http.server 8080
 In the console:
 
 ```js
-Makruk3D.version                       // "1.8.0"
+Makruk3D.version                       // "1.8.1"
 Makruk3D.getLegalMoves().length        // 23 at the opening
 Makruk3D.playMove(44, 36)              // true (e3–e4); bot replies
 Makruk3D.getState().moveCount          // 2 after the reply

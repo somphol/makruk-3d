@@ -123,7 +123,7 @@ Board materials:
 
 - Teak textures: `makeWoodTexture` on 384×384 canvases with `seededRandom(42/89/17/71)`; the light square is deliberately raised to `#c29a67` and the dark square to `#5b3a24`.
 - Stone textures: `makeStoneTexture` with seeds 601–608 and styles `marble`, `travertine`, `granite`, `jade`, `slate`.
-- Five sets in `materials.boardSets`: teak, maple (maple + slate), carrara, travertine, jade. Maple is the default.
+- Five sets in `materials.boardSets`: teak, maple (maple + slate), carrara, travertine, jade. Jade & Slate is the default.
 - `boardTileMaterial(isLight)` returns the light material for every square in `traditional` mode, and light/dark in `checkered` mode.
 
 ### Pieces
@@ -159,7 +159,7 @@ Materials are `MeshPhysicalMaterial` ivory/ruby/dark for pieces, `MeshStandardMa
 
 ## 5. UI, i18n and accessibility
 
-`dom` caches every element by id. `applyStaticTranslations()` sets `<html lang>`, the document title, every `[data-i18n]` text, `[data-i18n-title]`, language-toggle state and the glossary title. `updateAllUI()` then calls, in order: mode, assist, sound, turn, record status, move list, captures, tutor; it re-renders open result/glossary/preview/stalemate/display modals.
+`dom` caches every element by id. `applyStaticTranslations()` sets `<html lang>`, the document title, every `[data-i18n]` text, `[data-i18n-title]`, language-toggle state and the glossary title. `updateAllUI()` then calls, in order: mode, assist, sound, turn, record status, move list, captures, tutor; it re-renders open result/glossary/preview/stalemate/display modals. `sideLabel(color)` maps the internal `w`/`b` sides to player-facing names: White, Opponent in Single Player, or the active finish name (Ruby/Black) in Pass & Play. Both `#displayButton` in the sidebar and `#displayButtonStage` in the stage toolbar call `openDisplaySettings()`.
 
 `renderGlossary()` rebuilds seven `PIECE_ORDER` cards from `PIECES` and six rule cards from `I18N.rule1…rule6`. Cards are `role="button"`, keyboard-activatable, and carry a `data-pronounce` speaker button plus `data-piece-key` for the 3D preview.
 

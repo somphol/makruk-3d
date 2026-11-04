@@ -87,7 +87,7 @@
             <span class="chip" id="moveCounter">Move 1</span>
             <span class="chip chip-warning" id="checkChip" hidden>Check</span>
             <span class="chip chip-thinking" id="aiChip" hidden>
-              <span class="thinking-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="thinking-glass" aria-hidden="true"><i></i><i></i></span>
               <span data-i18n="botThinking">Bot thinking</span>
               <span class="chip-level" id="aiChipLevel"></span>
             </span>
@@ -111,6 +111,10 @@
               <button class="stage-button" id="fullSizeToggle" type="button" aria-pressed="false" title="Full-size board / กระดานเต็มจอ">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6v2H6v4H4V4Zm10 0h6v6h-2V6h-4V4ZM4 14h2v4h4v2H4v-6Zm14 0h2v6h-6v-2h4v-4Z"/></svg>
                 <span data-i18n="fullSize">Full size</span>
+              </button>
+              <button class="stage-button" id="displayButtonStage" type="button" title="Theme, pieces &amp; text / ธีม ชุดหมาก และตัวอักษร">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0 0 18c1.1 0 2-.9 2-2 0-.5-.2-1-.6-1.3-.3-.4-.4-.8-.4-1.2 0-1.1.9-2 2-2h1.4A5.6 5.6 0 0 0 22 8.9C21.5 5.5 17.2 3 12 3Zm-4.5 9a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Zm3-3.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Zm2.8 4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Z"/></svg>
+                <span data-i18n="openDisplayShort">Display</span>
               </button>
             </div>
             <span class="assist-pill" id="assistPill">
@@ -144,12 +148,12 @@
 
         <div class="capture-tray" aria-label="Captured pieces">
           <div class="capture-side">
-            <span class="capture-label" data-i18n="capturedByWhite">Captured by White</span>
+            <span class="capture-label" id="capturedByWhiteLabel">Captured by White</span>
             <span class="capture-pieces" id="capturedByWhite">—</span>
           </div>
           <span class="capture-separator" aria-hidden="true"></span>
           <div class="capture-side capture-side-right">
-            <span class="capture-label" data-i18n="capturedByBlack">Captured by Black</span>
+            <span class="capture-label" id="capturedByBlackLabel">Captured by Opponent</span>
             <span class="capture-pieces" id="capturedByBlack">—</span>
           </div>
         </div>
@@ -190,14 +194,42 @@
 
           <div class="bot-settings" id="botSettings">
             <div class="bot-settings-head">
-              <span class="micro-label" data-i18n="botLevelLabel">Bot strength</span>
-              <small data-i18n="botLevelHint">Hard is the default. Super thinks longer and searches captures more deeply.</small>
+              <h3 data-i18n="botLevelLabel">Bot strength</h3>
+              <p data-i18n="botLevelSubtitle">Four strengths share one engine. Each preset starts at its own thinking time; the slider below fine-tunes it.</p>
             </div>
             <div class="bot-level-grid" id="botLevelControl" role="group" aria-label="Bot strength">
-              <button class="bot-level-button" type="button" data-bot-level="easy" aria-pressed="false" data-i18n="botLevelSimple">Simple</button>
-              <button class="bot-level-button" type="button" data-bot-level="medium" aria-pressed="false" data-i18n="botLevelMedium">Medium</button>
-              <button class="bot-level-button" type="button" data-bot-level="hard" aria-pressed="false" data-i18n="botLevelHard">Hard</button>
-              <button class="bot-level-button" type="button" data-bot-level="super" aria-pressed="false" data-i18n="botLevelSuper">Super Super Hard</button>
+              <button class="bot-level-card" type="button" data-bot-level="easy" aria-pressed="false">
+                <span class="bot-level-pips" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+                <span class="bot-level-copy">
+                  <strong data-i18n="botLevelSimple">Simple</strong>
+                  <small data-i18n="botLevelSimpleMeta">Shallow · 0.5 s</small>
+                </span>
+                <span class="bot-level-check" aria-hidden="true">✓</span>
+              </button>
+              <button class="bot-level-card" type="button" data-bot-level="medium" aria-pressed="false">
+                <span class="bot-level-pips" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+                <span class="bot-level-copy">
+                  <strong data-i18n="botLevelMedium">Medium</strong>
+                  <small data-i18n="botLevelMediumMeta">Club · 1.5 s</small>
+                </span>
+                <span class="bot-level-check" aria-hidden="true">✓</span>
+              </button>
+              <button class="bot-level-card" type="button" data-bot-level="hard" aria-pressed="false">
+                <span class="bot-level-pips" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+                <span class="bot-level-copy">
+                  <strong data-i18n="botLevelHard">Hard</strong>
+                  <small data-i18n="botLevelHardMeta">Deep · 5 s</small>
+                </span>
+                <span class="bot-level-check" aria-hidden="true">✓</span>
+              </button>
+              <button class="bot-level-card" type="button" data-bot-level="super" aria-pressed="false">
+                <span class="bot-level-pips" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+                <span class="bot-level-copy">
+                  <strong data-i18n="botLevelSuper">Super Super Hard</strong>
+                  <small data-i18n="botLevelSuperMeta">Deepest · 12 s</small>
+                </span>
+                <span class="bot-level-check" aria-hidden="true">✓</span>
+              </button>
             </div>
             <div class="think-time">
               <label for="thinkTimeInput">
@@ -206,6 +238,7 @@
               </label>
               <input type="range" id="thinkTimeInput" min="500" max="20000" step="250" value="5000"
                 aria-label="Thinking time in seconds" />
+              <div class="think-time-scale" aria-hidden="true"><span>0.5 s</span><span>20 s</span></div>
             </div>
           </div>
         </section>
@@ -250,6 +283,11 @@
             <span aria-hidden="true">↻</span>
             <span data-i18n="newGame">New Game</span>
           </button>
+          <button class="button button-quiet display-entry" id="displayButton" type="button">
+            <span aria-hidden="true">🎨</span>
+            <span data-i18n="openDisplay">Theme, pieces &amp; text</span>
+            <span class="display-entry-arrow" aria-hidden="true">→</span>
+          </button>
           <div class="action-grid">
             <button class="button button-quiet" id="saveButton" type="button">
               <span aria-hidden="true">💾</span>
@@ -263,11 +301,6 @@
           <button class="text-button" id="sidebarGlossary" type="button">
             <span aria-hidden="true">📖</span>
             <span data-i18n="openGlossary">Open the illustrated Makruk glossary</span>
-            <span aria-hidden="true">→</span>
-          </button>
-          <button class="text-button" id="displayButton" type="button">
-            <span aria-hidden="true">🎨</span>
-            <span data-i18n="openDisplay">Theme &amp; text size</span>
             <span aria-hidden="true">→</span>
           </button>
         </section>
@@ -385,18 +418,6 @@
           </section>
 
           <section class="display-section">
-            <h3 data-i18n="boardPatternHeading">Board pattern</h3>
-            <p data-i18n="boardPatternSubtitle">Traditional Makruk boards are single-tone; modern club boards often alternate light and dark squares.</p>
-            <div class="board-style-control" id="boardStyleControl"></div>
-          </section>
-
-          <section class="display-section">
-            <h3 data-i18n="boardMaterialHeading">Board material</h3>
-            <p data-i18n="boardMaterialSubtitle">Low-glare wood and honed stone table-top finishes. Maple &amp; Slate gives the crispest piece contrast.</p>
-            <div class="board-material-control" id="boardMaterialControl"></div>
-          </section>
-
-          <section class="display-section">
             <h3 data-i18n="pieceSetHeading">Piece set</h3>
             <p data-i18n="pieceSetSubtitle">Two hand-built families, both drawn for instant recognition. Court follows Thai tradition; Tournament exaggerates each silhouette.</p>
             <div class="board-style-control" id="pieceSetControl"></div>
@@ -406,6 +427,18 @@
             <h3 data-i18n="opponentColourHeading">Opponent colour</h3>
             <p data-i18n="opponentColourSubtitle">Ruby reads clearly against every board finish and cannot be mistaken for a shadow.</p>
             <div class="board-style-control" id="pieceFinishControl"></div>
+          </section>
+
+          <section class="display-section">
+            <h3 data-i18n="boardPatternHeading">Board pattern</h3>
+            <p data-i18n="boardPatternSubtitle">Traditional Makruk boards are single-tone; modern club boards often alternate light and dark squares.</p>
+            <div class="board-style-control" id="boardStyleControl"></div>
+          </section>
+
+          <section class="display-section">
+            <h3 data-i18n="boardMaterialHeading">Board material</h3>
+            <p data-i18n="boardMaterialSubtitle">Low-glare wood and honed stone table-top finishes. Jade &amp; Slate is the default; Maple &amp; Slate is the brightest alternative.</p>
+            <div class="board-material-control" id="boardMaterialControl"></div>
           </section>
 
           <section class="display-section">

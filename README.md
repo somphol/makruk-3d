@@ -13,7 +13,7 @@ An interactive, bilingual 3D Makruk (Thai chess) academy built with vanilla HTML
 - **Authentic Makruk rules** — pawns begin on the third/sixth ranks, no double-step, no en passant, no castling, Met moves one diagonal, Khon moves one diagonal or one forward, and promotion happens on the sixth rank.
 - **Procedural 3D pieces in two families** — Court uses carved `LatheGeometry` profiles; Tournament exaggerates every officer with a crown, diamond, brimmed helmet, horse head, towered barge and shell spire. Both are generated from native Three.js primitives with no model files.
 - **Two opponent finishes** — the default **Ivory & Ruby** pair keeps the opponent vivid against every square; **Ivory & Ebony** is available for the classic look.
-- **High-contrast 8×8 board** — choose traditional single-tone or modern checkered patterns, with five material finishes including **Maple & Slate** for the crispest read, plus teak, Carrara/Marquina marble, travertine/granite, and jade/slate. Inlaid gold trim, corner studs, coordinate labels, soft shadows, gold dust, and OrbitControls included.
+- **High-contrast 8×8 board** — choose traditional single-tone or modern checkered patterns, with five material finishes. **Jade & Slate** is the default: pale quartz squares against deep green stone, with Maple & Slate, teak, Carrara/Marquina marble and travertine/granite alternatives. Inlaid gold trim, corner studs, coordinate labels, soft shadows, gold dust, and OrbitControls included.
 - **Four bot strengths with adjustable thinking time** — Simple, Medium, Hard and Super Super Hard share one search engine; each starts at its own time preset (0.5 s to 12 s) and the 0.5–20 s slider lets you dial the thinking budget up or down. Hard is the default at 5 s.
 - **A bot that converts** — repetition-aware root search, king-and-rook mop-up evaluation, full-window root scoring and deterministic tie-breaking stop the engine from shuffling when it is ahead.
 - **Full-size board mode** — hides the side panels and header so the board can fill the viewport; exit with the same button or Escape.
@@ -26,6 +26,8 @@ An interactive, bilingual 3D Makruk (Thai chess) academy built with vanilla HTML
 - **Stalemate review** — after a stalemate, a beginner panel shows the final move, the safe Khun, and every escape square alongside the piece controlling it.
 - **Single Player vs AI or Pass & Play** — a heuristic alpha-beta bot playing Black with four strengths and an adjustable thinking budget, or two humans sharing one board.
 - **Instant EN ⇄ TH switching** — all headers, labels, tooltips, tutor copy, move record, result overlay, display settings, and glossary update without interrupting a match.
+- **Side-aware labels** — in Single Player the second side is called **Opponent**, not Black; its turn stone, move dots and capture labels follow the ruby finish. Pass & Play names the side **Ruby** or **Black** to match the selected finish.
+- **Display controls on the board** — a **Display** button in the stage toolbar opens theme, piece, opponent-colour and text-size settings, so the customisation is not buried in the sidebar.
 - **Four display themes & scalable text** — Midnight Lacquer, Ivory Court, Jade Pavilion, and Ruby Palace, plus four text sizes from 90% to 140%. Preferences are saved on the device.
 - **Adjustable stage palette** — choose the coloured room/backdrop behind the board from six presets or any custom colour. Light stages soften the vignette and table automatically.
 - **Moveable board view** — orbit, zoom, right-drag to pan, or switch on **Move view** to reposition the board with an ordinary drag. Reset view recentres everything.
@@ -60,7 +62,7 @@ npx serve .
 3. Click a highlighted destination to move. Captures, checks, promotions, and the match result are announced in the tutor bar, move record, and sound design.
 4. Use **Save Match** to download `makruk_save.json`; use **Load Match** to restore a saved position.
 5. Switch **EN / TH** at any time without resetting the match.
-6. Open **Theme & text size** to choose a display theme, a board pattern, a board material, a piece set, an opponent colour, a stage colour, and a larger type size.
+6. Open **Display** in the board toolbar (or **Theme, pieces & text** in the sidebar) to choose a display theme, a board pattern, a board material, a piece set, an opponent colour, a stage colour, and a larger type size.
 7. Use **Move view** to drag the board to a new position, or right-drag/two-finger drag at any time. **Reset view** recentres it.
 8. Use **Full size** to expand the board into an immersive viewport. Press the button again or Escape to return.
 
@@ -78,13 +80,13 @@ Open **Rules & Pieces** and click any card, or select a piece on the board and u
 
 | Finish | Character |
 | --- | --- |
-| Maple & Slate | Pale maple against blue-grey slate — the default, and the crispest piece contrast. |
+| Jade & Slate | Pale quartz against deep green stone — the default, and the most distinctive board. |
+| Maple & Slate | Pale maple against blue-grey slate — the brightest alternative. |
 | Teak & Ebony | Warm carved wood, the original academy board. |
 | Carrara & Marquina | Honed white marble against deep black stone. |
 | Travertine & Granite | Honed ivory travertine with warm charcoal granite. |
-| Jade & Slate | Green stone inlay with pale quartz squares. |
 
-The stone finishes use a low-glare honed treatment and are inspired by publicly sold stone table-top boards, where contrasting natural stones are inlaid flush into the playing surface. The Maple & Slate pairing follows the same principle: separate the two square values as far as possible so the pieces, not the board, carry the eye. References: [stone chess board styles](http://pebblez.com/stone-chess-boards.html), [marble chess-set buying guide](https://marbleseven.com/marble-chess-set-handcrafted-stone-chess-boards-buying-guide/), [travertine chess tables](https://www.1stdibs.com/furniture/tables/game-tables/1960s-pedestal-travertine-chess-table/id-f_33774512/).
+The stone finishes use a low-glare honed treatment and are inspired by publicly sold stone table-top boards, where contrasting natural stones are inlaid flush into the playing surface. Jade & Slate and Maple & Slate follow the same principle: separate the two square values as far as possible so the pieces, not the board, carry the eye. References: [stone chess board styles](http://pebblez.com/stone-chess-boards.html), [marble chess-set buying guide](https://marbleseven.com/marble-chess-set-handcrafted-stone-chess-boards-buying-guide/), [travertine chess tables](https://www.1stdibs.com/furniture/tables/game-tables/1960s-pedestal-travertine-chess-table/id-f_33774512/).
 
 ### Piece sets
 
@@ -221,7 +223,7 @@ The same payload is auto-saved under `makruk3d.match.v1` in browser storage.
 - **Rendering:** [Three.js](https://threejs.org) r160 via CDN, with `OrbitControls`
 - **Typography:** Cormorant Garamond, Manrope, Noto Sans Thai, and Noto Serif Thai via Google Fonts
 - **Cultural inspiration:** the Thai Makruk tradition, its court pieces, and the Thai river-barge silhouette of the Ruea
-- **Contrast and identification direction:** [Full 3D Chess Academy](https://github.com/somphol/full-3d-chess-academy), whose maple-and-slate board and legible piece family informed the 1.8.0 readability pass
+- **Contrast and identification direction:** [Full 3D Chess Academy](https://github.com/somphol/full-3d-chess-academy), whose maple-and-slate board and legible piece family informed the 1.8 readability pass
 - **Thai pronunciation audio:** generated with the macOS **Kanya** Thai system voice
 
 Build timing and token usage are recorded in [STATE.md](STATE.md).

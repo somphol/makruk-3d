@@ -24,7 +24,10 @@ Verified:
 - In Single Player, changing the level resets the thinking slider to that level's preset; the slider moves independently afterwards.
 - The bot panel hides in Pass & Play and returns in Single Player.
 - EN ⇄ TH updates the new bot copy and think-time output.
-- The thinking chip names the active level and budget while the bot is searching.
+- The thinking chip names the active level and budget and uses an hourglass indicator.
+- In Single Player the turn text says “Opponent is thinking…” / “Opponent to move”, never “Black”; the turn stone and move dots are ruby. In Pass & Play the same labels read “Ruby to move” / “Ruby is in check” while the ruby finish is selected.
+- Capture labels read “Captured by Opponent” in Single Player and “Captured by Ruby” in Pass & Play.
+- The Display button in the stage toolbar opens the modal and is reachable at 390 px.
 
 AI measurements on the opening position (Apple silicon, headless Chrome):
 

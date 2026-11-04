@@ -22,7 +22,7 @@ function ok(condition, label, detail = "") {
   return condition;
 }
 
-const VERSION = "1.8.0";
+const VERSION = "1.8.1";
 
 const required = [
   "index.html",
@@ -220,7 +220,8 @@ const featured = [
   ["AI", "function materialBalance("],
   ["AI", "rootRepetitionPenalty("],
   ["AI", "rootProgressScore("],
-  ["AI", 'boardMaterial: "maple"'],
+  ["AI", "function sideLabel("],
+  ["AI", 'boardMaterial: "jade"'],
   ["AI", 'pieceFinish: "ruby"'],
   ["AI", 'botLevel: "hard"'],
   ["AI", "thinkTimeMs: 5000"],
@@ -234,10 +235,13 @@ const sections = {
 for (const [section, needle] of featured) {
   ok(sections[section].includes(needle), `missing feature wiring (${section})`, needle);
 }
-for (const id of ["pieceSetControl", "pieceFinishControl", "botLevelControl", "thinkTimeInput", "aiChipLevel"]) {
+for (const id of ["pieceSetControl", "pieceFinishControl", "botLevelControl", "thinkTimeInput", "aiChipLevel", "displayButtonStage", "capturedByBlackLabel"]) {
   ok(html.includes(`id="${id}"`), "index.html is missing control", id);
   ok(script.includes(`#${id}`), "script.js does not cache control", id);
 }
+ok(html.includes("thinking-glass"), "index.html is missing the hourglass indicator");
+ok(script.includes('t("turnToMove"'), "turn text is not side-aware");
+ok(script.includes('t("capturedBy"'), "capture labels are not side-aware");
 
 // 7. Release identity and documentation.
 const readme = readFileSync(join(root, "README.md"), "utf8");
