@@ -133,6 +133,11 @@
             <button class="replay-exit" id="replayExit" type="button" aria-label="Exit replay" title="Exit replay">✕</button>
           </div>
 
+          <button class="stage-button view-toggle" id="topViewToggle" type="button" aria-pressed="false" title="Top view">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 21 8v8l-9 5-9-5V8l9-5Zm0 2.3L5 9v6l7 4 7-4V9l-7-3.7Z"/></svg>
+            <span id="topViewLabel">Top view</span>
+          </button>
+
           <div class="scene-loader" id="sceneLoader">
             <span class="loader-mark" aria-hidden="true">ม</span>
             <span class="loader-line"></span>
@@ -439,7 +444,7 @@
 
           <section class="display-section">
             <h3 data-i18n="pieceSetHeading">Piece set</h3>
-            <p data-i18n="pieceSetSubtitle">Two hand-built families, both drawn for instant recognition. Court follows Thai tradition; Tournament exaggerates each silhouette.</p>
+            <p data-i18n="pieceSetSubtitle">Four hand-built families: Court and Tournament for classic play, Sigil for top-down glyphs and Monolith for geometric top faces.</p>
             <div class="board-style-control" id="pieceSetControl"></div>
           </section>
 

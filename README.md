@@ -11,7 +11,8 @@ An interactive, bilingual 3D Makruk (Thai chess) academy built with vanilla HTML
 ## Highlights
 
 - **Authentic Makruk rules** — pawns begin on the third/sixth ranks, no double-step, no en passant, no castling, Met moves one diagonal, Khon moves one diagonal or one forward, and promotion happens on the sixth rank.
-- **Procedural 3D pieces in two families** — Court uses carved `LatheGeometry` profiles; Tournament exaggerates every officer with a crown, diamond, brimmed helmet, horse head, towered barge and shell spire. Both are generated from native Three.js primitives with no model files.
+- **Procedural 3D pieces in four families** — Court uses carved `LatheGeometry` profiles; Tournament exaggerates every officer; **Sigil** tops each piece with a dark seal and a gold glyph for top-down reading; **Monolith** gives each piece a different geometric top face. All are generated from native Three.js primitives with no model files.
+- **Top view** — a stage button tilts to a near-overhead camera so the Sigil glyphs and Monolith top faces are immediately readable; toggle back to the 3D view without losing your orbit position.
 - **Two opponent finishes** — the default **Ivory & Ruby** pair keeps the opponent vivid against every square; **Ivory & Ebony** is available for the classic look.
 - **High-contrast 8×8 board** — choose traditional single-tone or modern checkered patterns, with five material finishes. **Jade & Slate** is the default: pale quartz squares against deep green stone, with Maple & Slate, teak, Carrara/Marquina marble and travertine/granite alternatives. Inlaid gold trim, corner studs, coordinate labels, soft shadows, gold dust, and OrbitControls included.
 - **Four bot strengths with adjustable thinking time** — Simple, Medium, Hard and Super Super Hard share one search engine; each starts at its own time preset (0.5 s to 12 s) and the 0.5–20 s slider lets you dial the thinking budget up or down. Hard is the default at 5 s.
@@ -100,6 +101,12 @@ Open **Theme & text size → Piece set** to switch families at any time; the boa
 | --- | --- |
 | Court | Rounded lathe turnings with flared collars and gold bands, closest to a ceremonial Thai set. |
 | Tournament | Blocky, high-silhouette pieces: a five-point crown for the Khun, a faceted diamond for the Met, a wide-brimmed helmet for the Khon, an exaggerated horse head for the Ma, a crenellated barge for the Ruea, and a spired shell for the promoted Bia. |
+| Sigil | Dark wax-seal caps with a gold glyph on every piece — crown, diamond, mitre, horse, rook, shell and star. The top face is the primary cue; the bodies keep the side profiles distinct. |
+| Monolith | Geometric columns with a different top face: cross (Khun), diamond (Met), triangle (Khon), arrow (Ma), crenellated tower (Ruea), hexagon (Bia) and octagon (Bia Ngua). |
+
+| Sigil from above | Monolith from above |
+| --- | --- |
+| ![Sigil set from above](docs/sigil-top.webp) | ![Monolith set from above](docs/monolith-top.webp) |
 
 The opponent defaults to **Ivory & Ruby** because a near-black piece can vanish into a warm wooden square at a distance. Choose **Ivory & Ebony** in the same panel if you prefer the classic pairing.
 
@@ -127,6 +134,7 @@ The slider ranges from 0.5 s to 20 s. Choosing a level resets the slider to that
 - **Move view** switches left-drag/touch-drag to panning; right-drag and two-finger drag also pan.
 - **Full size** expands the board and hides the surrounding panels.
 - **Reset view** recentres the board and returns to the academy's signature three-quarter angle.
+- **Top view** tilts to a near-overhead camera for reading the Sigil glyphs and Monolith top faces; press it again to return to your previous 3D view.
 - Orbit and zoom stay available while the bot is thinking; the search yields a frame every ~70 ms.
 
 ## Authentic Makruk rules implemented

@@ -841,6 +841,28 @@ html[data-piece-finish="ruby"] .turn-stone.is-black {
   color: var(--muted);
 }
 
+.view-toggle {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  z-index: 4;
+  pointer-events: auto;
+}
+
+.view-toggle[hidden] {
+  display: none;
+}
+
+.view-toggle.is-raised {
+  bottom: 70px;
+}
+
+.view-toggle.is-active {
+  color: #1b120a;
+  border-color: rgba(243, 213, 142, 0.9);
+  background: linear-gradient(145deg, #f3d58e, #d6b36a);
+}
+
 .assist-pill {
   transition: opacity 180ms ease, border-color 180ms ease;
 }
@@ -2887,6 +2909,20 @@ html[data-piece-finish="ruby"] .move-stone.is-black {
     linear-gradient(150deg, rgba(255, 244, 218, 0.14), rgba(0, 0, 0, 0.42));
 }
 
+.piece-set-preview.is-sigil {
+  color: #f7dfa6;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(180, 35, 44, 0.3), transparent 58%),
+    linear-gradient(150deg, rgba(24, 16, 10, 0.9), rgba(0, 0, 0, 0.6));
+}
+
+.piece-set-preview.is-monolith {
+  color: #d7ddd9;
+  background:
+    radial-gradient(circle at 50% 80%, rgba(45, 76, 66, 0.6), transparent 68%),
+    linear-gradient(150deg, rgba(255, 244, 218, 0.12), rgba(0, 0, 0, 0.44));
+}
+
 .piece-finish-preview {
   width: 43px;
   height: 43px;
@@ -3686,6 +3722,15 @@ html[data-piece-finish="ruby"] .mini-piece.is-black {
   }
 
   #displayButtonStage span:last-child {
+    display: inline;
+  }
+
+  #topViewToggle {
+    width: auto;
+    padding-inline: 11px;
+  }
+
+  #topViewToggle span:last-child {
     display: inline;
   }
 

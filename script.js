@@ -46,6 +46,10 @@ const I18N = {
     turnLabel: "Turn",
     botThinking: "Bot thinking",
     resetView: "Reset view",
+    topView: "Top view",
+    threeQuarterView: "3D view",
+    topViewOn: "Top view enabled.",
+    topViewOff: "Returned to the 3D view.",
     moveView: "Move view",
     moveViewOn: "Move mode on — drag the stage to reposition the board.",
     moveViewOff: "Move mode off — drag to orbit the board.",
@@ -119,7 +123,7 @@ const I18N = {
     boardMaterialHeading: "Board material",
     boardMaterialSubtitle: "Low-glare wood and honed stone table-top finishes. Maple & Slate gives the crispest piece contrast.",
     pieceSetHeading: "Piece set",
-    pieceSetSubtitle: "Two hand-built families, both drawn for instant recognition. Court follows Thai tradition; Tournament exaggerates each silhouette.",
+    pieceSetSubtitle: "Four hand-built families: Court and Tournament for classic play, Sigil for top-down glyphs and Monolith for geometric top faces.",
     pieceSetCourt: "Court",
     pieceSetCourtDesc: "Carved lathe forms inspired by ceremonial Makruk sets.",
     pieceSetTournament: "Tournament",
@@ -258,6 +262,8 @@ const I18N = {
     piecePreviewModel: "3D model",
     modelCourtNote: "Shown in the Court set: rounded, carved profiles.",
     modelTournamentNote: "Shown in the Tournament set: bold silhouettes with a crown, diamond, brimmed helmet, horse head, towered barge and shell spire.",
+    modelSigilNote: "Shown in the Sigil set: a dark seal with a gold glyph on every crown, designed to read from above.",
+    modelMonolithNote: "Shown in the Monolith set: geometric columns with a distinct top face.",
     viewIn3D: "View in 3D",
     hearThai: "Hear Thai",
     pronounceHint: "Thai pronunciation",
@@ -290,6 +296,10 @@ const I18N = {
     turnLabel: "ตาเดิน",
     botThinking: "บอทกำลังคิด",
     resetView: "มุมมองเริ่มต้น",
+    topView: "มองจากด้านบน",
+    threeQuarterView: "มุมมอง 3 มิติ",
+    topViewOn: "เปิดมุมมองจากด้านบนแล้ว",
+    topViewOff: "กลับสู่มุมมอง 3 มิติแล้ว",
     moveView: "เลื่อนมุมมอง",
     moveViewOn: "โหมดเลื่อนเปิด — ลากพื้นที่เวทีเพื่อย้ายกระดาน",
     moveViewOff: "โหมดเลื่อนปิด — ลากเพื่อหมุนรอบกระดาน",
@@ -363,7 +373,7 @@ const I18N = {
     boardMaterialHeading: "วัสดุกระดาน",
     boardMaterialSubtitle: "ผิวไม้และหินขัดด้านลดแสงสะท้อน เมเปิลกับสเลตให้ความต่างสีของหมากชัดที่สุด",
     pieceSetHeading: "ชุดหมาก",
-    pieceSetSubtitle: "สองตระกูลที่ปั้นด้วยมือ ทั้งคู่ออกแบบให้เห็นชนิดหมากได้ทันที ราชสำนักคงความเป็นไทย ส่วนแข่งขันเน้นรูปทรงให้ชัดเกินจริง",
+    pieceSetSubtitle: "สี่ตระกูลที่ปั้นด้วยมือ: ราชสำนักและแข่งขันสำหรับการเล่นคลาสสิก ตราสำหรับสัญลักษณ์จากด้านบน และเสาหินสำหรับหน้าตัดเรขาคณิต",
     pieceSetCourt: "ราชสำนัก",
     pieceSetCourtDesc: "รูปทรงกลึงแบบหมากรุกพิธีการไทย",
     pieceSetTournament: "แข่งขัน",
@@ -502,6 +512,8 @@ const I18N = {
     piecePreviewModel: "แบบจำลองสามมิติ",
     modelCourtNote: "แสดงในชุดราชสำนัก: รูปทรงกลึงโค้งมนแบบงานแกะสลัก",
     modelTournamentNote: "แสดงในชุดแข่งขัน: รูปทรงเหลี่ยมชัด พร้อมมงกุฎ เพชร หมวกปีกกว้าง หัวม้า เรือมีหอ และยอดหอย",
+    modelSigilNote: "แสดงในชุดตรา: ตราประทับเข้มพร้อมอักขระทองบนยอดทุกตัว ออกแบบให้อ่านจากด้านบน",
+    modelMonolithNote: "แสดงในชุดเสาหิน: แท่งเรขาคณิตที่มีหน้าตัดด้านบนต่างกัน",
     viewIn3D: "ดูในสามมิติ",
     hearThai: "ฟังเสียงไทย",
     pronounceHint: "คำอ่านภาษาไทย",
@@ -772,6 +784,27 @@ const PIECE_SETS = {
       th: "รูปทรงเหลี่ยมชัดเจน พร้อมยอดต่างกันทุกตัว",
     },
   },
+  sigil: {
+    name: { en: "Sigil", th: "ตรา" },
+    description: {
+      en: "A dark seal with a gold glyph on every crown — the clearest read from above.",
+      th: "ตราประทับเข้มพร้อมอักขระทองบนยอดทุกตัว อ่านง่ายที่สุดเมื่อมองจากด้านบน",
+    },
+  },
+  monolith: {
+    name: { en: "Monolith", th: "เสาหิน" },
+    description: {
+      en: "Geometric columns with a different top face: cross, diamond, triangle, arrow, tower, hexagon and octagon.",
+      th: "แท่งเรขาคณิตที่หน้าตัดด้านบนต่างกัน: กากบาท เพชร สามเหลี่ยม ลูกศร หอคอย หกเหลี่ยม และแปดเหลี่ยม",
+    },
+  },
+};
+
+const PIECE_SET_NOTE_KEYS = {
+  court: "modelCourtNote",
+  tournament: "modelTournamentNote",
+  sigil: "modelSigilNote",
+  monolith: "modelMonolithNote",
 };
 
 const PIECE_FINISHES = {
@@ -808,6 +841,17 @@ const PIECE_SET_ICONS = {
     <path d="M7.5 7.5 12 15V9l6.5 7V7l3 3 3-3v9L31 9v6l4.5-7.5-3.5 11H11L7.5 7.5Z" fill="currentColor"/>
     <path d="M15 21h10l1.6 6H13.4L15 21Z" fill="currentColor" opacity=".85"/>
     <rect x="9" y="29" width="22" height="4.6" rx="1.6" fill="currentColor"/>
+  </svg>`,
+  sigil: `<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false">
+    <circle cx="20" cy="20" r="15" fill="none" stroke="currentColor" stroke-width="2" opacity=".7"/>
+    <path d="M11 25h18l-1.5-10-4.5 4-3-6-3 6-4.5-4L11 25Z" fill="currentColor"/>
+    <path d="M14 27h12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+  </svg>`,
+  monolith: `<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false">
+    <path d="M20 4 34 11v14L20 36 6 25V11L20 4Z" fill="currentColor" opacity=".22"/>
+    <path d="M20 4 34 11l-14 7L6 11 20 4Z" fill="currentColor" opacity=".9"/>
+    <path d="M20 18v18L6 25V11l14 7Z" fill="currentColor" opacity=".55"/>
+    <path d="M20 18 34 11v14L20 36V18Z" fill="currentColor" opacity=".75"/>
   </svg>`,
 };
 
@@ -927,6 +971,7 @@ const dom = {
   sceneLoader: $("#sceneLoader"),
   sceneFallback: $("#sceneFallback"),
   resetView: $("#resetView"),
+  topViewToggle: $("#topViewToggle"),
   assistPill: $("#assistPill"),
   tutorEmpty: $("#tutorEmpty"),
   tutorContent: $("#tutorContent"),
@@ -2119,6 +2164,8 @@ let dust = null;
 let sceneReady = false;
 let defaultCameraPosition = new THREE.Vector3(8.6, 9.9, 10.2);
 let lastViewportAspect = null;
+let topViewActive = false;
+let topViewReturn = null;
 const meshById = new Map();
 const removalEntries = [];
 const materials = {};
@@ -2550,12 +2597,12 @@ function addLathe(parent, profile, material, segments = 64) {
   return addMesh(parent, geometry, material);
 }
 
-function addGoldRing(parent, y, radius, tube = 0.012) {
+function addGoldRing(parent, y, radius, tube = 0.012, x = 0, z = 0) {
   const ring = addMesh(
     parent,
     new THREE.TorusGeometry(radius, tube, 8, 64),
     materials.gold,
-    new THREE.Vector3(0, y, 0),
+    new THREE.Vector3(x, y, z),
   );
   ring.rotation.x = Math.PI / 2;
   return ring;
@@ -3083,6 +3130,278 @@ function createTournamentBia(piece) {
   return { group, height: promoted ? 0.55 : 0.28 };
 }
 
+/* Sigil set — a dark wax seal with a gold glyph on every crown. The top
+   face is the primary identification cue; the body shapes keep the side
+   silhouettes distinct as well. */
+
+const SEAL_GLYPHS = {
+  K: "♔",
+  M: "❖",
+  B: "♗",
+  N: "♘",
+  R: "♜",
+  P: "◒",
+  PROMOTED: "★",
+};
+const sealTextureCache = new Map();
+
+function sealTexture(glyph) {
+  if (sealTextureCache.has(glyph)) return sealTextureCache.get(glyph);
+  const canvas = document.createElement("canvas");
+  canvas.width = 256;
+  canvas.height = 256;
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, 256, 256);
+  ctx.font = "800 178px Georgia, 'Times New Roman', serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.lineJoin = "round";
+  ctx.lineWidth = 12;
+  ctx.strokeStyle = "rgba(8, 5, 2, 0.9)";
+  ctx.strokeText(glyph, 128, 141);
+  ctx.fillStyle = "#f7dfa6";
+  ctx.fillText(glyph, 128, 141);
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.anisotropy = renderer ? Math.min(8, renderer.capabilities.getMaxAnisotropy()) : 1;
+  sealTextureCache.set(glyph, texture);
+  return texture;
+}
+
+function addSigilBase(parent, body, radius = 0.38) {
+  addMesh(parent, new THREE.CylinderGeometry(radius, radius * 1.08, 0.06, 8), body, new THREE.Vector3(0, 0.03, 0));
+  addMesh(parent, new THREE.CylinderGeometry(radius * 0.85, radius * 0.94, 0.055, 40), body, new THREE.Vector3(0, 0.0875, 0));
+  addGoldRing(parent, 0.118, radius * 0.85, 0.008);
+}
+
+function addSealCap(parent, piece, y, radius, x = 0, z = 0) {
+  const glyph = piece.type === "P" && piece.promoted ? SEAL_GLYPHS.PROMOTED : SEAL_GLYPHS[piece.type];
+  addMesh(
+    parent,
+    new THREE.CylinderGeometry(radius, radius * 0.92, 0.055, 48),
+    materials.dark,
+    new THREE.Vector3(x, y + 0.0275, z),
+  );
+  addGoldRing(parent, y + 0.056, radius * 0.92, 0.009);
+  const plane = new THREE.Mesh(
+    new THREE.CircleGeometry(radius * 0.78, 48),
+    new THREE.MeshBasicMaterial({
+      map: sealTexture(glyph),
+      transparent: true,
+      depthWrite: false,
+      toneMapped: false,
+    }),
+  );
+  plane.rotation.x = -Math.PI / 2;
+  plane.rotation.z = piece.color === "w" ? Math.PI : 0;
+  plane.position.set(x, y + 0.0585, z);
+  parent.add(plane);
+}
+
+function createSigilKhun(piece) {
+  const group = new THREE.Group();
+  const body = getSetMaterial(piece);
+  addSigilBase(group, body, 0.39);
+  addLathe(group, [
+    [0, 0.12], [0.32, 0.12], [0.28, 0.18], [0.21, 0.3],
+    [0.175, 0.45], [0.185, 0.55], [0.25, 0.6], [0.27, 0.65],
+    [0.23, 0.69], [0.18, 0.72], [0, 0.75],
+  ], body);
+  addGoldRing(group, 0.58, 0.244, 0.01);
+  addGoldRing(group, 0.68, 0.225, 0.009);
+  addSealCap(group, piece, 0.75, 0.28);
+  return { group, height: 0.81 };
+}
+
+function createSigilMet(piece) {
+  const group = new THREE.Group();
+  const body = getSetMaterial(piece);
+  addSigilBase(group, body, 0.34);
+  addLathe(group, [
+    [0, 0.12], [0.27, 0.12], [0.24, 0.18], [0.17, 0.3],
+    [0.135, 0.4], [0.15, 0.48], [0.18, 0.52], [0.13, 0.56], [0, 0.58],
+  ], body);
+  addGoldRing(group, 0.51, 0.172, 0.008);
+  addSealCap(group, piece, 0.58, 0.21);
+  return { group, height: 0.64 };
+}
+
+function createSigilKhon(piece) {
+  const group = new THREE.Group();
+  const body = getSetMaterial(piece);
+  addSigilBase(group, body, 0.36);
+  addLathe(group, [
+    [0, 0.12], [0.28, 0.12], [0.25, 0.18], [0.18, 0.29],
+    [0.16, 0.37], [0.24, 0.42], [0.27, 0.46], [0.21, 0.5],
+    [0.16, 0.54], [0, 0.58],
+  ], body);
+  addGoldRing(group, 0.44, 0.258, 0.01);
+  addMesh(group, new THREE.ConeGeometry(0.19, 0.18, 40), body, new THREE.Vector3(0, 0.64, 0));
+  addSealCap(group, piece, 0.69, 0.23);
+  return { group, height: 0.75 };
+}
+
+function createSigilMa(piece) {
+  const created = createTournamentMa(piece);
+  const group = created.group;
+  // A seal-crown on the horse's head, rather than a standard behind it.
+  addSealCap(group, piece, 1.07, 0.2, 0, 0);
+  return { group, height: 1.13 };
+}
+
+function createSigilRuea(piece) {
+  const created = createRuea(piece);
+  const group = created.group;
+  const body = getSetMaterial(piece);
+  addMesh(group, new THREE.CylinderGeometry(0.026, 0.042, 0.28, 16), body, new THREE.Vector3(0, 0.44, 0));
+  addGoldRing(group, 0.52, 0.05, 0.006);
+  addSealCap(group, piece, 0.56, 0.22);
+  return { group, height: 0.68 };
+}
+
+function createSigilBia(piece) {
+  const group = new THREE.Group();
+  const body = getSetMaterial(piece);
+  const promoted = Boolean(piece.promoted);
+  addSigilBase(group, body, promoted ? 0.32 : 0.3);
+  const shellGeometry = new THREE.SphereGeometry(0.31, 40, 24, 0, Math.PI * 2, 0, Math.PI / 2);
+  shellGeometry.scale(1, promoted ? 0.62 : 0.48, 0.74);
+  addMesh(group, shellGeometry, body, new THREE.Vector3(0, 0.115, 0));
+  addGoldRing(group, 0.14, 0.29, 0.008);
+  addSealCap(group, piece, promoted ? 0.4 : 0.28, promoted ? 0.21 : 0.18);
+  return { group, height: promoted ? 0.58 : 0.35 };
+}
+
+/* Monolith set — geometric columns whose top faces are different prisms:
+   cross, diamond, triangle, arrow, tower, hexagon and octagon. */
+
+function addMonolithBase(parent, body, size = 0.62) {
+  addBox(parent, size, 0.07, size, 0, 0.035, 0, body);
+  addBox(parent, size * 0.8, 0.05, size * 0.8, 0, 0.095, 0, body);
+  addBox(parent, size * 0.84, 0.012, size * 0.84, 0, 0.122, 0, materials.goldDark);
+}
+
+function addFlatTopPlate(parent, geometry, y, material = materials.gold) {
+  const mesh = addMesh(parent, geometry, material, new THREE.Vector3(0, y, 0));
+  mesh.castShadow = false;
+  return mesh;
+}
+
+function createMonolithKhun(piece) {
+  const group = new THREE.Group();
+  const body = getSetMaterial(piece);
+  addMonolithBase(group, body, 0.64);
+  addBox(group, 0.24, 0.8, 0.24, 0, 0.52, 0, body);
+  addBox(group, 0.64, 0.2, 0.2, 0, 0.84, 0, body);
+  addBox(group, 0.2, 0.2, 0.64, 0, 0.84, 0, body);
+  addBox(group, 0.5, 0.012, 0.1, 0, 0.946, 0, materials.gold);
+  addBox(group, 0.1, 0.012, 0.5, 0, 0.946, 0, materials.gold);
+  addGoldRing(group, 0.7, 0.14, 0.008);
+  return { group, height: 0.96 };
+}
+
+function createMonolithMet(piece) {
+  const group = new THREE.Group();
+  const body = getSetMaterial(piece);
+  addMonolithBase(group, body, 0.6);
+  const diamond = addMesh(group, new THREE.OctahedronGeometry(0.3, 0), body, new THREE.Vector3(0, 0.62, 0));
+  diamond.scale.set(1, 1.55, 1);
+  diamond.rotation.y = Math.PI / 4;
+  addGoldRing(group, 0.37, 0.22, 0.009);
+  addMesh(group, new THREE.OctahedronGeometry(0.06, 0), materials.gold, new THREE.Vector3(0, 0.94, 0));
+  return { group, height: 1.1 };
+}
+
+function createMonolithKhon(piece) {
+  const group = new THREE.Group();
+  const body = getSetMaterial(piece);
+  addMonolithBase(group, body, 0.66);
+  const prism = addMesh(group, new THREE.CylinderGeometry(0.34, 0.4, 0.78, 3), body, new THREE.Vector3(0, 0.51, 0));
+  prism.rotation.y = Math.PI / 6;
+  addFlatTopPlate(
+    group,
+    new THREE.CylinderGeometry(0.34, 0.34, 0.014, 3),
+    0.9,
+  );
+  addGoldRing(group, 0.38, 0.255, 0.009);
+  return { group, height: 0.92 };
+}
+
+function createMonolithMa(piece) {
+  const group = new THREE.Group();
+  const body = getSetMaterial(piece);
+  addMonolithBase(group, body, 0.62);
+  const arrow = new THREE.Shape();
+  arrow.moveTo(-0.18, -0.3);
+  arrow.lineTo(0.18, -0.3);
+  arrow.lineTo(0.18, 0.08);
+  arrow.lineTo(0.34, 0.08);
+  arrow.lineTo(0, 0.36);
+  arrow.lineTo(-0.34, 0.08);
+  arrow.lineTo(-0.18, 0.08);
+  arrow.closePath();
+  const geometry = new THREE.ExtrudeGeometry(arrow, {
+    depth: 0.78,
+    bevelEnabled: false,
+    steps: 1,
+  });
+  geometry.rotateX(-Math.PI / 2);
+  const block = new THREE.Mesh(geometry, body);
+  block.position.set(0, 0.16, 0);
+  block.rotation.y = piece.color === "w" ? 0 : Math.PI;
+  block.castShadow = true;
+  block.receiveShadow = true;
+  group.add(block);
+  const plate = new THREE.ExtrudeGeometry(arrow, { depth: 0.012, bevelEnabled: false, steps: 1 });
+  plate.rotateX(-Math.PI / 2);
+  const goldPlate = new THREE.Mesh(plate, materials.gold);
+  goldPlate.position.set(0, 0.94, 0);
+  goldPlate.rotation.y = piece.color === "w" ? 0 : Math.PI;
+  group.add(goldPlate);
+  addMesh(group, new THREE.SphereGeometry(0.032, 16, 12), materials.gold, new THREE.Vector3(0, 0.55, 0.28));
+  addMesh(group, new THREE.SphereGeometry(0.032, 16, 12), materials.gold, new THREE.Vector3(0, 0.55, -0.28));
+  return { group, height: 0.96 };
+}
+
+function createMonolithRuea(piece) {
+  const group = new THREE.Group();
+  const body = getSetMaterial(piece);
+  addMonolithBase(group, body, 0.7);
+  addBox(group, 0.56, 0.7, 0.56, 0, 0.48, 0, body);
+  for (const x of [-0.25, 0.25]) {
+    for (const z of [-0.25, 0.25]) {
+      addBox(group, 0.13, 0.24, 0.13, x, 0.95, z, body);
+      addBox(group, 0.16, 0.035, 0.16, x, 1.0875, z, materials.gold);
+    }
+  }
+  addBox(group, 0.58, 0.035, 0.58, 0, 0.85, 0, materials.goldDark);
+  addGoldRing(group, 0.74, 0.31, 0.009);
+  return { group, height: 1.1 };
+}
+
+function createMonolithBia(piece) {
+  const group = new THREE.Group();
+  const body = getSetMaterial(piece);
+  const promoted = Boolean(piece.promoted);
+  addMonolithBase(group, body, promoted ? 0.56 : 0.5);
+  const sides = promoted ? 8 : 6;
+  addMesh(
+    group,
+    new THREE.CylinderGeometry(0.27, 0.31, promoted ? 0.48 : 0.28, sides),
+    body,
+    new THREE.Vector3(0, promoted ? 0.36 : 0.27, 0),
+  );
+  addFlatTopPlate(
+    group,
+    new THREE.CylinderGeometry(0.27, 0.27, 0.014, sides),
+    promoted ? 0.61 : 0.42,
+  );
+  if (promoted) {
+    addMesh(group, new THREE.CylinderGeometry(0.1, 0.12, 0.03, 8), materials.gold, new THREE.Vector3(0, 0.63, 0));
+  }
+  return { group, height: promoted ? 0.66 : 0.44 };
+}
+
 const PIECE_BUILDERS = {
   court: {
     K: createKhun,
@@ -3099,6 +3418,22 @@ const PIECE_BUILDERS = {
     N: createTournamentMa,
     R: createTournamentRuea,
     P: createTournamentBia,
+  },
+  sigil: {
+    K: createSigilKhun,
+    M: createSigilMet,
+    B: createSigilKhon,
+    N: createSigilMa,
+    R: createSigilRuea,
+    P: createSigilBia,
+  },
+  monolith: {
+    K: createMonolithKhun,
+    M: createMonolithMet,
+    B: createMonolithKhon,
+    N: createMonolithMa,
+    R: createMonolithRuea,
+    P: createMonolithBia,
   },
 };
 
@@ -3360,6 +3695,12 @@ function initScene() {
   controls.target.set(0, 0.35, 0);
   controls.rotateSpeed = 0.55;
   controls.zoomSpeed = 0.65;
+  controls.addEventListener("start", () => {
+    if (!topViewActive) return;
+    topViewActive = false;
+    topViewReturn = null;
+    updateTopViewButton();
+  });
 
   raycaster = new THREE.Raycaster();
   clock = new THREE.Clock();
@@ -3433,8 +3774,54 @@ function setBoardFocus(enabled, { announce = true } = {}) {
   }
 }
 
+function updateTopViewButton() {
+  if (!dom.topViewToggle) return;
+  const label = topViewActive ? t("threeQuarterView") : t("topView");
+  dom.topViewToggle.classList.toggle("is-active", topViewActive);
+  dom.topViewToggle.setAttribute("aria-pressed", String(topViewActive));
+  dom.topViewToggle.title = label;
+  dom.topViewToggle.setAttribute("aria-label", label);
+  const text = dom.topViewToggle.querySelector("span:last-child");
+  if (text) text.textContent = label;
+}
+
+function setTopView(enabled, { announce = true } = {}) {
+  if (!camera || !controls) return;
+  if (enabled === topViewActive) return;
+  if (enabled) {
+    topViewReturn = {
+      position: camera.position.clone(),
+      target: controls.target.clone(),
+    };
+    topViewActive = true;
+    const aspect = Math.max(0.55, dom.boardStage.clientWidth / Math.max(1, dom.boardStage.clientHeight));
+    const distance = 14.5 * aspectDistanceMultiplier(aspect) * (boardFocus ? 0.9 : 1);
+    controls.target.set(0, 0.35, 0);
+    camera.position.set(0.001, distance * 0.985, distance * 0.17);
+    camera.lookAt(controls.target);
+  } else {
+    topViewActive = false;
+    if (topViewReturn) {
+      camera.position.copy(topViewReturn.position);
+      controls.target.copy(topViewReturn.target);
+      topViewReturn = null;
+      camera.lookAt(controls.target);
+    } else {
+      resetCamera();
+    }
+  }
+  controls.update();
+  updateTopViewButton();
+  if (announce) {
+    showToast(topViewActive ? t("topViewOn") : t("topViewOff"), "info", topViewActive ? "▦" : "◈");
+  }
+}
+
 function resetCamera() {
   if (!camera || !controls) return;
+  topViewActive = false;
+  topViewReturn = null;
+  updateTopViewButton();
   controls.target.set(0, 0.35, 0);
   const aspect = Math.max(0.55, dom.boardStage.clientWidth / Math.max(1, dom.boardStage.clientHeight));
   const focusZoom = boardFocus ? (aspect < 1 ? 0.87 : 0.85) : 1;
@@ -3925,6 +4312,10 @@ function renderReplayPosition(index) {
 function updateReplayBar() {
   if (!dom.replayBar) return;
   dom.replayBar.hidden = !gameReplay.active;
+  if (dom.topViewToggle) {
+    dom.topViewToggle.hidden = false;
+    dom.topViewToggle.classList.toggle("is-raised", gameReplay.active);
+  }
   if (!gameReplay.active) return;
   const total = gameReplay.snapshot?.history.length || 0;
   if (dom.replayStepLabel) {
@@ -4820,6 +5211,7 @@ function updateAllUI() {
   updateAssistUI();
   updateSoundUI();
   updateTurnUI();
+  updateTopViewButton();
   updateReplayButton();
   updateReplayBar();
   renderRecordStatus();
@@ -4843,7 +5235,7 @@ function renderGlossary() {
   dom.glossaryGrid.innerHTML = PIECE_ORDER.map((key) => {
     const piece = PIECES[key];
     const otherLang = state.lang === "en" ? "th" : "en";
-    const setNote = t(state.pieceSet === "tournament" ? "modelTournamentNote" : "modelCourtNote");
+    const setNote = t(PIECE_SET_NOTE_KEYS[state.pieceSet] || "modelCourtNote");
     return `
       <article class="glossary-card" data-piece-key="${key}" role="button" tabindex="0"
         aria-label="${t("viewIn3D")}: ${piece.name[state.lang]}">
@@ -5037,7 +5429,7 @@ function renderPiecePreviewCopy(key) {
   if (dom.piecePreviewLore) dom.piecePreviewLore.textContent = meta.lore[state.lang];
   if (dom.piecePreviewMovement) dom.piecePreviewMovement.textContent = meta.movement[state.lang];
   if (dom.piecePreviewModel) {
-    const setNote = t(state.pieceSet === "tournament" ? "modelTournamentNote" : "modelCourtNote");
+    const setNote = t(PIECE_SET_NOTE_KEYS[state.pieceSet] || "modelCourtNote");
     dom.piecePreviewModel.textContent = `${meta.model[state.lang]} ${setNote}`;
   }
   if (dom.piecePronounceButton) {
@@ -6002,6 +6394,10 @@ function bindEvents() {
     resetCamera();
     audio.click();
   });
+  dom.topViewToggle.addEventListener("click", () => {
+    setTopView(!topViewActive);
+    audio.click();
+  });
   dom.panToggle.addEventListener("click", () => {
     setPanMode(!panMode);
     audio.click();
@@ -6311,7 +6707,7 @@ boot();
 /* A small, deliberately read-friendly surface for teachers and automated
    smoke tests. It does not expose any private player information. */
 window.Makruk3D = {
-  version: "1.8.3",
+  version: "1.9.0",
   credits: APP_CREDIT,
   getState: () => ({
     turn: state.turn,
@@ -6328,6 +6724,7 @@ window.Makruk3D = {
     pieceSet: state.pieceSet,
     pieceFinish: state.pieceFinish,
     stageColor: state.stageColor,
+    topViewActive,
     panMode,
     boardFocus,
     status: state.status,
@@ -6383,7 +6780,9 @@ window.Makruk3D = {
   newGame: () => newGame({ announce: false }),
   getView: () => ({
     panMode,
+    topView: topViewActive,
     target: controls ? controls.target.toArray() : null,
     camera: camera ? camera.position.toArray() : null,
   }),
+  setTopView: (enabled) => setTopView(Boolean(enabled)),
 };

@@ -22,7 +22,7 @@ function ok(condition, label, detail = "") {
   return condition;
 }
 
-const VERSION = "1.8.3";
+const VERSION = "1.9.0";
 
 const required = [
   "index.html",
@@ -210,6 +210,8 @@ if (ok(i18nStart >= 0, "script.js defines I18N")) {
 const featured = [
   ["PIECE_SETS", 'court: {'],
   ["PIECE_SETS", 'tournament: {'],
+  ["PIECE_SETS", 'sigil: {'],
+  ["PIECE_SETS", 'monolith: {'],
   ["PIECE_FINISHES", 'ruby: {'],
   ["PIECE_FINISHES", 'ebony: {'],
   ["AI_LEVELS", 'easy: {'],
@@ -226,6 +228,9 @@ const featured = [
   ["AI", "function replayLastMove("],
   ["AI", "function startGameReplay("],
   ["AI", "function applyReplayMove("],
+  ["AI", "function createSigilKhun("],
+  ["AI", "function createMonolithKhun("],
+  ["AI", "function setTopView("],
   ["AI", 'boardMaterial: "jade"'],
   ["AI", 'pieceFinish: "ruby"'],
   ["AI", 'botLevel: "hard"'],
@@ -240,7 +245,7 @@ const sections = {
 for (const [section, needle] of featured) {
   ok(sections[section].includes(needle), `missing feature wiring (${section})`, needle);
 }
-for (const id of ["pieceSetControl", "pieceFinishControl", "botLevelControl", "thinkTimeInput", "aiChipLevel", "displayButtonStage", "capturedByBlackLabel", "replayLastMove", "replayGameButton", "replayBar", "replayToggle", "replayExit"]) {
+for (const id of ["pieceSetControl", "pieceFinishControl", "botLevelControl", "thinkTimeInput", "aiChipLevel", "displayButtonStage", "capturedByBlackLabel", "replayLastMove", "replayGameButton", "replayBar", "replayToggle", "replayExit", "topViewToggle"]) {
   ok(html.includes(`id="${id}"`), "index.html is missing control", id);
   ok(script.includes(`#${id}`), "script.js does not cache control", id);
 }

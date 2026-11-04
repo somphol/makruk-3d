@@ -128,7 +128,11 @@ Board materials:
 
 ### Pieces
 
-Each builder returns `{ group, height }`. All are procedural; no model files. `state.pieceSet` selects the Court or Tournament family through `PIECE_BUILDERS`, and `state.pieceFinish` selects the opponent material (`ruby` or `dark`) through `getSetMaterial`/`getSetAccent`.
+Each builder returns `{ group, height }`. All are procedural; no model files. `state.pieceSet` selects Court, Tournament, Sigil or Monolith through `PIECE_BUILDERS`, and `state.pieceFinish` selects the opponent material (`ruby` or `dark`) through `getSetMaterial`/`getSetAccent`.
+
+**Sigil** (`createSigil*`) adds `addSealCap`: a dark cylinder with a gold rim and a procedural canvas glyph texture (`♔ ❖ ♗ ♘ ♜ ◒ ★`). The seal faces up, so the top view reads it directly. Bodies keep distinct heights and profiles (brimmed Khon, horse Ma, masted Ruea).
+
+**Monolith** (`createMonolith*`) uses geometric prisms whose top faces differ: cross (Khun), octahedral diamond (Met), triangular prism (Khon), extruded arrow (Ma), crenellated square tower (Ruea), hexagonal prism (Bia) and octagonal prism with a gold cap (Bia Ngua).
 
 | Builder | Court geometry | Height |
 | --- | --- | --- |

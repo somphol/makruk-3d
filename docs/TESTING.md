@@ -19,6 +19,7 @@ Verified:
 
 - The board, loader and all 32 pieces render with no page errors or console errors.
 - Both piece families build and rebuild live; the 3D preview follows the selected family.
+- **Sigil** and **Monolith** build and rebuild live. In Top view, Sigil shows the crown/diamond/mitre/horse/rook/shell/star seals; Monolith shows the cross/diamond/triangle/arrow/tower/hexagon/octagon top faces. Toggling Top view restores the previous camera position and target.
 - Maple & Slate, Teak & Ebony, Carrara, Travertine and Jade board sets all render; Ruby and Ebony opponent finishes all render.
 - The display modal saves and restores board material, piece set, opponent colour, theme, stage colour and text size.
 - In Single Player, changing the level resets the thinking slider to that level's preset; the slider moves independently afterwards.
