@@ -5,7 +5,7 @@
 
 > Latest completion snapshot for the build, post-release review features, display themes, and GitHub publication.
 
-## Release 1.8.1 — readable UI and opponent-aware labels
+## Release 1.8.2 — replay, readable coordinates and a responsive search
 
 The 1.7.0 timing and token tables below are the historical build record and are not re-measured. This release addresses three pieces of player feedback:
 
@@ -13,6 +13,7 @@ The 1.7.0 timing and token tables below are the historical build record and are 
 - **Two piece families.** Court keeps the carved lathe set; Tournament adds distinct crowns for the Khun, Met, Khon, Ma, Ruea and promoted Bia. Both are selectable in Display settings.
 - **Four bot levels with an adjustable clock.** Simple, Medium, Hard and Super Super Hard start at 0.5 s, 1.5 s, 5 s and 12 s; the slider ranges 0.5–20 s. The search now uses a full-window root, quiescence on Hard/Super, killer moves, a history heuristic, repetition avoidance when ahead and an endgame mop-up term.
 - **1.8.1 UI pass.** Jade & Slate became the default board; the bot selector became a set of ranked strength cards with a custom slider; player-facing labels are side-aware ("Opponent" in Single Player, "Ruby" or "Black" in Pass & Play); the thinking chip uses an hourglass; and a Display button now sits in the board toolbar.
+- **1.8.2 replay and readability.** Coordinate labels are larger, outlined and repeated on all four edges. The match record carries a **Replay** button that re-animates the last move (with a captured-piece ghost) without touching the position. The AI search yields to the browser every ~70 ms, so orbiting and zooming remain available while the bot thinks.
 
 Verification for this release is recorded in [docs/TESTING.md](docs/TESTING.md).
 
@@ -21,7 +22,7 @@ Verification for this release is recorded in [docs/TESTING.md](docs/TESTING.md).
 | Field | Value |
 | --- | --- |
 | Project status | ✅ Complete and published |
-| App version | `1.8.1` |
+| App version | `1.8.2` |
 | Repository | <https://github.com/somphol/makruk-3d> |
 | Live page | <https://somphol.github.io/makruk-3d/> (GitHub Pages deployment enabled) |
 | Primary branch | `main` |

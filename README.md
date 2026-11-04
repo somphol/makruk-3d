@@ -27,6 +27,9 @@ An interactive, bilingual 3D Makruk (Thai chess) academy built with vanilla HTML
 - **Single Player vs AI or Pass & Play** — a heuristic alpha-beta bot playing Black with four strengths and an adjustable thinking budget, or two humans sharing one board.
 - **Instant EN ⇄ TH switching** — all headers, labels, tooltips, tutor copy, move record, result overlay, display settings, and glossary update without interrupting a match.
 - **Side-aware labels** — in Single Player the second side is called **Opponent**, not Black; its turn stone, move dots and capture labels follow the ruby finish. Pass & Play names the side **Ruby** or **Black** to match the selected finish.
+- **Replay the last move** — a **Replay** button in the Match Record re-animates the opponent's last move (including captures) without changing the position, so a long think cannot make you miss it.
+- **Readable coordinates** — file and rank labels are large, outlined and repeated on all four edges of the board.
+- **Live camera while the bot thinks** — the search yields to the browser every ~70 ms, so you can still orbit and zoom the board during a long think.
 - **Display controls on the board** — a **Display** button in the stage toolbar opens theme, piece, opponent-colour and text-size settings, so the customisation is not buried in the sidebar.
 - **Four display themes & scalable text** — Midnight Lacquer, Ivory Court, Jade Pavilion, and Ruby Palace, plus four text sizes from 90% to 140%. Preferences are saved on the device.
 - **Adjustable stage palette** — choose the coloured room/backdrop behind the board from six presets or any custom colour. Light stages soften the vignette and table automatically.
@@ -117,6 +120,7 @@ The slider ranges from 0.5 s to 20 s. Choosing a level resets the slider to that
 - **Move view** switches left-drag/touch-drag to panning; right-drag and two-finger drag also pan.
 - **Full size** expands the board and hides the surrounding panels.
 - **Reset view** recentres the board and returns to the academy's signature three-quarter angle.
+- Orbit and zoom stay available while the bot is thinking; the search yields a frame every ~70 ms.
 
 ## Authentic Makruk rules implemented
 
@@ -186,7 +190,7 @@ The board is built from 64 carved tile meshes on a layered plinth. All material 
 
 ## AI
 
-Four levels share one engine: legal-move generation, iterative deepening, alpha-beta pruning, MVV-LVA capture ordering, killer moves, a history heuristic, quiescence search on Hard and Super Super Hard, and a piece-square evaluation with pawn advancement, open files, king safety, enemy-king pressure and an endgame mop-up term. The root is searched with a full window so every candidate has an exact score; ties are broken toward captures, promotions and advancement, with repetition penalties when the bot is ahead. The search budget is the slider value (0.5–20 s), and the level preset supplies the starting budget. It plays Black only in Single Player mode.
+Four levels share one engine: legal-move generation, iterative deepening, alpha-beta pruning, MVV-LVA capture ordering, killer moves, a history heuristic, quiescence search on Hard and Super Super Hard, and a piece-square evaluation with pawn advancement, open files, king safety, enemy-king pressure and an endgame mop-up term. The root is searched with a full window so every candidate has an exact score; ties are broken toward captures, promotions and advancement, with repetition penalties when the bot is ahead. The search budget is the slider value (0.5–20 s), and the level preset supplies the starting budget. The root search yields to the browser roughly every 70 ms, so the render loop and OrbitControls keep working during a deep think; moves and menu actions that would change the position remain blocked. It plays Black only in Single Player mode.
 
 ## Save format
 

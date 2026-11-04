@@ -1604,6 +1604,46 @@ html[data-piece-finish="ruby"] .turn-stone.is-black {
   flex: 1;
 }
 
+.record-heading-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.record-replay {
+  min-height: 23px;
+  padding: 0 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid rgba(214, 179, 106, 0.26);
+  border-radius: 999px;
+  color: var(--gold);
+  background: rgba(214, 179, 106, 0.06);
+  font-family: var(--font-ui);
+  font-size: calc(8px * var(--text-scale));
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.record-replay:hover:not(:disabled) {
+  color: var(--gold-bright);
+  border-color: rgba(214, 179, 106, 0.5);
+  background: rgba(214, 179, 106, 0.12);
+}
+
+.record-replay:disabled {
+  opacity: 0.42;
+  cursor: default;
+}
+
+.record-replay[hidden] {
+  display: none;
+}
+
 .record-count {
   min-width: 24px;
   height: 21px;

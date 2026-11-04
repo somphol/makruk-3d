@@ -92,7 +92,7 @@ Promotion is **automatic and compulsory**: any unpromoted Bia reaching its promo
 
 ## 3. AI
 
-`chooseAIMove()` is called only for Black, after a 420 ms UI delay in `scheduleAI()`. The thinking budget is `state.thinkTimeMs` (0.5–20 s, default 5 s at Hard); `AI_LEVELS[state.botLevel]` adds a depth cap, quiescence policy, move-pool margin and blunder chance.
+`chooseAIMove()` is async and is called only for Black, after a 420 ms UI delay in `scheduleAI()`. The thinking budget is `state.thinkTimeMs` (0.5–20 s, default 5 s at Hard); `AI_LEVELS[state.botLevel]` adds a depth cap, quiescence policy, move-pool margin and blunder chance. Between root moves the search calls `yieldToBrowser()` roughly every 70 ms, so the render loop and OrbitControls keep running; `searchGeneration` cancels a stale search when the game is reset or a save is loaded.
 
 - Legal root moves come from `getLegalMoves("b", state.board)`.
 - Root moves are ordered by `orderMoves`; depth 1 is shuffled, later depths reuse the ordered list.
@@ -117,7 +117,7 @@ Simple and Medium keep a margin and a blunder chance, so they remain beatable. H
 
 ### Coordinates and board
 
-`worldPosition(index) = (col − 3.5, 0.455, row − 3.5)`. The board top is `WORLD.boardTop = 0.455`; White is at positive z, near the default camera. `buildBoard()` builds a layered plinth (`9.45 × 0.18`, `9.02`, `8.58`, `8.18` boxes), 64 tiles (`0.985` square, `0.032` thick, y `0.447`), gold trim, corner studs and coordinate labels. An invisible 8×8 plane grid (`pickables`) provides raycast picking; each plane stores `userData.square`.
+`worldPosition(index) = (col − 3.5, 0.455, row − 3.5)`. The board top is `WORLD.boardTop = 0.455`; White is at positive z, near the default camera. `buildBoard()` builds a layered plinth (`9.45 × 0.18`, `9.02`, `8.58`, `8.18` boxes), 64 tiles (`0.985` square, `0.032` thick, y `0.447`), gold trim, corner studs and coordinate labels on all four edges. Each label is a 256 px canvas (150 px Georgia, 22 px dark halo, `#f7dfa6`) on a 0.44-unit plane with opacity 0.94. An invisible 8×8 plane grid (`pickables`) provides raycast picking; each plane stores `userData.square`.
 
 Board materials:
 
@@ -159,7 +159,9 @@ Materials are `MeshPhysicalMaterial` ivory/ruby/dark for pieces, `MeshStandardMa
 
 ## 5. UI, i18n and accessibility
 
-`dom` caches every element by id. `applyStaticTranslations()` sets `<html lang>`, the document title, every `[data-i18n]` text, `[data-i18n-title]`, language-toggle state and the glossary title. `updateAllUI()` then calls, in order: mode, assist, sound, turn, record status, move list, captures, tutor; it re-renders open result/glossary/preview/stalemate/display modals. `sideLabel(color)` maps the internal `w`/`b` sides to player-facing names: White, Opponent in Single Player, or the active finish name (Ruby/Black) in Pass & Play. Both `#displayButton` in the sidebar and `#displayButtonStage` in the stage toolbar call `openDisplaySettings()`.
+`dom` caches every element by id. `applyStaticTranslations()` sets `<html lang>`, the document title, every `[data-i18n]` text, `[data-i18n-title]`, language-toggle state and the glossary title. `updateAllUI()` then calls, in order: mode, assist, sound, turn, replay button, record status, move list, captures, tutor; it re-renders open result/glossary/preview/stalemate/display modals. `sideLabel(color)` maps the internal `w`/`b` sides to player-facing names: White, Opponent in Single Player, or the active finish name (Ruby/Black) in Pass & Play. Both `#displayButton` in the sidebar and `#displayButtonStage` in the stage toolbar call `openDisplaySettings()`.
+
+`replayLastMove()` animates the existing mesh from the stored `from` square to `to`, spawns a temporary ghost for a captured piece, and restores the mesh at the end. It never edits the board, history, turn or repetition counts; `state.replayActive` blocks board input for the ~1 s replay.
 
 `renderGlossary()` rebuilds seven `PIECE_ORDER` cards from `PIECES` and six rule cards from `I18N.rule1…rule6`. Cards are `role="button"`, keyboard-activatable, and carry a `data-pronounce` speaker button plus `data-piece-key` for the 3D preview.
 
@@ -204,7 +206,7 @@ pointerdown/up on #scene
   → scheduleAI (if Black bot) or scheduleResult (if terminal)
 ```
 
-Intents are local and synchronous except the AI timer, result timer and audio callbacks.
+Intents are local and synchronous except the async AI search, result timer and audio callbacks.
 
 Match storage:
 

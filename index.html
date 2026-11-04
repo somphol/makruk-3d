@@ -267,7 +267,13 @@
               <h2 data-i18n="recordTitle">Match Record</h2>
               <p data-i18n="recordSubtitle">Every move, transcribed in real time.</p>
             </span>
-            <span class="record-count" id="plyCount">0</span>
+            <span class="record-heading-actions">
+              <button class="record-replay" id="replayLastMove" type="button" hidden>
+                <span aria-hidden="true">↺</span>
+                <span id="replayLastMoveLabel">Replay</span>
+              </button>
+              <span class="record-count" id="plyCount">0</span>
+            </span>
           </div>
           <div class="move-list" id="moveList">
             <p class="move-empty" data-i18n="recordEmpty">The first move is yours.</p>

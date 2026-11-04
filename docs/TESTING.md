@@ -34,18 +34,24 @@ AI measurements on the opening position (Apple silicon, headless Chrome):
 | Level | Budget | Completed depth | Nodes | Wall time |
 | --- | ---: | ---: | ---: | ---: |
 | Simple | 0.5 s | 3 | ~5.5k | ~20 ms |
-| Medium | 1.5 s | 5 | ~607k | ~1.0 s |
-| Hard | 5 s | 5 | ~2.0M | 5.0 s |
-| Super Super Hard | 8 s (test override) | 5 | ~3.2M | 8.0 s |
+| Medium | 1.5 s | 5 | ~607k | ~1.1 s |
+| Hard | 5 s | 5 | ~1.9M | 5.0 s |
+| Super Super Hard | 8 s (test override) | 5 | ~2.9M | 8.0 s |
 
-Depth is budget-bound in the crowded opening; the completed depth is the last full iteration. Deeper iterations are resumed when the position allows.
+Depth is budget-bound in the crowded opening; the completed depth is the last full iteration. Deeper iterations are resumed when the position allows. The search yields a frame roughly every 70 ms, so the wall time includes those yields and the board stays interactive.
 
 Conversion test: a constructed endgame of Black Khun + Ruea + Met versus a lone White Khun, with a scripted passive White. At a 0.5 s budget, Hard played the textbook plan — Ruea to the second rank to cut the Khun, then walked the Khun in — and delivered checkmate on move 9. This specifically guards against the earlier "shuffle instead of convert" failure.
+
+Replay test: after the bot replied, the **Replay** button animated the last move and returned `replayActive` to false; move count, turn and board signature were unchanged. A separate capture position showed the captured-piece ghost. The button is disabled while the bot is thinking and reads `Replay the opponent's last move` in Single Player.
+
+Saved-position audit: `makruk_save (3).json` replays legally through all 40 history moves and produces the same 25-piece board that the file stores; the 25 rendered meshes match the 25 board entries with no position mismatches. It is White's turn, so the bot does not move until White moves. Subsequent White moves at Hard produce a reply after the 5 s budget.
+
+Camera-during-search test: with a 5 s budget and the bot thinking, an orbit drag changed the camera position while the search continued; the bot still replied afterwards.
 
 ## 3. Not verified
 
 - Safari, Firefox, iOS and Android were not formally tested.
-- The 20 s maximum thinking time was not run on a phone; long searches block the main thread.
+- The 20 s maximum thinking time was not run on a phone. The search yields every ~70 ms, so the camera stays usable, but frame rate drops during deep iterations.
 - Thai copy is complete and symmetric but has not been proofread by a native speaker.
 - The AI is a heuristic opponent. Hard/Super can convert simple endgames; they have no opening book, transposition table or tablebase and are not tournament strength.
 - The Thai endgame counting rules remain unimplemented.

@@ -87,6 +87,10 @@ const I18N = {
     assistToggleLabel: "Toggle beginner move assist",
     recordTitle: "Match Record",
     recordSubtitle: "Every move, transcribed in real time.",
+    replayLastMove: "Replay last move",
+    replayOpponentMove: "Replay the opponent's last move",
+    replayLastMoveShort: "Replay",
+    replayingShort: "Replaying…",
     recordEmpty: "The first move is yours.",
     recordReady: "Ready to play",
     newGame: "New Game",
@@ -213,8 +217,8 @@ const I18N = {
     toastGameOver: "The match has ended. Start a new game to play again.",
     toastNewGame: "A fresh board is ready.",
     toastSaved: "Match saved to makruk_save.json.",
-    toastLoaded: "Match restored from file.",
-    toastAutoRestored: "Your previous match was restored.",
+    toastLoaded: "Match loaded — {side} to move.",
+    toastAutoRestored: "Match restored — {side} to move.",
     toastInvalidSave: "That file is not a valid Makruk 3D save.",
     toastAssistOn: "Beginner assist enabled.",
     toastAssistOff: "Beginner assist hidden.",
@@ -317,6 +321,10 @@ const I18N = {
     assistToggleLabel: "เปิดหรือปิดตัวช่วยการเดิน",
     recordTitle: "บันทึกการแข่งขัน",
     recordSubtitle: "ทุกตาเดินถูกบันทึกทันที",
+    replayLastMove: "เล่นซ้ำตาเดินล่าสุด",
+    replayOpponentMove: "เล่นซ้ำตาของคู่ต่อสู้",
+    replayLastMoveShort: "เล่นซ้ำ",
+    replayingShort: "กำลังเล่นซ้ำ…",
     recordEmpty: "ตาแรกเป็นของคุณ",
     recordReady: "พร้อมเล่น",
     newGame: "เริ่มเกมใหม่",
@@ -443,8 +451,8 @@ const I18N = {
     toastGameOver: "เกมจบแล้ว เริ่มเกมใหม่เพื่อเล่นอีกครั้ง",
     toastNewGame: "กระดานใหม่พร้อมแล้ว",
     toastSaved: "บันทึกแมตช์เป็น makruk_save.json แล้ว",
-    toastLoaded: "โหลดแมตช์จากไฟล์แล้ว",
-    toastAutoRestored: "กู้คืนแมตช์ก่อนหน้าของคุณแล้ว",
+    toastLoaded: "โหลดแมตช์จากไฟล์แล้ว — {side}เดิน",
+    toastAutoRestored: "กู้คืนแมตช์ก่อนหน้าแล้ว — {side}เดิน",
     toastInvalidSave: "ไฟล์นี้ไม่ใช่ไฟล์บันทึกหมากรุกไทย 3D ที่ถูกต้อง",
     toastAssistOn: "เปิดตัวช่วยผู้เล่นใหม่แล้ว",
     toastAssistOff: "ซ่อนตัวช่วยผู้เล่นใหม่แล้ว",
@@ -914,6 +922,8 @@ const dom = {
   assistToggle: $("#assistToggle"),
   moveList: $("#moveList"),
   plyCount: $("#plyCount"),
+  replayLastMove: $("#replayLastMove"),
+  replayLastMoveLabel: $("#replayLastMoveLabel"),
   recordStatus: $("#recordStatus"),
   recordStatusDot: $(".record-status-dot"),
   newGameButton: $("#newGameButton"),
@@ -1174,7 +1184,9 @@ function warmSpeechVoices() {
 let pieceIdCounter = 1;
 let aiTimer = null;
 let resultTimer = null;
+let replayTimer = null;
 let lastFocusedElement = null;
+const replayFx = [];
 
 const state = {
   board: [],
@@ -1205,6 +1217,7 @@ const state = {
   halfmove: 0,
   positionCounts: {},
   aiThinking: false,
+  replayActive: false,
   startedAt: Date.now(),
 };
 
@@ -1552,8 +1565,13 @@ function evaluateGameState() {
 function resetGameState() {
   clearTimeout(aiTimer);
   clearTimeout(resultTimer);
+  clearTimeout(replayTimer);
   aiTimer = null;
   resultTimer = null;
+  replayTimer = null;
+  state.replayActive = false;
+  searchGeneration += 1;
+  clearReplayFx();
   state.board = createStartingBoard();
   state.turn = "w";
   state.history = [];
@@ -1610,7 +1628,7 @@ function isTerminal() {
 }
 
 function canHumanInteract() {
-  if (isTerminal() || state.aiThinking) return false;
+  if (isTerminal() || state.aiThinking || state.replayActive) return false;
   if (state.mode === "ai" && state.turn === "b") return false;
   return true;
 }
@@ -1827,6 +1845,7 @@ function shuffleMoves(moves) {
 
 let searchDeadline = 0;
 let searchAborted = false;
+let searchGeneration = 0;
 let searchStats = { depth: 0, nodes: 0, ms: 0, aborted: false, level: "hard" };
 const killerMoves = [];
 const historyHeuristic = new Int32Array(64 * 64);
@@ -1837,6 +1856,22 @@ function searchExpired() {
     return true;
   }
   return false;
+}
+
+// Yielding a frame lets OrbitControls and the render loop run during a long
+// search. The timeout fallback keeps the search alive in a background tab,
+// where requestAnimationFrame may not fire.
+function yieldToBrowser() {
+  return new Promise((resolve) => {
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      resolve();
+    };
+    window.requestAnimationFrame(finish);
+    window.setTimeout(finish, 40);
+  });
 }
 
 function quiesce(board, color, alpha, beta, ply, remaining = 4) {
@@ -1933,13 +1968,15 @@ function rootRepetitionPenalty(move, avoidDraw) {
   return 0;
 }
 
-function chooseAIMove() {
+async function chooseAIMove() {
   const cfg = activeAILevel();
+  const generation = ++searchGeneration;
   const rootMoves = getLegalMoves("b", state.board);
   if (rootMoves.length === 0) return null;
   if (rootMoves.length === 1) return rootMoves[0];
 
   const startedAt = performance.now();
+  let lastYield = startedAt;
   const avoidDraw = materialBalance(state.board, "b") > 120;
   searchStats = { depth: 0, nodes: 0, ms: 0, aborted: false, level: state.botLevel };
   killerMoves.length = 0;
@@ -1971,6 +2008,12 @@ function chooseAIMove() {
       if (score > depthBestScore) {
         depthBestScore = score;
         depthBest = move;
+      }
+
+      if (performance.now() - lastYield > 70) {
+        await yieldToBrowser();
+        if (generation !== searchGeneration) return null;
+        lastYield = performance.now();
       }
     }
 
@@ -3042,24 +3085,32 @@ function createPieceGroup(piece) {
 
 function addBoardLabel(parent, text, x, z, rotation = 0) {
   const canvas = document.createElement("canvas");
-  canvas.width = 128;
-  canvas.height = 128;
+  canvas.width = 256;
+  canvas.height = 256;
   const ctx = canvas.getContext("2d");
-  ctx.clearRect(0, 0, 128, 128);
-  ctx.fillStyle = "#d8bc7d";
-  ctx.font = "600 66px Georgia, serif";
+  ctx.clearRect(0, 0, 256, 256);
+  ctx.font = "800 150px Georgia, 'Times New Roman', serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText(text, 64, 68);
+  // A dark halo plus a bright fill keeps the label readable over both the
+  // polished frame and the shadowed board edge.
+  ctx.lineJoin = "round";
+  ctx.lineWidth = 22;
+  ctx.strokeStyle = "rgba(8, 5, 2, 0.92)";
+  ctx.strokeText(text, 128, 138);
+  ctx.fillStyle = "#f7dfa6";
+  ctx.fillText(text, 128, 138);
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
+  texture.anisotropy = renderer ? Math.min(8, renderer.capabilities.getMaxAnisotropy()) : 1;
   const material = new THREE.MeshBasicMaterial({
     map: texture,
     transparent: true,
-    opacity: 0.48,
+    opacity: 0.94,
     depthWrite: false,
+    toneMapped: false,
   });
-  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(0.28, 0.28), material);
+  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(0.44, 0.44), material);
   mesh.rotation.x = -Math.PI / 2;
   mesh.rotation.z = rotation;
   mesh.position.set(x, WORLD.boardTop + 0.002, z);
@@ -3126,7 +3177,13 @@ function buildBoard() {
 
   for (let col = 0; col < 8; col += 1) {
     addBoardLabel(boardRoot, FILES[col], col - 3.5, 4.34);
-    addBoardLabel(boardRoot, String(8 - col), -4.34, col - 3.5, Math.PI / 2);
+    addBoardLabel(boardRoot, FILES[col], col - 3.5, -4.34, Math.PI);
+  }
+
+  for (let row = 0; row < 8; row += 1) {
+    const rank = String(8 - row);
+    addBoardLabel(boardRoot, rank, -4.34, row - 3.5, Math.PI / 2);
+    addBoardLabel(boardRoot, rank, 4.34, row - 3.5, -Math.PI / 2);
   }
 
   pickables = [];
@@ -3407,7 +3464,7 @@ function renderFrame() {
     }
 
     if (entry.animation) {
-      entry.animation.time += delta * 4.6;
+      entry.animation.time += delta / (entry.animation.duration || 0.217);
       const progress = Math.min(1, entry.animation.time);
       const eased = progress < 0.5
         ? 4 * progress * progress * progress
@@ -3416,13 +3473,28 @@ function renderFrame() {
       const target = entry.animation.target;
       group.position.x = start.x + (target.x - start.x) * eased;
       group.position.z = start.z + (target.z - start.z) * eased;
-      group.position.y = WORLD.boardTop + Math.sin(progress * Math.PI) * 0.19;
+      group.position.y = WORLD.boardTop + Math.sin(progress * Math.PI) * (entry.animation.lift || 0.19);
       group.rotation.x = Math.sin(progress * Math.PI) * 0.055;
       if (progress >= 1) {
         group.position.copy(target);
         group.rotation.x = 0;
         entry.animation = null;
       }
+    }
+  }
+
+  for (let i = replayFx.length - 1; i >= 0; i -= 1) {
+    const fx = replayFx[i];
+    fx.life += delta;
+    if (fx.life > 0.55) {
+      const fade = Math.min(1, (fx.life - 0.55) / 0.25);
+      fx.group.scale.setScalar(Math.max(0.001, 1 - fade * 1.15));
+      fx.group.position.y = WORLD.boardTop - fade * 0.12;
+    }
+    if (fx.life >= 0.85) {
+      pieceLayer.remove(fx.group);
+      disposeGroup(fx.group);
+      replayFx.splice(i, 1);
     }
   }
 
@@ -3640,8 +3712,78 @@ function rebuildPieceMeshes() {
     disposeGroup(entry.group);
   }
   meshById.clear();
+  clearReplayFx();
   syncPieceMeshes({ animate: false });
   renderHighlights();
+}
+
+/* =========================================================================
+   Last-move replay
+   ========================================================================= */
+
+function clearReplayFx() {
+  for (const fx of replayFx) {
+    if (pieceLayer) pieceLayer.remove(fx.group);
+    disposeGroup(fx.group);
+  }
+  replayFx.length = 0;
+}
+
+function spawnReplayGhost(captured, position) {
+  if (!sceneReady || !captured) return;
+  const ghost = createPieceGroup({
+    id: -1,
+    type: captured.type,
+    color: captured.color,
+    promoted: Boolean(captured.promoted),
+  });
+  ghost.position.copy(position);
+  pieceLayer.add(ghost);
+  replayFx.push({ group: ghost, life: 0 });
+}
+
+function finishReplay() {
+  clearTimeout(replayTimer);
+  replayTimer = null;
+  state.replayActive = false;
+  clearReplayFx();
+  if (sceneReady && state.lastMove) {
+    const piece = state.board[state.lastMove.to];
+    const entry = piece ? meshById.get(piece.id) : null;
+    if (entry) {
+      entry.group.position.copy(worldPosition(state.lastMove.to));
+      entry.group.rotation.x = 0;
+      entry.animation = null;
+    }
+  }
+  updateAllUI();
+}
+
+function replayLastMove() {
+  if (!sceneReady || !state.lastMove || state.aiThinking || state.replayActive) return false;
+  const move = state.lastMove;
+  const piece = state.board[move.to];
+  const entry = piece ? meshById.get(piece.id) : null;
+  if (!entry || entry.removing) return false;
+
+  clearTimeout(replayTimer);
+  clearReplayFx();
+  state.replayActive = true;
+  updateReplayButton();
+
+  const start = worldPosition(move.from);
+  const target = worldPosition(move.to);
+  entry.group.position.copy(start);
+  entry.group.rotation.x = 0;
+  entry.animation = { start, target, time: 0, duration: 0.85, lift: 0.3 };
+
+  const lastHistory = state.history[state.history.length - 1];
+  if (lastHistory?.captured) spawnReplayGhost(lastHistory.captured, target);
+  if (move.captured || lastHistory?.captured) audio.capture();
+  else audio.move();
+
+  replayTimer = window.setTimeout(finishReplay, 1000);
+  return true;
 }
 
 /* =========================================================================
@@ -3706,6 +3848,20 @@ function updateTurnUI() {
   }
   const fullMove = Math.floor(state.history.length / 2) + 1;
   dom.moveCounter.textContent = t("moveLabel", { n: fullMove });
+}
+
+function updateReplayButton() {
+  if (!dom.replayLastMove) return;
+  const move = state.lastMove;
+  dom.replayLastMove.hidden = !move;
+  const available = Boolean(move) && !state.aiThinking && !state.replayActive;
+  dom.replayLastMove.disabled = !available;
+  const opponentMove = Boolean(move) && state.mode === "ai" && move.color === "b";
+  const labelKey = opponentMove ? "replayOpponentMove" : "replayLastMove";
+  const shortLabel = state.replayActive ? t("replayingShort") : t("replayLastMoveShort");
+  dom.replayLastMove.title = available ? t(labelKey) : shortLabel;
+  dom.replayLastMove.setAttribute("aria-label", t(labelKey));
+  if (dom.replayLastMoveLabel) dom.replayLastMoveLabel.textContent = shortLabel;
 }
 
 function renderRecordStatus() {
@@ -4348,6 +4504,7 @@ function updateAllUI() {
   updateAssistUI();
   updateSoundUI();
   updateTurnUI();
+  updateReplayButton();
   renderRecordStatus();
   renderMoveList();
   renderCaptures();
@@ -5093,7 +5250,7 @@ function scheduleAI() {
 
   state.aiThinking = true;
   updateAllUI();
-  aiTimer = window.setTimeout(() => {
+  aiTimer = window.setTimeout(async () => {
     if (state.mode !== "ai" || state.turn !== "b" || isTerminal()) {
       state.aiThinking = false;
       updateAllUI();
@@ -5102,9 +5259,15 @@ function scheduleAI() {
 
     let move = null;
     try {
-      move = chooseAIMove();
+      move = await chooseAIMove();
     } catch (error) {
       console.error("AI search failed", error);
+    }
+
+    if (state.mode !== "ai" || state.turn !== "b" || isTerminal()) {
+      state.aiThinking = false;
+      updateAllUI();
+      return;
     }
 
     state.aiThinking = false;
@@ -5351,6 +5514,10 @@ function restoreGameFromPayload(payload, { announce = true, auto = false } = {})
 
   clearTimeout(aiTimer);
   clearTimeout(resultTimer);
+  clearTimeout(replayTimer);
+  replayTimer = null;
+  state.replayActive = false;
+  searchGeneration += 1;
   closeEndModals();
 
   state.board = deserializeBoard(game.board);
@@ -5385,7 +5552,13 @@ function restoreGameFromPayload(payload, { announce = true, auto = false } = {})
   savePreferences();
 
   if (announce) {
-    showToast(auto ? t("toastAutoRestored") : t("toastLoaded"), "success", auto ? "↺" : "📂");
+    showToast(
+      auto
+        ? t("toastAutoRestored", { side: sideLabel(state.turn) })
+        : t("toastLoaded", { side: sideLabel(state.turn) }),
+      "success",
+      auto ? "↺" : "📂",
+    );
   }
   if (!isTerminal()) {
     scheduleAI();
@@ -5406,7 +5579,7 @@ function tryRestoreAutoSave() {
     if (!validateLoadedGame(game)) return false;
     const restored = restoreGameFromPayload(payload, { announce: false, auto: true });
     if (restored) {
-      window.setTimeout(() => showToast(t("toastAutoRestored"), "success", "↺"), 600);
+      window.setTimeout(() => showToast(t("toastAutoRestored", { side: sideLabel(state.turn) }), "success", "↺"), 600);
     }
     return restored;
   } catch {
@@ -5520,6 +5693,9 @@ function bindEvents() {
     audio.click();
   });
   dom.saveButton.addEventListener("click", downloadSave);
+  dom.replayLastMove.addEventListener("click", () => {
+    if (replayLastMove()) audio.click();
+  });
   dom.loadButton.addEventListener("click", () => {
     audio.click();
     dom.loadFileInput.click();
@@ -5798,7 +5974,7 @@ boot();
 /* A small, deliberately read-friendly surface for teachers and automated
    smoke tests. It does not expose any private player information. */
 window.Makruk3D = {
-  version: "1.8.1",
+  version: "1.8.2",
   credits: APP_CREDIT,
   getState: () => ({
     turn: state.turn,
@@ -5824,11 +6000,20 @@ window.Makruk3D = {
     moveCount: state.history.length,
     selected: state.selected,
     aiThinking: state.aiThinking,
+    replayActive: state.replayActive,
   }),
   getLegalMoves: () => getLegalMoves(state.turn, state.board).map((move) => ({
     from: move.from,
     to: move.to,
     promotion: move.promoted,
+  })),
+  getBoard: () => state.board.map((piece) => (piece
+    ? { id: piece.id, type: piece.type, color: piece.color, promoted: piece.promoted }
+    : null)),
+  getPiecePositions: () => Array.from(meshById.entries()).map(([id, entry]) => ({
+    id,
+    x: Math.round(entry.group.position.x * 100) / 100,
+    z: Math.round(entry.group.position.z * 100) / 100,
   })),
   getScreenPoint: (index) => {
     if (!sceneReady || !camera || !renderer) return null;
@@ -5843,13 +6028,14 @@ window.Makruk3D = {
   },
   selectSquare,
   playMove: (from, to) => performMove(from, to),
+  replayLastMove: () => replayLastMove(),
   setBotLevel: (level) => applyBotLevel(level),
   setThinkTime: (ms) => applyThinkTime(ms),
   setPieceSet: (setKey) => applyPieceSet(setKey),
   setPieceFinish: (finishKey) => applyPieceFinish(finishKey),
   setBoardMaterial: (materialKey) => applyBoardMaterial(materialKey),
-  previewBotMove: () => {
-    const move = chooseAIMove();
+  previewBotMove: async () => {
+    const move = await chooseAIMove();
     return move ? { from: move.from, to: move.to } : null;
   },
   getSearchStats: () => ({ ...searchStats }),

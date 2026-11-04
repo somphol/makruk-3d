@@ -4,7 +4,7 @@
 
 A static, bilingual 3D **Makruk** (Thai chess) academy: one page, three source files, Three.js r160 from a CDN, no build step. It renders an 8×8 carved board with procedurally modelled Khun, Met, Khon, Ma, Ruea, Bia and Bia Ngua in two selectable families; plays Single Player (human White vs a four-level heuristic Black bot with an adjustable thinking budget) or local Pass & Play; coaches beginners with legal-move dots, a piece tutor and a seven-card glossary; adds display themes, piece and board finishes, a per-piece 3D viewer, bundled Thai pronunciation, Web Audio effects, autosave and JSON save/load.
 
-It is **not international chess** — there is no castling, en passant, double pawn step or queen. It is not a server, account system or tournament-strength engine. It is **not a complete tournament implementation of Makruk**: the Thai endgame counting rules are absent, and Black's Khun/Met start squares are transposed relative to standard Makruk (see §5). Release **1.8.1**.
+It is **not international chess** — there is no castling, en passant, double pawn step or queen. It is not a server, account system or tournament-strength engine. It is **not a complete tournament implementation of Makruk**: the Thai endgame counting rules are absent, and Black's Khun/Met start squares are transposed relative to standard Makruk (see §5). Release **1.8.2**.
 
 Live: <https://somphol.github.io/makruk-3d/> · Local master: `~/Projects/makruk-3d`
 
@@ -33,7 +33,7 @@ Load order: `index.html` → `style.css` → `script.js` (module; import map pin
 1. **Content** — `I18N.en` / `I18N.th`, `PIECES`, `THEMES`, `TEXT_SIZES`, `BOARD_STYLES`, `BOARD_MATERIALS`, `PIECE_SETS`, `PIECE_FINISHES`, `STAGE_COLORS`, `PRONUNCIATION_FILES`.
 2. **State** — one mutable `state` object: board, turn, mode, `botLevel`, `thinkTimeMs`, assist, language, theme, text size, board style/material, `pieceSet`, `pieceFinish`, stage colour, history, captured lists, selection, legal moves, status, `halfmove`, `positionCounts`, `aiThinking`.
 3. **Rules** — `getPseudoMoves` → `getLegalMoves` (apply, reject own check, undo) → `performMove` → `updateGameStatus`. Pieces are `{ id, type, color, promoted }`, type `K|M|B|N|R|P`. `index = row * 8 + col`, **row 0 = rank 8**, col 0 = file a; `coordinateOf` maps `8 - row`.
-4. **AI** — `AI_LEVELS` (easy/medium/hard/super) → `chooseAIMove` → `negamax` (iterative deepening, alpha-beta, full-window root, killer moves, history heuristic) → `quiesce` (Hard/Super) → `evaluateBoard` → root repetition/progress adjustment. Black only.
+4. **AI** — `AI_LEVELS` (easy/medium/hard/super) → `chooseAIMove` (async; iterative deepening, alpha-beta, full-window root, killer moves, history heuristic, yields every ~70 ms) → `negamax` → `quiesce` (Hard/Super) → `evaluateBoard` → root repetition/progress adjustment. Black only.
 5. **3D scene** — `boot` → `initScene` → `createMaterials` → `createEnvironment` → `buildBoard` → `createDust`; `renderFrame` runs on `setAnimationLoop`; `syncPieceMeshes` reconciles meshes to `state.board`; `renderHighlights` redraws move dots/rings.
 6. **UI / I/O** — `updateAllUI` → `applyStaticTranslations`, tutor, move record, captures, result modals; `saveGameToStorage` / `savePreferences`; `downloadSave` / `handleLoadFile`; `renderGlossary`; `openPiecePreview`; display and bot controls. `sideLabel(color)` is the single source for player-facing side names; the stage toolbar's Display button and the sidebar entry both call `openDisplaySettings()`.
 
@@ -53,7 +53,7 @@ PIECE_VALUES = { K: 0, M: 170, B: 305, N: 330, R: 520, P: 100 }; promoted P = 19
 
 Persistence is split. Match: `localStorage["makruk3d.match.v1"]`, format `makruk-3d-save`, `version: 1`, payload `{ format, version, savedAt, app, credits, game: { board, turn, mode, assist, lang, sound, history, captured, lastMove, status, statusReason, winner, halfmove, positionCounts, startedAt } }`. Preferences: `localStorage["makruk3d.prefs.v1"]` (includes `botLevel`, `thinkTimeMs`, `pieceSet`, `pieceFinish`). The board serialises as `{t, c, p}` per square. `validateLoadedGame` only checks 64 cells, legal type/colour and exactly one Khun per side; it does not replay history.
 
-`window.Makruk3D` is a smoke-test surface: `version`, `getState`, `getLegalMoves`, `getScreenPoint`, `selectSquare`, `playMove`, `newGame`, `getView`, `setBotLevel`, `setThinkTime`, `setPieceSet`, `setPieceFinish`, `setBoardMaterial`, `previewBotMove`, `getSearchStats`.
+`window.Makruk3D` is a smoke-test surface: `version`, `getState`, `getLegalMoves`, `getBoard`, `getPiecePositions`, `getScreenPoint`, `selectSquare`, `playMove`, `replayLastMove`, `newGame`, `getView`, `setBotLevel`, `setThinkTime`, `setPieceSet`, `setPieceFinish`, `setBoardMaterial`, `previewBotMove` (async), `getSearchStats`.
 
 ## 4. Decisions and constraints
 
@@ -70,7 +70,8 @@ Persistence is split. Match: `localStorage["makruk3d.match.v1"]`, format `makruk
 - **Board contrast and piece recognition are product requirements.** Jade & Slate and Ivory & Ruby are the defaults for that reason. Keep both piece families distinguishable at the default camera distance; do not revert the raised light square or the camera-side fill. The Court set is the cultural default; Tournament is the identification aid.
 - **The AI is one engine with four presets.** `AI_LEVELS` supplies depth cap, default clock, quiescence, move-pool margin and blunder chance. Changing a level preset must also reset the slider (`applyBotLevel`). The slider is the user's override and must persist in preferences.
 - **The root must stay a full window.** A narrow root window returns the same bound for every failing move, which makes unrelated moves look tied and lets tie-breaking shuffle. This was the 1.7.0 "bot repeats instead of converting" defect. Keep `rootRepetitionPenalty` and `rootProgressScore`; do not remove the endgame mop-up term without re-running the conversion test in [docs/TESTING.md](docs/TESTING.md).
-- **Search is synchronous.** It blocks the main thread for the chosen budget (up to 20 s). The thinking chip is painted before the search starts. Do not raise the maximum without a worker or a cooperative search.
+- **Search is synchronous per subtree but yields between root moves.** `chooseAIMove` is async and `yieldToBrowser` waits for a frame (40 ms fallback) roughly every 70 ms. This keeps OrbitControls and the render loop alive during a long think. Position-changing actions are still blocked; `resetGameState` and load increment `searchGeneration` so a stale search cannot move a new game's pieces. Do not remove the generation check when refactoring.
+- **Replay must not mutate the position.** `replayLastMove` animates the existing mesh from `from` to `to`, spawns a temporary captured-piece ghost, and never touches `state.board`, `history`, turn or `positionCounts`. Keep it that way; `finishReplay` restores the mesh to the destination square.
 - **Documentation is part of the release.** Keep `README.md` as the human index, this file as the agent handoff, and `docs/` as the detailed set. `scripts/check.mjs` enforces the doc set, links and release identity.
 - **`STATE.md` is a historical build record.** Do not rewrite its 1.7.0 timing/token numbers; add dated release notes instead.
 
@@ -80,7 +81,8 @@ Persistence is split. Match: `localStorage["makruk3d.match.v1"]`, format `makruk
 - **No Thai counting rules.** Neither the 64-move board count when no unpromoted Bia remain, nor the bare-king material count is implemented. The app ends only by checkmate, stalemate, threefold repetition or two bare Khun.
 - **No 50-move rule, draw agreement or resignation.** `state.halfmove` is updated and saved but never used by `updateGameStatus`.
 - **Repetition and bare-kings draws are app conventions.** They are useful, but they are not a substitute for the Thai counting procedure.
-- **Search runs on the main thread.** Hard at 5 s and Super at 12 s freeze the board for the full budget. The UI paints the thinking chip first but cannot accept input during the search. Mobile at the 20 s maximum is untested.
+- **Search runs on the main thread but yields.** Hard at 5 s and Super at 12 s reduce the frame rate while the bot thinks; the board remains orbitable and zoomable, but position-changing actions are blocked. The 20 s maximum is still untested on mobile.
+- **Replay is a visual review, not a move rollback.** It shows the stored last move and a captured-piece ghost; it does not rewind history, undo checks, or allow branching. The replay animation is deliberately longer than the live move animation.
 - **The bot is a heuristic opponent.** It converts simple king-and-rook endings, but has no opening book, transposition table or tablebase. Simple and Medium deliberately blunder. Do not market it as tournament strength.
 - **Save validation is structural, not legal.** A file with two Khun per side is rejected, but an impossible board or illegal `turn` can load. History is trusted for display.
 - **Browser coverage.** Verified in headless Chrome at desktop and mobile widths. Safari, Firefox, iOS and Android were not formally verified. WebGL is required; the fallback panel only reports failure.
@@ -92,6 +94,6 @@ Persistence is split. Match: `localStorage["makruk3d.match.v1"]`, format `makruk
 
 - **Deployed copy:** GitHub Pages, `main`, repository root, HTTPS enforced. Live URL above.
 - **Local master:** `~/Projects/makruk-3d`.
-- **Release identity:** app version `1.8.1` in `window.Makruk3D.version` and the release note in `STATE.md`.
+- **Release identity:** app version `1.8.2` in `window.Makruk3D.version` and the release note in `STATE.md`.
 - **Documentation map:** [README.md](README.md) is the human entry point; [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) is the module/algorithm map; [docs/REPRODUCTION.md](docs/REPRODUCTION.md) is the rebuild book; [docs/TESTING.md](docs/TESTING.md) separates verified results from gaps; [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) covers Pages operations; [STATE.md](STATE.md) is the historical session record.
 - **Publishing rules:** keep the repository public (MIT) and Pages on `main` / `/`. Do not force-push. Do not commit credentials, `.env` files or downloaded save files. If the repository is renamed, update the absolute URLs in `index.html`, `README.md`, `AGENTS.md`, `docs/DEPLOYMENT.md` and `docs/REPRODUCTION.md`.
