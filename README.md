@@ -11,7 +11,7 @@ An interactive, bilingual 3D Makruk (Thai chess) academy built with vanilla HTML
 ## Highlights
 
 - **Authentic Makruk rules** — pawns begin on the third/sixth ranks, no double-step, no en passant, no castling, Met moves one diagonal, Khon moves one diagonal or one forward, and promotion happens on the sixth rank.
-- **Procedural 3D pieces in four families** — Court uses carved `LatheGeometry` profiles; Tournament exaggerates every officer; **Sigil** tops each piece with a dark seal and a gold glyph for top-down reading; **Monolith** gives each piece a different geometric top face. All are generated from native Three.js primitives with no model files.
+- **Procedural 3D pieces in four families** — Court uses carved `LatheGeometry` profiles; Tournament exaggerates every officer; **Sigil** tops each piece with a large dark seal and a gold glyph for top-down reading; **Monolith** builds monumental silhouettes (gate, obelisk, shrine, horse stele, keep, drums) with gold-capped top faces. All are generated from native Three.js primitives with no model files.
 - **Top view** — a stage button tilts to a near-overhead camera so the Sigil glyphs and Monolith top faces are immediately readable; toggle back to the 3D view without losing your orbit position.
 - **Two opponent finishes** — the default **Ivory & Ruby** pair keeps the opponent vivid against every square; **Ivory & Ebony** is available for the classic look.
 - **High-contrast 8×8 board** — choose traditional single-tone or modern checkered patterns, with five material finishes. **Jade & Slate** is the default: pale quartz squares against deep green stone, with Maple & Slate, teak, Carrara/Marquina marble and travertine/granite alternatives. Inlaid gold trim, corner studs, coordinate labels, soft shadows, gold dust, and OrbitControls included.
@@ -102,7 +102,7 @@ Open **Theme & text size → Piece set** to switch families at any time; the boa
 | Court | Rounded lathe turnings with flared collars and gold bands, closest to a ceremonial Thai set. |
 | Tournament | Blocky, high-silhouette pieces: a five-point crown for the Khun, a faceted diamond for the Met, a wide-brimmed helmet for the Khon, an exaggerated horse head for the Ma, a crenellated barge for the Ruea, and a spired shell for the promoted Bia. |
 | Sigil | Dark wax-seal caps with a gold glyph on every piece — crown, diamond, mitre, horse, rook, shell and star. The top face is the primary cue; the bodies keep the side profiles distinct. |
-| Monolith | Geometric columns with a different top face: cross (Khun), diamond (Met), triangle (Khon), arrow (Ma), crenellated tower (Ruea), hexagon (Bia) and octagon (Bia Ngua). |
+| Monolith | Monumental silhouettes: a cross-plan gate (Khun), diamond obelisk (Met), triangular shrine (Khon), horse-head stele (Ma), crenellated keep (Ruea), hex drum (Bia) and star drum (Bia Ngua). Every top is capped in gold for a high-contrast overhead read. |
 
 | Sigil from above | Monolith from above |
 | --- | --- |

@@ -132,7 +132,7 @@ Each builder returns `{ group, height }`. All are procedural; no model files. `s
 
 **Sigil** (`createSigil*`) adds `addSealCap`: a dark cylinder with a gold rim and a procedural canvas glyph texture (`♔ ❖ ♗ ♘ ♜ ◒ ★`). The seal faces up, so the top view reads it directly. Bodies keep distinct heights and profiles (brimmed Khon, horse Ma, masted Ruea).
 
-**Monolith** (`createMonolith*`) uses geometric prisms whose top faces differ: cross (Khun), octahedral diamond (Met), triangular prism (Khon), extruded arrow (Ma), crenellated square tower (Ruea), hexagonal prism (Bia) and octagonal prism with a gold cap (Bia Ngua).
+**Monolith** (`createMonolith*`) builds monumental silhouettes with gold-capped top faces: cross-plan gate (Khun), diamond obelisk (Met), triangular shrine (Khon), horse-head stele (Ma), crenellated keep (Ruea), hexagonal drum (Bia) and octagonal star drum (Bia Ngua).
 
 | Builder | Court geometry | Height |
 | --- | --- | --- |

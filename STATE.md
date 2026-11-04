@@ -5,7 +5,7 @@
 
 > Latest completion snapshot for the build, post-release review features, display themes, and GitHub publication.
 
-## Release 1.9.0 — Sigil and Monolith piece families, top view
+## Release 1.9.1 — bigger, clearer Sigil and Monolith
 
 The 1.7.0 timing and token tables below are the historical build record and are not re-measured. This release addresses three pieces of player feedback:
 
@@ -15,7 +15,8 @@ The 1.7.0 timing and token tables below are the historical build record and are 
 - **1.8.1 UI pass.** Jade & Slate became the default board; the bot selector became a set of ranked strength cards with a custom slider; player-facing labels are side-aware ("Opponent" in Single Player, "Ruby" or "Black" in Pass & Play); the thinking chip uses an hourglass; and a Display button now sits in the board toolbar.
 - **1.8.2 replay and readability.** Coordinate labels are larger, outlined and repeated on all four edges. The match record carries a **Replay** button that re-animates the last move (with a captured-piece ghost) without touching the position. The AI search yields to the browser every ~70 ms, so orbiting and zooming remain available while the bot thinks.
 - **1.8.3 full-game replay.** A **Replay game** button in the actions panel rebuilds the match from the initial position and animates every stored move. A floating bar offers play/pause, previous/next and exit; exiting restores the live board, turn, captures, history and status exactly. Replay is read-only: Save and Load are disabled while it runs.
-- **1.9.0 Sigil, Monolith and Top view.** Four piece families now ship. **Sigil** puts a dark wax seal with a gold glyph (crown, diamond, mitre, horse, rook, shell, star) on every crown, so the type is readable from directly above. **Monolith** gives each piece a different geometric top face (cross, diamond, triangle, arrow, tower, hexagon, octagon). A **Top view** button at the bottom-right of the stage tilts the camera to a near-overhead angle and restores the previous 3D view on toggle.
+- **1.9.0 Sigil, Monolith and Top view.** Four piece families now ship. **Sigil** puts a dark wax seal with a gold glyph (crown, diamond, mitre, horse, rook, shell, star) on every crown, so the type is readable from directly above. **Monolith** builds monumental silhouettes (cross gate, diamond obelisk, triangular shrine, horse stele, keep and drums) with gold-capped top faces. A **Top view** button at the bottom-right of the stage tilts the camera to a near-overhead angle and restores the previous 3D view on toggle.
+- **1.9.1 contrast pass.** Sigil seals were enlarged and mounted on collars; the Met became a faceted diamond and the Khon a wide brim. Monolith was rebuilt from abstract prisms into monumental silhouettes — cross gate, gold-tipped obelisk, tiled shrine, horse-head stele, crenellated keep, hex drum and octagonal star drum — with thicker gold top plates. Both families now fill more of the square for a stronger side and overhead read.
 
 Verification for this release is recorded in [docs/TESTING.md](docs/TESTING.md).
 
@@ -24,7 +25,7 @@ Verification for this release is recorded in [docs/TESTING.md](docs/TESTING.md).
 | Field | Value |
 | --- | --- |
 | Project status | ✅ Complete and published |
-| App version | `1.9.0` |
+| App version | `1.9.1` |
 | Repository | <https://github.com/somphol/makruk-3d> |
 | Live page | <https://somphol.github.io/makruk-3d/> (GitHub Pages deployment enabled) |
 | Primary branch | `main` |

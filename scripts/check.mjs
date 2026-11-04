@@ -22,7 +22,7 @@ function ok(condition, label, detail = "") {
   return condition;
 }
 
-const VERSION = "1.9.0";
+const VERSION = "1.9.1";
 
 const required = [
   "index.html",
